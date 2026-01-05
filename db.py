@@ -24,72 +24,44 @@ def create_database(conn, cursor):
     
     # Création des tables
     try:
-        # Création de la table commune 
+        # Création de la table commune (attribut zone temporairement en texte pour voir délimitaion des communes)
+        # Contient les communes
         print("CREATION TABLE COMMUNE")
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Commune(
-                code_insee INT PRIMARY KEY,
-                nom_commune TEXT
-            )
-        ''')
-        
-        print("Creating the table Student....")
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS Student(
-                stud_number INT PRIMARY KEY,
-                first_name TEXT,
-                last_name TEXT,
-                gender TEXT
+                id_reseau INT PRIMARY KEY,
+                code_insee INT,
+                nom_commune TEXT,
+                zone TEXT
             )
         ''')
 
-        print("Creating the table EmailAddress....")
+        # Création de la table paramètre
+        # Contient les paramètres de qualité
+        print("CREATION TABLE PARAMETRE")
         cursor.execute('''
-            CREATE TABLE IF NOT EXISTS EmailAddress(
-                email TEXT PRIMARY KEY,
-                stud_number INT,
-                FOREIGN KEY (stud_number) REFERENCES Student(stud_number)
+            CREATE TABLE IF NOT EXISTS Parametre(
+                id_param INT PRIMARY KEY,
+                nom_param TEXT,
+                unite TEXT,
+                seuil_qualite TEXT
             )
         ''')
-
-        print("Creating the table SkisatiEdition....")
+    
+        # Création de la table prelèvement
+        # Contient l'association des communes et le prélèvement de leurs paramètres ainsi que leurs conformités
+        print("CREATION TABLE PRELEVEMENT")
         cursor.execute('''
-            CREATE TABLE IF NOT EXISTS SkisatiEdition(
-                year TEXT PRIMARY KEY,
-                registration_fee REAL
-            )
-        ''')
-
-        print("Creating the table Association....")
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS Association(
-                asso_name TEXT PRIMARY KEY,
-                asso_desc TEXT
-            )
-        ''')
-
-        print("Creating the table Member_Of....")
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS Member_Of(
-		        stud_number INT,
-		        asso_name TEXT,		
-		        stud_role TEXT,
-                PRIMARY KEY (stud_number, asso_name),
-		        FOREIGN KEY (stud_number) REFERENCES Student(stud_number),
-		        FOREIGN KEY (asso_name) REFERENCES Association(asso_name)
-            )
-        ''')
-
-        print("Creating the table Register_For....")
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS Register_For(
-                stud_number INT,
-                year TEXT,
-		        registration_date TEXT,
-		        payment_date TEXT,
-                PRIMARY KEY (stud_number, year),
-                FOREIGN KEY (stud_number) REFERENCES Student(stud_number),
-		        FOREIGN KEY (year) REFERENCES SkisatiEdition(year)
+            CREATE TABLE IF NOT EXISTS Prelevement(
+                PRIMARY KEY (id_reseau, id_param),
+		        FOREIGN KEY (id_reseau) REFERENCES Commune(id_reseau),
+		        FOREIGN KEY (id_param) REFERENCES Association(id_param),
+                date_prelev DATE,
+                valeur_param FLOAT,
+                conformite_bacterio TEXT, 
+                conformite_chimique TEXT,
+                conformite_refbact TEXT,
+                conformite_refchim TEXT
             )
         ''')
        
