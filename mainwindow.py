@@ -34,7 +34,7 @@ def get_coordinates_and_name_from_insee(insee_code):
         return None, None, None
 
 # Exemple de code INSEE
-insee_code = "29200"
+insee_code = "29100"
 
 # Obtenir le nom, la latitude et la longitude
 name, latitude, longitude = get_coordinates_and_name_from_insee(insee_code)
