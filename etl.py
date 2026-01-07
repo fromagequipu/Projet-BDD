@@ -102,19 +102,30 @@ def extract():
     ################## TODO: COMPLETE THE CODE OF THIS FUNCTION  #####################
     
     ### Extraction de nos données dans les deux fichiers CSV ###
+    commune = pd.read_csv(
+    r"C:\Users\gatie\Downloads\dis-2024\DIS_COM_UDI_2024.csv",
+    delimiter=',',
+    low_memory=False)
 
-    commune = pd.read_csv(r"C:\Users\gatie\Downloads\dis-2024\DIS_COM_UDI_2024.csv", delimiter=',')
-    prelevement = pd.read_csv(r"C:\Users\gatie\Downloads\dis-2024\DIS_PLV_2024.csv", delimiter=',')
-    resultat = pd.read_csv(r"C:\Users\gatie\Downloads\dis-2024\DIS_RESULT_2024.csv", delimiter=',')
+    prelevement = pd.read_csv(
+    r"C:\Users\gatie\Downloads\dis-2024\DIS_PLV_2024.csv",
+    delimiter=',',
+    low_memory=False)
+
+    resultat = pd.read_csv(
+    r"C:\Users\gatie\Downloads\dis-2024\DIS_RESULT_2024.csv",
+    delimiter=',',
+    low_memory=False)
+
     print(commune)
     print(prelevement)
     print(resultat)
 
     ### Récupération de nos données utiles pour chaque table de notre BDD ###
 
-    commune_df = commune[["cdreseau", "inseecommune", "nomcommune", "quartier"]]
-    prelevement_df = prelevement[["inseecommuneprinc", "cdreseau","dateprel","referenceprel","plvconformitebacterio","plvconformitechimique","plvconformitereferencebact","plvconformitereferencebact","plvconformitereferencechim"]] 
-    parametre_df = resultat[["referenceprel", "libmajparametre","cdunitereferencesiseeaux","refqual"]] # Ici on peut avoir des duplicas car par étudiant de base mais inscription la même année et le même prix
+    commune_df = commune[["id_reseau", "code_insee", "nom_commune", "zone"]]
+    prelevement_df = prelevement[["id_reseau", "id_param","date_prelev","valeur_param","conformite_bacterio","conformite_chimique","conformite_refbact","conformite_refchim"]] 
+    parametre_df = resultat[["id_param", "nom_param","unite","seuil_qualite"]] # Ici on peut avoir des duplicas car par étudiant de base mais inscription la même année et le même prix
     
 
     ### Ajout des dataframes pour chaque table de notre BDD dans un même dictionnaire ###
@@ -182,10 +193,10 @@ def load(dataframes):
         The dictionary returned by the function extract()
     """
     # Loads the application configuration.
-    app_config = utils.load_config()
+   
 
     # Gets the path to the database file.
-    database_file = app_config["db"]
+    database_file = "WaterQuality.db"
 
     # You might bump into some errors while debugging your code which 
     # This might result in a database that is partially filled with some data.

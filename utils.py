@@ -257,7 +257,7 @@ if __name__ == "__main__":
     try:
         config = load_config()
         assert config["app"] == "SkisatiResa" \
-            and config["db"] == "./DB/WaterQuality.db" \
+            and config["db"] == "./WaterQuality.db" \
             
     except NotImplementedError:
         pass
