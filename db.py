@@ -2,6 +2,7 @@
 
 ### BIBLIOTHEQUES ###
 import sqlite3
+import utils
 
 def create_database(conn, cursor):
     """Creates the WaterQuality database
@@ -44,7 +45,7 @@ def create_database(conn, cursor):
                 id_param INT PRIMARY KEY,
                 nom_param TEXT,
                 unite TEXT,
-                seuil_qualite TEXT
+                seuil_qualite FLOAT
             )
         ''')
     
@@ -53,15 +54,17 @@ def create_database(conn, cursor):
         print("CREATION TABLE PRELEVEMENT")
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Prelevement(
-                PRIMARY KEY (id_reseau, id_param),
-		        FOREIGN KEY (id_reseau) REFERENCES Commune(id_reseau),
-		        FOREIGN KEY (id_param) REFERENCES Association(id_param),
+                id_reseau INT,
+                id_param INT,
                 date_prelev DATE,
                 valeur_param FLOAT,
                 conformite_bacterio TEXT, 
                 conformite_chimique TEXT,
                 conformite_refbact TEXT,
-                conformite_refchim TEXT
+                conformite_refchim TEXT,
+                PRIMARY KEY (id_reseau, id_param),
+		        FOREIGN KEY (id_reseau) REFERENCES Commune(id_reseau),
+		        FOREIGN KEY (id_param) REFERENCES Parametre(id_param)
             )
         ''')
        
@@ -86,11 +89,8 @@ def create_database(conn, cursor):
 # The entry point of this module.
 if __name__ == "__main__":
 
-    # Loads the app config into the dictionary app_config.
-    app_config = utils.load_config()
-
-    # From the configuration, gets the path to the database file.
-    db_file = app_config["db"]
+    # Chemin de la BDD
+    db_file = "WaterQuality.db"
 
     # Open a connection to the database.
     conn = sqlite3.connect(db_file)
