@@ -30,10 +30,9 @@ def create_database(conn, cursor):
         print("CREATION TABLE COMMUNE")
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Commune(
-                id_reseau INT PRIMARY KEY,
-                code_insee INT,
-                nom_commune TEXT,
-                zone TEXT
+                cdreseau INT PRIMARY KEY,
+                inseecommune INT,
+                nomcommune TEXT
             )
         ''')
 
@@ -42,10 +41,12 @@ def create_database(conn, cursor):
         print("CREATION TABLE PARAMETRE")
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Parametre(
-                id_param INT PRIMARY KEY,
-                nom_param TEXT,
-                unite TEXT,
-                seuil_qualite FLOAT
+                cdparametre INT PRIMARY KEY,
+                referenceprel INT,
+                libminparametre TEXT,
+                cdunitereferencesiseeaux TEXT,
+                refqual TEXT,
+                FOREIGN KEY (referenceprel) REFERENCES Prelevement(referenceprel)
             )
         ''')
     
@@ -54,17 +55,14 @@ def create_database(conn, cursor):
         print("CREATION TABLE PRELEVEMENT")
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Prelevement(
-                id_reseau INT,
-                id_param INT,
-                date_prelev DATE,
-                valeur_param FLOAT,
-                conformite_bacterio TEXT, 
-                conformite_chimique TEXT,
-                conformite_refbact TEXT,
-                conformite_refchim TEXT,
-                PRIMARY KEY (id_reseau, id_param),
-		        FOREIGN KEY (id_reseau) REFERENCES Commune(id_reseau),
-		        FOREIGN KEY (id_param) REFERENCES Parametre(id_param)
+                cdreseau INT,
+                referenceprel INT PRIMARY KEY,
+                dateprel DATE,
+                plvconformitebacterio TEXT, 
+                plvconformitechimique TEXT,
+                plvconformitereferencebact TEXT,
+                plvconformitereferencechim TEXT,
+		        FOREIGN KEY (cdreseau) REFERENCES Commune(cdreseau)
             )
         ''')
        
@@ -89,8 +87,16 @@ def create_database(conn, cursor):
 # The entry point of this module.
 if __name__ == "__main__":
 
+<<<<<<< HEAD
+    # Loads the app config into the dictionary app_config.
+    app_config = utils.load_config()
+
+    # From the configuration, gets the path to the database file.
+    db_file = app_config["db"]
+=======
     # Chemin de la BDD
     db_file = "WaterQuality.db"
+>>>>>>> database
 
     # Open a connection to the database.
     conn = sqlite3.connect(db_file)
