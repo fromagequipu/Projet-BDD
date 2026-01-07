@@ -87,16 +87,8 @@ def create_database(conn, cursor):
 # The entry point of this module.
 if __name__ == "__main__":
 
-<<<<<<< HEAD
-    # Loads the app config into the dictionary app_config.
-    app_config = utils.load_config()
-
-    # From the configuration, gets the path to the database file.
-    db_file = app_config["db"]
-=======
     # Chemin de la BDD
     db_file = "WaterQuality.db"
->>>>>>> database
 
     # Open a connection to the database.
     conn = sqlite3.connect(db_file)

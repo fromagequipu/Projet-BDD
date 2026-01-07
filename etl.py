@@ -123,9 +123,9 @@ def extract():
 
     ### Récupération de nos données utiles pour chaque table de notre BDD ###
 
-    commune_df = commune[["id_reseau", "code_insee", "nom_commune", "zone"]]
-    prelevement_df = prelevement[["id_reseau", "id_param","date_prelev","valeur_param","conformite_bacterio","conformite_chimique","conformite_refbact","conformite_refchim"]] 
-    parametre_df = resultat[["id_param", "nom_param","unite","seuil_qualite"]] # Ici on peut avoir des duplicas car par étudiant de base mais inscription la même année et le même prix
+    commune_df = commune[["cdreseau", "inseecommune", "nomcommune"]]
+    prelevement_df = prelevement[["cdreseau", "referenceprel","dateprel","plvconformitebacterio","plvconformitechimique","plvconformitereferencebact","plvconformitereferencechim"]] 
+    parametre_df = resultat[["cdparametre", "libminparametre","cdunitereference","refqual"]] # Ici on peut avoir des duplicas car par étudiant de base mais inscription la même année et le même prix
     
 
     ### Ajout des dataframes pour chaque table de notre BDD dans un même dictionnaire ###
