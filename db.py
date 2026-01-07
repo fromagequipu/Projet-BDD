@@ -30,9 +30,10 @@ def create_database(conn, cursor):
         print("CREATION TABLE COMMUNE")
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Commune(
-                cdreseau INT PRIMARY KEY,
+                cdreseau INT,
                 inseecommune INT,
-                nomcommune TEXT
+                nomcommune TEXT,
+                PRIMARY KEY (inseecommune, cdreseau)
             )
         ''')
 
