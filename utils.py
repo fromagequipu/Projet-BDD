@@ -3,6 +3,7 @@ called in different points of the application.
 
 """
 
+
 from datetime import datetime, date
 from PIL import Image, ImageTk
 import re
@@ -262,3 +263,6 @@ if __name__ == "__main__":
         pass
 
  
+
+
+
