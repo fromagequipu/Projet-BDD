@@ -1,6 +1,10 @@
 import sys
 import requests
 import folium
+import webbrowser
+import os
+
+
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton
 from PyQt6.QtCore import Qt
 
@@ -50,10 +54,13 @@ def create_map(selected_code_insee=None, selected_name=None):
     for commune in communes_to_display:
         folium.Marker([commune["latitude"], commune["longitude"]], popup=commune["name"]).add_to(m)
 
-    # Sauvegarder la carte dans un fichier HTML
-    m.save("carte_communes_filtrées.html")
-    print("Carte générée : carte_communes_filtrées.html")
+    # Sauvegarde
+    filename = "carte_communes_filtrées.html"
+    m.save(filename)
 
+     # Ouverture dans le navigateur
+    file_path = os.path.abspath(filename)
+    webbrowser.open(f"file://{file_path}")
 
 # Interface PyQt6
 class SimpleMapApp(QWidget):
