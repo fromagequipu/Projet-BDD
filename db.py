@@ -42,7 +42,7 @@ def create_database(conn, cursor):
         print("CREATION TABLE PARAMETRE")
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Parametre(
-                cdparametre INT PRIMARY KEY,
+                id_param INT PRIMARY KEY AUTOINCREMENT,
                 referenceprel INT,
                 libminparametre TEXT,
                 cdunitereferencesiseeaux TEXT,
@@ -56,14 +56,13 @@ def create_database(conn, cursor):
         print("CREATION TABLE PRELEVEMENT")
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Prelevement(
-                cdreseau INT,
                 referenceprel INT PRIMARY KEY,
+                cdreseau INT,
                 dateprel DATE,
                 plvconformitebacterio TEXT, 
                 plvconformitechimique TEXT,
                 plvconformitereferencebact TEXT,
-                plvconformitereferencechim TEXT,
-		        FOREIGN KEY (cdreseau) REFERENCES Commune(cdreseau)
+                plvconformitereferencechim TEXT
             )
         ''')
        
