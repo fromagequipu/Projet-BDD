@@ -17,7 +17,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_185787d7d227a512d7f67db58d192d64 {
+                #map_81503ad065a45f21c986746b809a406f {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -54,16 +54,16 @@
 <body>
     
     
-            <div class="folium-map" id="map_185787d7d227a512d7f67db58d192d64" ></div>
+            <div class="folium-map" id="map_81503ad065a45f21c986746b809a406f" ></div>
         
 </body>
 <script>
     
     
-            var map_185787d7d227a512d7f67db58d192d64 = L.map(
-                "map_185787d7d227a512d7f67db58d192d64",
+            var map_81503ad065a45f21c986746b809a406f = L.map(
+                "map_81503ad065a45f21c986746b809a406f",
                 {
-                    center: [46.603354, 1.888334],
+                    center: [47.0, 1.0],
                     crs: L.CRS.EPSG3857,
                     ...{
   "zoom": 6,
@@ -78,7 +78,7 @@
 
         
     
-            var tile_layer_20a440a934b321c6c9f1bf9f4393d44f = L.tileLayer(
+            var tile_layer_eef893d675518099a259cadeb0843d5e = L.tileLayer(
                 "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                 {
   "minZoom": 0,
@@ -95,31 +95,45 @@
             );
         
     
-            tile_layer_20a440a934b321c6c9f1bf9f4393d44f.addTo(map_185787d7d227a512d7f67db58d192d64);
+            tile_layer_eef893d675518099a259cadeb0843d5e.addTo(map_81503ad065a45f21c986746b809a406f);
         
     
-            var marker_d3f42e7c63c0d6a54417c82143b1d41f = L.marker(
-                [47.239367, -1.555335],
+            var marker_1d4a1bc70512043bc7e46b2ca1a64cbb = L.marker(
+                [47.2, 1.5],
                 {
 }
-            ).addTo(map_185787d7d227a512d7f67db58d192d64);
+            ).addTo(map_81503ad065a45f21c986746b809a406f);
         
     
-        var popup_1d93f79028656876290b9f3ece0dcf99 = L.popup({
+            var icon_512c029b4b609d44130ec6d2ede81065 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "green",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_1a71ade7922ef324fd4de2a9530d6a92 = L.popup({
   "maxWidth": "100%",
 });
 
         
             
-                var html_85bbe580ca023f98de858a49a15ab5e3 = $(`<div id="html_85bbe580ca023f98de858a49a15ab5e3" style="width: 100.0%; height: 100.0%;">Nantes</div>`)[0];
-                popup_1d93f79028656876290b9f3ece0dcf99.setContent(html_85bbe580ca023f98de858a49a15ab5e3);
+                var html_918e944dbcd704df9af2088ef2e92646 = $(`<div id="html_918e944dbcd704df9af2088ef2e92646" style="width: 100.0%; height: 100.0%;">Commune conforme</div>`)[0];
+                popup_1a71ade7922ef324fd4de2a9530d6a92.setContent(html_918e944dbcd704df9af2088ef2e92646);
             
         
 
-        marker_d3f42e7c63c0d6a54417c82143b1d41f.bindPopup(popup_1d93f79028656876290b9f3ece0dcf99)
+        marker_1d4a1bc70512043bc7e46b2ca1a64cbb.bindPopup(popup_1a71ade7922ef324fd4de2a9530d6a92)
         ;
 
         
     
+    
+                marker_1d4a1bc70512043bc7e46b2ca1a64cbb.setIcon(icon_512c029b4b609d44130ec6d2ede81065);
+            
 </script>
 </html>

@@ -92,15 +92,6 @@ class SimpleMapApp(QWidget):
         self.combo_name.addItem("Saint André des Eaux")
         self.layout.addWidget(self.combo_name)
 
-
-        # Ajouter un combo box pour le choix des villes non-conformes
-        self.combo_nonconf = QComboBox(self)
-        self.combo_nonconf.addItem("Villes conformes")
-        self.combo_nonconf.addItem("OUI")
-        self.combo_nonconf.addItem("NON")
-        self.layout.addWidget(self.combo_nonconf)
-
-
         # Ajouter un bouton pour générer la carte
         self.button = QPushButton("Générer la carte", self)
         self.button.clicked.connect(self.on_generate_map)
