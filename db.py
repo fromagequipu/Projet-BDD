@@ -45,9 +45,9 @@ def create_database(conn, cursor):
                 id_param INT PRIMARY KEY AUTOINCREMENT,
                 referenceprel INT,
                 libminparametre TEXT,
+                valtraduite TEXT, 
                 cdunitereferencesiseeaux TEXT,
-                refqual TEXT,
-                FOREIGN KEY (referenceprel) REFERENCES Prelevement(referenceprel)
+                refqual TEXT
             )
         ''')
     
