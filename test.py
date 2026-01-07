@@ -3,6 +3,9 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.QtCore import QUrl
 from PyQt5.QtWebEngineWidgets import QWebEngineView
+import os
+
+map_path = os.path.abspath("map.html")
 
 def create_map():
     m = folium.Map(location=[47, 1], zoom_start=6)
@@ -18,13 +21,11 @@ def create_map():
 
 
 class MainWindow(QMainWindow):
-    def init(self):
-        super().init()
+    def __init__(self):
+        super().__init__()
         self.setWindowTitle("Supervision Qualité de l'Eau")
         self.browser = QWebEngineView()
-        self.browser.load(QUrl.fromLocalFile(
-            "map.html"
-        ))
+        self.browser.load(QUrl.fromLocalFile(map_path))
 
         self.setCentralWidget(self.browser)
 
