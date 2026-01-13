@@ -9,6 +9,8 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import QUrl
 from PyQt5.QtWebEngineWidgets import QWebEngineView
+from PyQt5.QtWidgets import QLabel, QDateEdit
+from PyQt5.QtCore import QDate
 
 
 MAP_FILE = "map.html"
@@ -50,14 +52,14 @@ def create_map(insee_code=None):
     m.save(MAP_FILE)
 
 
-# -------------------------
+
 # Fenêtre principale
 # -------------------------
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Supervision Qualité de l'Eau")
-        self.resize(900, 600)
+        self.resize(1400, 800)
 
         # Widget central
         central = QWidget()
@@ -74,6 +76,35 @@ class MainWindow(QMainWindow):
         self.combo.addItem("Rennes", "35000")
         self.combo.addItem("Saint André des Eaux", "44151")
         layout.addWidget(self.combo)
+
+        #Conformité
+        label2 = QLabel("Critères de conformité")
+        layout.addWidget(label2)
+        self.combo = QComboBox()
+        self.combo.addItem("C", "C")
+        self.combo.addItem("NC", "NC")
+        layout.addWidget(self.combo)
+        
+        #Catégorie
+        label3 = QLabel("Catégories")
+        layout.addWidget(label3)
+        self.combo = QComboBox()
+        self.combo.addItem("Bacteries", "Bacteries")
+        self.combo.addItem("Chimie", "Chimie")
+        self.combo.addItem("Référence Bacterie", "Référence Bacterie")
+        self.combo.addItem("Référence Chimie", "Référence Chimie")
+        layout.addWidget(self.combo)
+
+
+        #Date à définir
+        label_date = QLabel("Choisissez une date :")
+        self.date_edit = QDateEdit()
+        self.date_edit.setCalendarPopup(True)   # ouvre un calendrier
+        self.date_edit.setDate(QDate.currentDate())  # date du jour
+        layout.addWidget(label_date)
+        layout.addWidget(self.date_edit)
+
+
 
         # Bouton
         button = QPushButton("Afficher la carte")
