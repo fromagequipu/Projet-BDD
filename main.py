@@ -66,9 +66,13 @@ class MainWindow(QMainWindow):
         col2 = QVBoxLayout()
         col3 = QVBoxLayout()
 
+        layout.addLayout(col1)
+        layout.addLayout(col2)
+        layout.addLayout(col3)
+
         # Label
         label = QLabel("Choisissez une ville :")
-        layout.addWidget(label)
+        col1.addWidget(label)
 
         # ComboBox villes
         self.combo_ville = QComboBox()
@@ -76,15 +80,15 @@ class MainWindow(QMainWindow):
         self.combo_ville.addItem("Nantes", "44000")
         self.combo_ville.addItem("Rennes", "35000")
         self.combo_ville.addItem("Saint André des Eaux", "44151")
-        layout.addWidget(self.combo_ville)
+        col1.addWidget(self.combo_ville)
 
         #Conformité
         label2 = QLabel("Critères de conformité")
-        layout.addWidget(label2)
+        col1.addWidget(label2)
         self.combo_conformite = QComboBox()
         self.combo_conformite.addItem("C", "C")
         self.combo_conformite.addItem("NC", "NC")
-        layout.addWidget(self.combo_conformite)
+        col1.addWidget(self.combo_conformite)
         
         #Catégorie
         label3 = QLabel("Catégories")
