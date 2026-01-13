@@ -1,131 +1,110 @@
 import sys
+import os
 import requests
 import folium
-import webbrowser
-import os
+
+from PyQt5.QtWidgets import (
+    QApplication, QMainWindow, QWidget,
+    QVBoxLayout, QLabel, QComboBox, QPushButton
+)
+from PyQt5.QtCore import QUrl
+from PyQt5.QtWebEngineWidgets import QWebEngineView
 
 
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton
-from PyQt5.QtCore import Qt
+MAP_FILE = "map.html"
 
-# Fonction pour obtenir les coordonnées et le nom depuis l'API de l'INSEE
+
+# -------------------------
+# API INSEE
+# -------------------------
 def get_coordinates_and_name_from_insee(insee_code):
     url = f"https://api-adresse.data.gouv.fr/search/?q={insee_code}&type=municipality&limit=1"
     response = requests.get(url)
 
     if response.status_code == 200:
         data = response.json()
-        if data['features']:
-            name = data['features'][0]['properties']['label']
-            latitude = data['features'][0]['geometry']['coordinates'][1]
-            longitude = data['features'][0]['geometry']['coordinates'][0]
-            return name, latitude, longitude
+        if data["features"]:
+            name = data["features"][0]["properties"]["label"]
+            lon, lat = data["features"][0]["geometry"]["coordinates"]
+            return name, lat, lon
     return None, None, None
 
 
-# Créer une carte avec Folium
-def create_map(selected_code_insee=None, selected_name=None):
-    codes_insee = {
-        "Nantes": "44000",
-        "Rennes": "35000",
-        "Saint André des Eaux": "44151"
-    }
+# -------------------------
+# Création carte Folium
+# -------------------------
+def create_map(insee_code=None):
+    m = folium.Map(location=[46.6, 1.8], zoom_start=6)
 
-    # Créer la carte centrée sur la France
-    m = folium.Map(location=[46.603354, 1.888334], zoom_start=6)
+    if insee_code:
+        name, lat, lon = get_coordinates_and_name_from_insee(insee_code)
+        if lat and lon:
+            folium.Marker(
+                location=[lat, lon],
+                popup=name,
+                icon=folium.Icon(color="blue", icon="info-sign")
+            ).add_to(m)
+            m.location = [lat, lon]
+            m.zoom_start = 10
 
-    # Sélectionner les communes à afficher
-    communes_to_display = []
+    m.save(MAP_FILE)
 
-    if selected_code_insee:
-        name, lat, lon = get_coordinates_and_name_from_insee(selected_code_insee)
-        if name:
-            communes_to_display.append({"name": name, "latitude": lat, "longitude": lon})
 
-    if selected_name:
-        # Si on a un nom de ville, on filtre par celui-ci
-        if selected_name in codes_insee:
-            code_insee = codes_insee[selected_name]
-            name, lat, lon = get_coordinates_and_name_from_insee(code_insee)
-            if name:
-                communes_to_display.append({"name": name, "latitude": lat, "longitude": lon})
-
-    # Ajouter les marqueurs pour chaque commune filtrée
-    for commune in communes_to_display:
-        folium.Marker([commune["latitude"], commune["longitude"]], popup=commune["name"]).add_to(m)
-
-    # Sauvegarde
-    filename = "carte_communes_filtrées.html"
-    m.save(filename)
-
-     # Ouverture dans le navigateur
-    file_path = os.path.abspath(filename)
-    webbrowser.open(f"file://{file_path}")
-
-# Interface PyQt6
-class SimpleMapApp(QWidget):
+# -------------------------
+# Fenêtre principale
+# -------------------------
+class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.setWindowTitle("Supervision Qualité de l'Eau")
+        self.resize(900, 600)
 
-        self.setWindowTitle("Filtrer les Communes")
-        self.setGeometry(100, 100, 300, 200)
-        
-        self.layout = QVBoxLayout()
+        # Widget central
+        central = QWidget()
+        layout = QVBoxLayout(central)
 
-        # Ajouter une étiquette
-        self.label = QLabel("Choisissez un filtre pour la carte:", self)
-        self.layout.addWidget(self.label)
+        # Label
+        label = QLabel("Choisissez une ville :")
+        layout.addWidget(label)
 
-        # Ajouter un combo box pour le choix du code INSEE
-        self.combo_code_insee = QComboBox(self)
-        self.combo_code_insee.addItem("Sélectionner un code INSEE")
-        self.combo_code_insee.addItem("44000")  # Nantes
-        self.combo_code_insee.addItem("35000")  # Paris
-        self.combo_code_insee.addItem("44151")  # Lyon
-        self.layout.addWidget(self.combo_code_insee)
+        # ComboBox villes
+        self.combo = QComboBox()
+        self.combo.addItem("Sélectionner une ville", None)
+        self.combo.addItem("Nantes", "44000")
+        self.combo.addItem("Rennes", "35000")
+        self.combo.addItem("Saint André des Eaux", "44151")
+        layout.addWidget(self.combo)
 
-        # Ajouter un combo box pour le choix du nom de la ville
-        self.combo_name = QComboBox(self)
-        self.combo_name.addItem("Sélectionner une ville")
-        self.combo_name.addItem("Nantes")
-        self.combo_name.addItem("Rennes")
-        self.combo_name.addItem("Saint André des Eaux")
-        self.layout.addWidget(self.combo_name)
+        # Bouton
+        button = QPushButton("Afficher la carte")
+        button.clicked.connect(self.update_map)
+        layout.addWidget(button)
 
+        # Vue Web (carte)
+        self.browser = QWebEngineView()
+        layout.addWidget(self.browser)
 
-        # Ajouter un combo box pour le choix des villes non-conformes
-        self.combo_nonconf = QComboBox(self)
-        self.combo_nonconf.addItem("Villes conformes")
-        self.combo_nonconf.addItem("OUI")
-        self.combo_nonconf.addItem("NON")
-        self.layout.addWidget(self.combo_nonconf)
+        self.setCentralWidget(central)
 
+        # Carte initiale
+        create_map()
+        self.load_map()
 
-        # Ajouter un bouton pour générer la carte
-        self.button = QPushButton("Générer la carte", self)
-        self.button.clicked.connect(self.on_generate_map)
-        self.layout.addWidget(self.button)
+    def load_map(self):
+        path = os.path.abspath(MAP_FILE)
+        self.browser.load(QUrl.fromLocalFile(path))
 
-        self.setLayout(self.layout)
-
-    def on_generate_map(self):
-        # Récupérer les sélections
-        selected_code_insee = self.combo_code_insee.currentText()
-        selected_name = self.combo_name.currentText()
-
-        # Vérifier si un code INSEE ou un nom de ville a été sélectionné
-        if selected_code_insee != "Sélectionner un code INSEE":
-            create_map(selected_code_insee=selected_code_insee)
-        elif selected_name != "Sélectionner une ville":
-            create_map(selected_name=selected_name)
-        else:
-            print("Aucun filtre sélectionné")
-
-        print("Carte générée et sauvegardée sous 'carte_communes_filtrées.html'")
+    def update_map(self):
+        insee_code = self.combo.currentData()
+        create_map(insee_code)
+        self.load_map()
 
 
+# -------------------------
+# Lancement
+# -------------------------
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = SimpleMapApp()
+    window = MainWindow()
     window.show()
     sys.exit(app.exec())

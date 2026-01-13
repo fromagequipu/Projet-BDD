@@ -26,7 +26,6 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Supervision Qualité de l'Eau")
         self.browser = QWebEngineView()
         self.browser.load(QUrl.fromLocalFile(map_path))
-
         self.setCentralWidget(self.browser)
 
 
