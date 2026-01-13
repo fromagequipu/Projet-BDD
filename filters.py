@@ -18,16 +18,18 @@ def get_conformites(cursor):
     If an error occurs while querying the database, the function returns None.
     """
     try:
+        C1="N"
+        C2="N"
+        C3="N"
+        C4="N"
         # Reqûete qui permet de visualiser les infos des associations
-        cursor.execute("SELECT c.inseecommune, c.nomcommune FROM Commune c JOIN Prelevement p ON p.cdreseau = c.cdreseau WHERE p.plvconformitechimique = ? AND p.plvconformitebacterio = ? AND p.plvconformitereferencebact = ? AND p.plvconformitereferencechim = ?;", (VARS,))
+        cursor.execute("SELECT c.inseecommune, c.nomcommune FROM Commune c JOIN Prelevement p ON p.cdreseau = c.cdreseau WHERE p.plvconformitechimique = ? AND p.plvconformitebacterio = ? AND p.plvconformitereferencebact = ? AND p.plvconformitereferencechim = ?;", (C1,C2,C3,C4))
         row = cursor.fetchall()
     except sqlite3.Error as error:
         print(error)
         return None
     print("Le resultat est", row)
     return row
-
-
 
 # Entry point of this module.
 if __name__ == '__main__':
@@ -44,6 +46,9 @@ if __name__ == '__main__':
     # Get the cursor for the connection. This object is used to execute queries 
     # in the database.
     cursor = conn.cursor()
+
+    # TEST FONCTION
+    get_conformites(cursor)
 
     # Close the connection to the database.
     cursor.close()
