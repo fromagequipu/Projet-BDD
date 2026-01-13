@@ -103,17 +103,17 @@ def extract():
     
     ### Extraction de nos données dans les deux fichiers CSV ###
     commune = pd.read_csv(
-    r"C:\Users\Gatie\Downloads\dis-2024\DIS_COM_UDI_2024.csv",
+    r"data\dis-2024\DIS_COM_UDI_2024.csv",
     delimiter=',',
     low_memory=False)
 
     prelevement = pd.read_csv(
-    r"C:\Users\Gatie\Downloads\dis-2024\DIS_PLV_2024.csv",
+    r"data\dis-2024\DIS_PLV_2024.csv",
     delimiter=',',
     low_memory=False)
 
     resultat = pd.read_csv(
-    r"C:\Users\Gatie\Downloads\dis-2024\DIS_RESULT_2024.csv",
+    r"data\dis-2024\DIS_RESULT_2024.csv",
     delimiter=',',
     low_memory=False)
 
