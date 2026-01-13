@@ -25,15 +25,26 @@ def create_database(conn, cursor):
     
     # Création des tables
     try:
+        # Création de la table réseau
+        # Contient les réseaux d'eau
+        print("CREATION TABLE RESEAU")
+        cursor.execute('''
+        CREATE TABLE Reseau(
+            cdreseau TEXT PRIMARY KEY,
+            nomreseau TEXT
+        )
+        ''')
+
         # Création de la table commune (attribut zone temporairement en texte pour voir délimitaion des communes)
         # Contient les communes
         print("CREATION TABLE COMMUNE")
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Commune(
-                cdreseau INT,
-                inseecommune INT,
+                cdreseau TEXT,
+                inseecommune TEXT,
                 nomcommune TEXT,
-                PRIMARY KEY (inseecommune, cdreseau)
+                PRIMARY KEY (inseecommune, cdreseau),
+                FOREIGN KEY (cdreseau) REFERENCES Reseau(cdreseau)
             )
         ''')
 
@@ -42,15 +53,14 @@ def create_database(conn, cursor):
         print("CREATION TABLE PRELEVEMENT")
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Prelevement(
-                referenceprel INT PRIMARY KEY,
-                cdreseau INT,
+                referenceprel TEXT PRIMARY KEY,
+                cdreseau TEXT,
                 dateprel DATE,
                 plvconformitebacterio TEXT, 
                 plvconformitechimique TEXT,
                 plvconformitereferencebact TEXT,
                 plvconformitereferencechim TEXT,
-                FOREIGN KEY (cdreseau)
-                REFERENCES Commune(cdreseau)
+                FOREIGN KEY (cdreseau) REFERENCES Reseau(cdreseau)
             )
         ''')
 
@@ -59,14 +69,13 @@ def create_database(conn, cursor):
         print("CREATION TABLE PARAMETRE")
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Parametre(
-                id_param INT PRIMARY KEY AUTOINCREMENT,
-                referenceprel INT,
+                id_param INTEGER PRIMARY KEY AUTOINCREMENT,
+                referenceprel TEXT,
                 libminparametre TEXT,
                 valtraduite TEXT, 
                 cdunitereferencesiseeaux TEXT,
                 refqual TEXT,
-                FOREIGN KEY (referenceprel)
-                REFERENCES Prelevement(referenceprel)
+                FOREIGN KEY (referenceprel) REFERENCES Prelevement(referenceprel)
             )
         ''')
        

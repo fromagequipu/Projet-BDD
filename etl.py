@@ -103,17 +103,17 @@ def extract():
     
     ### Extraction de nos données dans les deux fichiers CSV ###
     commune = pd.read_csv(
-    r"C:\Users\gatie\Downloads\dis-2024\DIS_COM_UDI_2024.csv",
+    r"C:\Users\Computer Camcam\Downloads\dis-2024\DIS_COM_UDI_2024.csv",
     delimiter=',',
     low_memory=False)
 
     prelevement = pd.read_csv(
-    r"C:\Users\gatie\Downloads\dis-2024\DIS_PLV_2024.csv",
+    r"C:\Users\Computer Camcam\Downloads\dis-2024\DIS_PLV_2024.csv",
     delimiter=',',
     low_memory=False)
 
     resultat = pd.read_csv(
-    r"C:\Users\gatie\Downloads\dis-2024\DIS_RESULT_2024.csv",
+    r"C:\Users\Computer Camcam\Downloads\dis-2024\DIS_RESULT_2024.csv",
     delimiter=',',
     low_memory=False)
 
@@ -122,14 +122,13 @@ def extract():
     print(resultat)
 
     ### Récupération de nos données utiles pour chaque table de notre BDD ###
-
+    reseau_df = commune[["cdreseau", "nomreseau"]]
     commune_df = commune[["cdreseau", "inseecommune", "nomcommune"]]
-    prelevement_df = prelevement[["cdreseau", "referenceprel","dateprel","plvconformitebacterio","plvconformitechimique","plvconformitereferencebact","plvconformitereferencechim"]] 
-    parametre_df = resultat[["libminparametre","cdunitereference","refqual","valtraduite","referenceprel"]] # Ici on peut avoir des duplicas car par étudiant de base mais inscription la même année et le même prix
-    
+    prelevement_df = prelevement[["referenceprel", "cdreseau", "dateprel","plvconformitebacterio","plvconformitechimique","plvconformitereferencebact","plvconformitereferencechim"]] 
+    parametre_df = resultat[["referenceprel", "libminparametre", "valtraduite", "cdunitereferencesiseeaux","refqual"]] # Ici on peut avoir des duplicas car par étudiant de base mais inscription la même année et le même prix
 
     ### Ajout des dataframes pour chaque table de notre BDD dans un même dictionnaire ###
-
+    dataframes["Reseau"] = reseau_df
     dataframes["Commune"] = commune_df
     dataframes["Prelevement"] = prelevement_df
     dataframes["Parametre"] = parametre_df
@@ -157,20 +156,21 @@ def transform(dataframes):
     ################## TODO: COMPLETE THE CODE OF THIS FUNCTION  #####################
 
     ### 1 - SUPPRESSION DES DUPLICAS DANS LES DONNEES ###
-    dataframes["Commune"] = dataframes["Commune"].drop_duplicates()
-    dataframes["Prelevement"] = dataframes["Prelevement"].drop_duplicates()
+    #dataframes["Commune"] = dataframes["Commune"].drop_duplicates()
+    #dataframes["Prelevement"] = dataframes["Prelevement"].drop_duplicates()
+    #dataframes["Parametre"] = dataframes["Parametre"].drop_duplicates()
+    #dataframes["Reseau"] = dataframes["Reseau"].drop_duplicates()
+    dataframes["Reseau"] = dataframes["Reseau"].drop_duplicates(subset=["cdreseau"])
+    dataframes["Commune"] = dataframes["Commune"].drop_duplicates(subset=["inseecommune"])
+    dataframes["Prelevement"] = dataframes["Prelevement"].drop_duplicates(subset=["referenceprel"])
     dataframes["Parametre"] = dataframes["Parametre"].drop_duplicates()
-   
+
 
     ### 2 - FORMATAGE DES DATES EN DD-MM-YYYY ###
 
     dataframes["Prelevement"]["dateprel"] = dataframes["Prelevement"]["dateprel"].map(get_right_date)
     
     print(dataframes["Prelevement"]["dateprel"])
-    
-
-   
- 
 
     
 
@@ -224,8 +224,10 @@ def load(dataframes):
     ################## TODO: COMPLETE THE CODE OF THIS FUNCTION  #####################
     
     # Pour chaque table, on l'importe dans SQL 
-    for table_name, df in dataframes.items():
-        df.to_sql(table_name, conn, if_exists="append", index=False)
+    dataframes["Reseau"].to_sql("Reseau", conn, if_exists="append", index=False)
+    dataframes["Commune"].to_sql("Commune", conn, if_exists="append", index=False)
+    dataframes["Prelevement"].to_sql("Prelevement", conn, if_exists="append", index=False)
+    dataframes["Parametre"].to_sql("Parametre", conn, if_exists="append", index=False)
     
     ##################################################################################
     
