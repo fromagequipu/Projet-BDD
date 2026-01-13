@@ -37,20 +37,6 @@ def create_database(conn, cursor):
             )
         ''')
 
-        # Création de la table paramètre
-        # Contient les paramètres de qualité
-        print("CREATION TABLE PARAMETRE")
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS Parametre(
-                id_param INT PRIMARY KEY AUTOINCREMENT,
-                referenceprel INT,
-                libminparametre TEXT,
-                valtraduite TEXT, 
-                cdunitereferencesiseeaux TEXT,
-                refqual TEXT
-            )
-        ''')
-    
         # Création de la table prelèvement
         # Contient l'association des communes et le prélèvement de leurs paramètres ainsi que leurs conformités
         print("CREATION TABLE PRELEVEMENT")
@@ -62,7 +48,25 @@ def create_database(conn, cursor):
                 plvconformitebacterio TEXT, 
                 plvconformitechimique TEXT,
                 plvconformitereferencebact TEXT,
-                plvconformitereferencechim TEXT
+                plvconformitereferencechim TEXT,
+                FOREIGN KEY (cdreseau)
+                REFERENCES Commune(cdreseau)
+            )
+        ''')
+
+        # Création de la table paramètre
+        # Contient les paramètres de qualité
+        print("CREATION TABLE PARAMETRE")
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS Parametre(
+                id_param INT PRIMARY KEY AUTOINCREMENT,
+                referenceprel INT,
+                libminparametre TEXT,
+                valtraduite TEXT, 
+                cdunitereferencesiseeaux TEXT,
+                refqual TEXT,
+                FOREIGN KEY (referenceprel)
+                REFERENCES Prelevement(referenceprel)
             )
         ''')
        
