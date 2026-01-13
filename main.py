@@ -59,7 +59,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Supervision Qualité de l'Eau")
-        self.resize(1400, 800)
+        self.resize(1400, 850)
 
         # Widget central
         central = QWidget()
@@ -105,6 +105,14 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.date_edit)
 
 
+        #Molécules
+        label3 = QLabel("Molécules")
+        layout.addWidget(label3)
+        self.combo = QComboBox()
+        self.combo.addItem("Nitrate", "Nitrate")
+        self.combo.addItem("Phosphate", "Phosphate")
+        self.combo.addItem("pH", "pH")
+        layout.addWidget(self.combo)
 
         # Bouton
         button = QPushButton("Afficher la carte")
