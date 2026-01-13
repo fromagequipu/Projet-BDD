@@ -5,12 +5,10 @@ import folium
 
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget,
-    QVBoxLayout, QLabel, QComboBox, QPushButton
+    QVBoxLayout, QLabel, QComboBox, QPushButton, QHBoxLayout, QDateEdit
 )
-from PyQt5.QtCore import QUrl
+from PyQt5.QtCore import QUrl, QDate
 from PyQt5.QtWebEngineWidgets import QWebEngineView
-from PyQt5.QtWidgets import QLabel, QDateEdit
-from PyQt5.QtCore import QDate
 
 
 MAP_FILE = "map.html"
@@ -59,41 +57,44 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Supervision Qualité de l'Eau")
-        self.resize(1400, 850)
+        self.resize(1600, 850)
 
         # Widget central
         central = QWidget()
-        layout = QVBoxLayout(central)
+        layout = QHBoxLayout(central)
+        col1 = QVBoxLayout()
+        col2 = QVBoxLayout()
+        col3 = QVBoxLayout()
 
         # Label
         label = QLabel("Choisissez une ville :")
         layout.addWidget(label)
 
         # ComboBox villes
-        self.combo = QComboBox()
-        self.combo.addItem("Sélectionner une ville", None)
-        self.combo.addItem("Nantes", "44000")
-        self.combo.addItem("Rennes", "35000")
-        self.combo.addItem("Saint André des Eaux", "44151")
-        layout.addWidget(self.combo)
+        self.combo_ville = QComboBox()
+        self.combo_ville.addItem("Sélectionner une ville", None)
+        self.combo_ville.addItem("Nantes", "44000")
+        self.combo_ville.addItem("Rennes", "35000")
+        self.combo_ville.addItem("Saint André des Eaux", "44151")
+        layout.addWidget(self.combo_ville)
 
         #Conformité
         label2 = QLabel("Critères de conformité")
         layout.addWidget(label2)
-        self.combo = QComboBox()
-        self.combo.addItem("C", "C")
-        self.combo.addItem("NC", "NC")
-        layout.addWidget(self.combo)
+        self.combo_conformite = QComboBox()
+        self.combo_conformite.addItem("C", "C")
+        self.combo_conformite.addItem("NC", "NC")
+        layout.addWidget(self.combo_conformite)
         
         #Catégorie
         label3 = QLabel("Catégories")
         layout.addWidget(label3)
-        self.combo = QComboBox()
-        self.combo.addItem("Bacteries", "Bacteries")
-        self.combo.addItem("Chimie", "Chimie")
-        self.combo.addItem("Référence Bacterie", "Référence Bacterie")
-        self.combo.addItem("Référence Chimie", "Référence Chimie")
-        layout.addWidget(self.combo)
+        self.combo_categorie = QComboBox()
+        self.combo_categorie.addItem("Bacteries", "Bacteries")
+        self.combo_categorie.addItem("Chimie", "Chimie")
+        self.combo_categorie.addItem("Référence Bacterie", "Référence Bacterie")
+        self.combo_categorie.addItem("Référence Chimie", "Référence Chimie")
+        layout.addWidget(self.combo_categorie)
 
 
         #Date à définir
@@ -106,13 +107,13 @@ class MainWindow(QMainWindow):
 
 
         #Molécules
-        label3 = QLabel("Molécules")
-        layout.addWidget(label3)
-        self.combo = QComboBox()
-        self.combo.addItem("Nitrate", "Nitrate")
-        self.combo.addItem("Phosphate", "Phosphate")
-        self.combo.addItem("pH", "pH")
-        layout.addWidget(self.combo)
+        label4 = QLabel("Molécules")
+        layout.addWidget(label4)
+        self.combo_molecule = QComboBox()
+        self.combo_molecule.addItem("Nitrate", "Nitrate")
+        self.combo_molecule.addItem("Phosphate", "Phosphate")
+        self.combo_molecule.addItem("pH", "pH")
+        layout.addWidget(self.combo_molecule)
 
         # Bouton
         button = QPushButton("Afficher la carte")
@@ -134,7 +135,7 @@ class MainWindow(QMainWindow):
         self.browser.load(QUrl.fromLocalFile(path))
 
     def update_map(self):
-        insee_code = self.combo.currentData()
+        insee_code = self.combo_ville.currentData()
         create_map(insee_code)
         self.load_map()
 
