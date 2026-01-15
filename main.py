@@ -8,8 +8,9 @@ from PyQt5.QtWidgets import (
     QVBoxLayout, QHBoxLayout, QLabel,
     QComboBox, QPushButton, QDateEdit, QGroupBox
 )
-from PyQt5.QtCore import QUrl, QDate
+from PyQt5.QtCore import QUrl, QDate, Qt
 from PyQt5.QtWebEngineWidgets import QWebEngineView
+from PyQt5.QtGui import QIcon
 
 
 MAP_FILE = "map.html"
@@ -58,6 +59,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Water Quality")
+        self.setWindowIcon(QIcon("logo.png"))
         self.resize(1600, 850)
 
         central = QWidget()
@@ -66,9 +68,27 @@ class MainWindow(QMainWindow):
         # Layout principal (vertical)
         main_layout = QVBoxLayout(central)
 
+        # Layout titre
+        titre_layout = QHBoxLayout()
+        main_layout.addLayout(titre_layout)
+
         # Layout du haut (3 colonnes)
         top_layout = QHBoxLayout()
         main_layout.addLayout(top_layout)
+
+        # -------------------------
+        # TITRE (au centre, en haut)
+        # -------------------------
+        title_label = QLabel("Bienvenue dans l'interface Water Quality !")
+        title_label.setAlignment(Qt.AlignCenter)
+        title_label.setStyleSheet("""
+            font-size: 34px;
+            font-weight: bold;
+            color: #1f4e79;
+            padding: 20px;
+        """)
+
+        titre_layout.addWidget(title_label)
 
         # -------------------------
         # COLONNE 1 - Général
