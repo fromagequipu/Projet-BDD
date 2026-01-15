@@ -6,7 +6,8 @@ import folium
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget,
     QVBoxLayout, QHBoxLayout, QLabel,
-    QComboBox, QPushButton, QDateEdit, QGroupBox
+    QComboBox, QPushButton, QDateEdit, QGroupBox,
+    QButtonGroup, QRadioButton
 )
 from PyQt5.QtCore import QUrl, QDate, Qt
 from PyQt5.QtWebEngineWidgets import QWebEngineView
