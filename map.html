@@ -17,7 +17,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_6ff40d427f5c21f248eb4065908d191f {
+                #map_384c374795c612b428ad4884fb8fbb8c {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -50,20 +50,23 @@
             </script>
 
         
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.Default.css"/>
 </head>
 <body>
     
     
-            <div class="folium-map" id="map_6ff40d427f5c21f248eb4065908d191f" ></div>
+            <div class="folium-map" id="map_384c374795c612b428ad4884fb8fbb8c" ></div>
         
 </body>
 <script>
     
     
-            var map_6ff40d427f5c21f248eb4065908d191f = L.map(
-                "map_6ff40d427f5c21f248eb4065908d191f",
+            var map_384c374795c612b428ad4884fb8fbb8c = L.map(
+                "map_384c374795c612b428ad4884fb8fbb8c",
                 {
-                    center: [46.6, 1.8],
+                    center: [44.3041, 6.3169],
                     crs: L.CRS.EPSG3857,
                     ...{
   "zoom": 6,
@@ -78,7 +81,7 @@
 
         
     
-            var tile_layer_8bb1e6a206b5388ed8b6c487000e268e = L.tileLayer(
+            var tile_layer_0d6dd87c7578d2f74a092df03a494727 = L.tileLayer(
                 "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                 {
   "minZoom": 0,
@@ -95,7 +98,1308 @@
             );
         
     
-            tile_layer_8bb1e6a206b5388ed8b6c487000e268e.addTo(map_6ff40d427f5c21f248eb4065908d191f);
+            tile_layer_0d6dd87c7578d2f74a092df03a494727.addTo(map_384c374795c612b428ad4884fb8fbb8c);
+        
+    
+            var marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8 = L.markerClusterGroup(
+                {
+}
+            );
+        
+    
+            var marker_8d783a07a8e2c031bae58bae6d360224 = L.marker(
+                [44.3041, 6.3169],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_86b9355fc63b6c9946299a8db2b8c0b9 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_25a11f359e0c7eb17f6dfa71fee1cbf9 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_0b23d3fdfd29c063651a499cafa88682 = $(`<div id="html_0b23d3fdfd29c063651a499cafa88682" style="width: 100.0%; height: 100.0%;"><b>AUZET</b><br>INSEE : 4017</div>`)[0];
+                popup_25a11f359e0c7eb17f6dfa71fee1cbf9.setContent(html_0b23d3fdfd29c063651a499cafa88682);
+            
+        
+
+        marker_8d783a07a8e2c031bae58bae6d360224.bindPopup(popup_25a11f359e0c7eb17f6dfa71fee1cbf9)
+        ;
+
+        
+    
+    
+                marker_8d783a07a8e2c031bae58bae6d360224.setIcon(icon_86b9355fc63b6c9946299a8db2b8c0b9);
+            
+    
+            var marker_1113dbae8590d4aaef5a43ceeb92c473 = L.marker(
+                [44.0432, 6.6475],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_09863036412e2fce703a4e206b67e5fa = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_b8eefbc5cc85bde2e356e3da40febf37 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_7d013cc42e31fecf287e039fe2329ee7 = $(`<div id="html_7d013cc42e31fecf287e039fe2329ee7" style="width: 100.0%; height: 100.0%;"><b>MEAILLES</b><br>INSEE : 4115</div>`)[0];
+                popup_b8eefbc5cc85bde2e356e3da40febf37.setContent(html_7d013cc42e31fecf287e039fe2329ee7);
+            
+        
+
+        marker_1113dbae8590d4aaef5a43ceeb92c473.bindPopup(popup_b8eefbc5cc85bde2e356e3da40febf37)
+        ;
+
+        
+    
+    
+                marker_1113dbae8590d4aaef5a43ceeb92c473.setIcon(icon_09863036412e2fce703a4e206b67e5fa);
+            
+    
+            var marker_0fb99b9116e9fa457558f1a42354ce71 = L.marker(
+                [43.0502, 1.471],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_a2ecf060153007abf04c8bcc3a0b44de = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_b70951f4beac7f66189fee84fb6545ff = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_ba59aba4f495bbd38e2853deece0f7c6 = $(`<div id="html_ba59aba4f495bbd38e2853deece0f7c6" style="width: 100.0%; height: 100.0%;"><b>AIGUES-JUNTES</b><br>INSEE : 9001</div>`)[0];
+                popup_b70951f4beac7f66189fee84fb6545ff.setContent(html_ba59aba4f495bbd38e2853deece0f7c6);
+            
+        
+
+        marker_0fb99b9116e9fa457558f1a42354ce71.bindPopup(popup_b70951f4beac7f66189fee84fb6545ff)
+        ;
+
+        
+    
+    
+                marker_0fb99b9116e9fa457558f1a42354ce71.setIcon(icon_a2ecf060153007abf04c8bcc3a0b44de);
+            
+    
+            var marker_d02eda859ba31c67580630ec1d74a248 = L.marker(
+                [44.6518, 2.4341],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_3d5efbe15b6f13c60c071f095982bbf6 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_5d3224722903db4e154b70de148930a5 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_eb62056d1617ed71a638a20f30d358ed = $(`<div id="html_eb62056d1617ed71a638a20f30d358ed" style="width: 100.0%; height: 100.0%;"><b>VIEILLEVIE</b><br>INSEE : 15260</div>`)[0];
+                popup_5d3224722903db4e154b70de148930a5.setContent(html_eb62056d1617ed71a638a20f30d358ed);
+            
+        
+
+        marker_d02eda859ba31c67580630ec1d74a248.bindPopup(popup_5d3224722903db4e154b70de148930a5)
+        ;
+
+        
+    
+    
+                marker_d02eda859ba31c67580630ec1d74a248.setIcon(icon_3d5efbe15b6f13c60c071f095982bbf6);
+            
+    
+            var marker_6b16da76a9a364eb3160d787c8ada9d9 = L.marker(
+                [45.2475, 1.8065],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_3f2961dfa6292df29981c1c6d674eb75 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_869a6d507e66c5235751fa2ec8c7f097 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_ef219b6d914440050f6412d23202d2af = $(`<div id="html_ef219b6d914440050f6412d23202d2af" style="width: 100.0%; height: 100.0%;"><b>LAGUENNE-SUR-AVALOUZE</b><br>INSEE : 19101</div>`)[0];
+                popup_869a6d507e66c5235751fa2ec8c7f097.setContent(html_ef219b6d914440050f6412d23202d2af);
+            
+        
+
+        marker_6b16da76a9a364eb3160d787c8ada9d9.bindPopup(popup_869a6d507e66c5235751fa2ec8c7f097)
+        ;
+
+        
+    
+    
+                marker_6b16da76a9a364eb3160d787c8ada9d9.setIcon(icon_3f2961dfa6292df29981c1c6d674eb75);
+            
+    
+            var marker_72cada005264b5a8d45441cb5cdfa90d = L.marker(
+                [45.1354, 2.0824],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_cfc9186ccc54aeaff2ee70b7707ea8e6 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_09cec117b15ec8857cf013ea2c3b3f9c = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_1b9b46ac45dfa3b3f8a6e4adcc1ddc5d = $(`<div id="html_1b9b46ac45dfa3b3f8a6e4adcc1ddc5d" style="width: 100.0%; height: 100.0%;"><b>SAINT-PRIVAT</b><br>INSEE : 19237</div>`)[0];
+                popup_09cec117b15ec8857cf013ea2c3b3f9c.setContent(html_1b9b46ac45dfa3b3f8a6e4adcc1ddc5d);
+            
+        
+
+        marker_72cada005264b5a8d45441cb5cdfa90d.bindPopup(popup_09cec117b15ec8857cf013ea2c3b3f9c)
+        ;
+
+        
+    
+    
+                marker_72cada005264b5a8d45441cb5cdfa90d.setIcon(icon_cfc9186ccc54aeaff2ee70b7707ea8e6);
+            
+    
+            var marker_b85911dd21eb4898fecfa5f34500d620 = L.marker(
+                [47.6059, 4.8331],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_1049ef5f8f12de76f61ece129c76f19e = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_62f1ba8d0fc24f83b89df82fd8a2f747 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_77c30cfefc647760c8ee20db58b7cd53 = $(`<div id="html_77c30cfefc647760c8ee20db58b7cd53" style="width: 100.0%; height: 100.0%;"><b>ECHALOT</b><br>INSEE : 21237</div>`)[0];
+                popup_62f1ba8d0fc24f83b89df82fd8a2f747.setContent(html_77c30cfefc647760c8ee20db58b7cd53);
+            
+        
+
+        marker_b85911dd21eb4898fecfa5f34500d620.bindPopup(popup_62f1ba8d0fc24f83b89df82fd8a2f747)
+        ;
+
+        
+    
+    
+                marker_b85911dd21eb4898fecfa5f34500d620.setIcon(icon_1049ef5f8f12de76f61ece129c76f19e);
+            
+    
+            var marker_13642f5fe7ee6a64c385993be80f0581 = L.marker(
+                [47.6076, 4.4377],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_7ce56730027802dc8a93b351cddbea86 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_05804b5a8f7be37b963ffce74997d492 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_719b09b3778382cbef969975418c5451 = $(`<div id="html_719b09b3778382cbef969975418c5451" style="width: 100.0%; height: 100.0%;"><b>FRESNES</b><br>INSEE : 21287</div>`)[0];
+                popup_05804b5a8f7be37b963ffce74997d492.setContent(html_719b09b3778382cbef969975418c5451);
+            
+        
+
+        marker_13642f5fe7ee6a64c385993be80f0581.bindPopup(popup_05804b5a8f7be37b963ffce74997d492)
+        ;
+
+        
+    
+    
+                marker_13642f5fe7ee6a64c385993be80f0581.setIcon(icon_7ce56730027802dc8a93b351cddbea86);
+            
+    
+            var marker_c17474f79d75ffaf4931d721015142fc = L.marker(
+                [47.4076, 4.7206],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_a58e5a94c56201276a0874fb92cf1fa4 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_d2e6c2824a0479ae34d2ada4b8c1b283 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_7008c333ffc8896ae0bce16562d90026 = $(`<div id="html_7008c333ffc8896ae0bce16562d90026" style="width: 100.0%; height: 100.0%;"><b>TURCEY</b><br>INSEE : 21648</div>`)[0];
+                popup_d2e6c2824a0479ae34d2ada4b8c1b283.setContent(html_7008c333ffc8896ae0bce16562d90026);
+            
+        
+
+        marker_c17474f79d75ffaf4931d721015142fc.bindPopup(popup_d2e6c2824a0479ae34d2ada4b8c1b283)
+        ;
+
+        
+    
+    
+                marker_c17474f79d75ffaf4931d721015142fc.setIcon(icon_a58e5a94c56201276a0874fb92cf1fa4);
+            
+    
+            var marker_dd2192490b8f5379997b13e6bfbf9eea = L.marker(
+                [44.7152, 4.9622],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_95c7a774fead61fe86ee9eff5fdd65d0 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_4a39fbec8bc9c37f6b76079462ea7f6d = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_0cfb9127c7f4bfaee877f92a0159e80e = $(`<div id="html_0cfb9127c7f4bfaee877f92a0159e80e" style="width: 100.0%; height: 100.0%;"><b>CHABRILLAN</b><br>INSEE : 26065</div>`)[0];
+                popup_4a39fbec8bc9c37f6b76079462ea7f6d.setContent(html_0cfb9127c7f4bfaee877f92a0159e80e);
+            
+        
+
+        marker_dd2192490b8f5379997b13e6bfbf9eea.bindPopup(popup_4a39fbec8bc9c37f6b76079462ea7f6d)
+        ;
+
+        
+    
+    
+                marker_dd2192490b8f5379997b13e6bfbf9eea.setIcon(icon_95c7a774fead61fe86ee9eff5fdd65d0);
+            
+    
+            var marker_2ca9f1989ce0ab7e8680b5ca5408ba21 = L.marker(
+                [42.3892, 9.3418],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_35eeb3cdfb48b871c440e45d88883848 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_c76a42d820e03b7d157ec74b0ba41130 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_f5409c8de904588971771651fe598eba = $(`<div id="html_f5409c8de904588971771651fe598eba" style="width: 100.0%; height: 100.0%;"><b>CAMPANA</b><br>INSEE : 2B052</div>`)[0];
+                popup_c76a42d820e03b7d157ec74b0ba41130.setContent(html_f5409c8de904588971771651fe598eba);
+            
+        
+
+        marker_2ca9f1989ce0ab7e8680b5ca5408ba21.bindPopup(popup_c76a42d820e03b7d157ec74b0ba41130)
+        ;
+
+        
+    
+    
+                marker_2ca9f1989ce0ab7e8680b5ca5408ba21.setIcon(icon_35eeb3cdfb48b871c440e45d88883848);
+            
+    
+            var marker_87a7e24382d641bdf3eb3f2e80ccbadf = L.marker(
+                [42.3929, 9.3466],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_5805ee95d961440b0c49953e4d25dd16 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_d656a6019b7deb7c4bd100cccc9c02ce = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_24933dc8f004d41a7f83571b254718f1 = $(`<div id="html_24933dc8f004d41a7f83571b254718f1" style="width: 100.0%; height: 100.0%;"><b>NOCARIO</b><br>INSEE : 2B176</div>`)[0];
+                popup_d656a6019b7deb7c4bd100cccc9c02ce.setContent(html_24933dc8f004d41a7f83571b254718f1);
+            
+        
+
+        marker_87a7e24382d641bdf3eb3f2e80ccbadf.bindPopup(popup_d656a6019b7deb7c4bd100cccc9c02ce)
+        ;
+
+        
+    
+    
+                marker_87a7e24382d641bdf3eb3f2e80ccbadf.setIcon(icon_5805ee95d961440b0c49953e4d25dd16);
+            
+    
+            var marker_ab4be79e024c4c2318ae6df8bf3f58d1 = L.marker(
+                [42.9715, 9.3685],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_8a43a656a0ac6fcbc41c75221585bbae = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_9fa41a4e852477c1bc665e18dfe34141 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_8383f281dbbbb5604aef6e6213491e96 = $(`<div id="html_8383f281dbbbb5604aef6e6213491e96" style="width: 100.0%; height: 100.0%;"><b>CENTURI</b><br>INSEE : 2B086</div>`)[0];
+                popup_9fa41a4e852477c1bc665e18dfe34141.setContent(html_8383f281dbbbb5604aef6e6213491e96);
+            
+        
+
+        marker_ab4be79e024c4c2318ae6df8bf3f58d1.bindPopup(popup_9fa41a4e852477c1bc665e18dfe34141)
+        ;
+
+        
+    
+    
+                marker_ab4be79e024c4c2318ae6df8bf3f58d1.setIcon(icon_8a43a656a0ac6fcbc41c75221585bbae);
+            
+    
+            var marker_5fd8a860b366805d20014925299ba0db = L.marker(
+                [46.8188, 6.0792],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_1bc6e3257e1799caae1101932c00446a = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_556c46a732dc791b12174fcc9c87c257 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_efa32334df5497f2c9eeb5e4ec0ad744 = $(`<div id="html_efa32334df5497f2c9eeb5e4ec0ad744" style="width: 100.0%; height: 100.0%;"><b>CENSEAU</b><br>INSEE : 39083</div>`)[0];
+                popup_556c46a732dc791b12174fcc9c87c257.setContent(html_efa32334df5497f2c9eeb5e4ec0ad744);
+            
+        
+
+        marker_5fd8a860b366805d20014925299ba0db.bindPopup(popup_556c46a732dc791b12174fcc9c87c257)
+        ;
+
+        
+    
+    
+                marker_5fd8a860b366805d20014925299ba0db.setIcon(icon_1bc6e3257e1799caae1101932c00446a);
+            
+    
+            var marker_7b83e7857ac0c6fcd3932aeeedea46e3 = L.marker(
+                [46.7209, 5.9212],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_72d49ea05b5acd8a50ab098a631103bd = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_6c995a2c6ccbe93214697ec86de063ed = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_eaf7c78f00545008e2ff3ef3cb68b2d8 = $(`<div id="html_eaf7c78f00545008e2ff3ef3cb68b2d8" style="width: 100.0%; height: 100.0%;"><b>CIZE</b><br>INSEE : 39153</div>`)[0];
+                popup_6c995a2c6ccbe93214697ec86de063ed.setContent(html_eaf7c78f00545008e2ff3ef3cb68b2d8);
+            
+        
+
+        marker_7b83e7857ac0c6fcd3932aeeedea46e3.bindPopup(popup_6c995a2c6ccbe93214697ec86de063ed)
+        ;
+
+        
+    
+    
+                marker_7b83e7857ac0c6fcd3932aeeedea46e3.setIcon(icon_72d49ea05b5acd8a50ab098a631103bd);
+            
+    
+            var marker_46e35ff5522874a3642fc92c8fbdc052 = L.marker(
+                [46.4912, 5.7981],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_26bea79dc96cb5791bc67351ccfb8cf0 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_3b5c5ce52e4baab8c5e8c8ccd649f75e = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_d7dcc03651c4b671de11fe8f85e46955 = $(`<div id="html_d7dcc03651c4b671de11fe8f85e46955" style="width: 100.0%; height: 100.0%;"><b>ETIVAL</b><br>INSEE : 39216</div>`)[0];
+                popup_3b5c5ce52e4baab8c5e8c8ccd649f75e.setContent(html_d7dcc03651c4b671de11fe8f85e46955);
+            
+        
+
+        marker_46e35ff5522874a3642fc92c8fbdc052.bindPopup(popup_3b5c5ce52e4baab8c5e8c8ccd649f75e)
+        ;
+
+        
+    
+    
+                marker_46e35ff5522874a3642fc92c8fbdc052.setIcon(icon_26bea79dc96cb5791bc67351ccfb8cf0);
+            
+    
+            var marker_c723b17bd8d6cc9dcf7d1facd318aeb0 = L.marker(
+                [46.938, 5.776],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_8c321a03c4bf1322f858f33bcdc09ffe = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_b2e704d9a358d5d9fc85bae64740c592 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_a9d8994fbbf8ba88dc64c6a7d757964a = $(`<div id="html_a9d8994fbbf8ba88dc64c6a7d757964a" style="width: 100.0%; height: 100.0%;"><b>MONTIGNY-LES-ARSURES</b><br>INSEE : 39355</div>`)[0];
+                popup_b2e704d9a358d5d9fc85bae64740c592.setContent(html_a9d8994fbbf8ba88dc64c6a7d757964a);
+            
+        
+
+        marker_c723b17bd8d6cc9dcf7d1facd318aeb0.bindPopup(popup_b2e704d9a358d5d9fc85bae64740c592)
+        ;
+
+        
+    
+    
+                marker_c723b17bd8d6cc9dcf7d1facd318aeb0.setIcon(icon_8c321a03c4bf1322f858f33bcdc09ffe);
+            
+    
+            var marker_255afff17dcd8d5fc810a2c99c529156 = L.marker(
+                [46.9745, 5.8845],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_dba6a29e57eb3b27b7adbda64558f45e = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_0d578d4cd9fb2cb56f40849bd04054d8 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_c15bf3a78e0f2e08d4955fd9e6718025 = $(`<div id="html_c15bf3a78e0f2e08d4955fd9e6718025" style="width: 100.0%; height: 100.0%;"><b>SAINT-THIEBAUD</b><br>INSEE : 39495</div>`)[0];
+                popup_0d578d4cd9fb2cb56f40849bd04054d8.setContent(html_c15bf3a78e0f2e08d4955fd9e6718025);
+            
+        
+
+        marker_255afff17dcd8d5fc810a2c99c529156.bindPopup(popup_0d578d4cd9fb2cb56f40849bd04054d8)
+        ;
+
+        
+    
+    
+                marker_255afff17dcd8d5fc810a2c99c529156.setIcon(icon_dba6a29e57eb3b27b7adbda64558f45e);
+            
+    
+            var marker_1ad27acb33e0b87de9c26c33aa60fb2a = L.marker(
+                [46.9668, 5.9356],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_f72c7a7b946b0678f1ddee041088c110 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_ae8f337365848ff930caa887766bfef3 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_de3ef71f7115054ae44d9a3020a456f6 = $(`<div id="html_de3ef71f7115054ae44d9a3020a456f6" style="width: 100.0%; height: 100.0%;"><b>SAIZENAY</b><br>INSEE : 39497</div>`)[0];
+                popup_ae8f337365848ff930caa887766bfef3.setContent(html_de3ef71f7115054ae44d9a3020a456f6);
+            
+        
+
+        marker_1ad27acb33e0b87de9c26c33aa60fb2a.bindPopup(popup_ae8f337365848ff930caa887766bfef3)
+        ;
+
+        
+    
+    
+                marker_1ad27acb33e0b87de9c26c33aa60fb2a.setIcon(icon_f72c7a7b946b0678f1ddee041088c110);
+            
+    
+            var marker_ce0b8bf28d6879c3581c6950b9a9747a = L.marker(
+                [46.7448, 5.9461],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_aa07b7d7fcd89d2f1c8d3a11e0fec029 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_1a4c2fbd018e1471c5045b8a36102022 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_4515d690509b90c97586556954b7a657 = $(`<div id="html_4515d690509b90c97586556954b7a657" style="width: 100.0%; height: 100.0%;"><b>SAPOIS</b><br>INSEE : 39503</div>`)[0];
+                popup_1a4c2fbd018e1471c5045b8a36102022.setContent(html_4515d690509b90c97586556954b7a657);
+            
+        
+
+        marker_ce0b8bf28d6879c3581c6950b9a9747a.bindPopup(popup_1a4c2fbd018e1471c5045b8a36102022)
+        ;
+
+        
+    
+    
+                marker_ce0b8bf28d6879c3581c6950b9a9747a.setIcon(icon_aa07b7d7fcd89d2f1c8d3a11e0fec029);
+            
+    
+            var marker_fd98a9e04b523ff2c747a87d7cead656 = L.marker(
+                [49.1351, 4.2331],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_1b4209d2d40e46620c86476c76c63095 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_e046e5a9551774f70f8325f36ee3bf25 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_f1a02992912779dc0b44ba3f4c15398a = $(`<div id="html_f1a02992912779dc0b44ba3f4c15398a" style="width: 100.0%; height: 100.0%;"><b>PETITES-LOGES (LES)</b><br>INSEE : 51428</div>`)[0];
+                popup_e046e5a9551774f70f8325f36ee3bf25.setContent(html_f1a02992912779dc0b44ba3f4c15398a);
+            
+        
+
+        marker_fd98a9e04b523ff2c747a87d7cead656.bindPopup(popup_e046e5a9551774f70f8325f36ee3bf25)
+        ;
+
+        
+    
+    
+                marker_fd98a9e04b523ff2c747a87d7cead656.setIcon(icon_1b4209d2d40e46620c86476c76c63095);
+            
+    
+            var marker_4892dd5891e50c556c9ba0c64a70c2e1 = L.marker(
+                [48.8522, 4.8353],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_f0b6c09a9f159e7d330919f2bee53c7f = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_2fc1fbf4bb905b37dd87433fbfbd6b8b = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_ffdc08c7b2a94de3377fa832706313dc = $(`<div id="html_ffdc08c7b2a94de3377fa832706313dc" style="width: 100.0%; height: 100.0%;"><b>VERNANCOURT</b><br>INSEE : 51608</div>`)[0];
+                popup_2fc1fbf4bb905b37dd87433fbfbd6b8b.setContent(html_ffdc08c7b2a94de3377fa832706313dc);
+            
+        
+
+        marker_4892dd5891e50c556c9ba0c64a70c2e1.bindPopup(popup_2fc1fbf4bb905b37dd87433fbfbd6b8b)
+        ;
+
+        
+    
+    
+                marker_4892dd5891e50c556c9ba0c64a70c2e1.setIcon(icon_f0b6c09a9f159e7d330919f2bee53c7f);
+            
+    
+            var marker_2f2b6fe20e009e1dbfb640785ab8b8c5 = L.marker(
+                [48.7866, 5.3034],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_671d0b5ee26b542da7ca3f6360d2bfd6 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_a541d3af5d3cdccd4e7acb51de6593e5 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_a3c8c86ee1a70cfc4f3637631c537c8c = $(`<div id="html_a3c8c86ee1a70cfc4f3637631c537c8c" style="width: 100.0%; height: 100.0%;"><b>GERY</b><br>INSEE : 55207</div>`)[0];
+                popup_a541d3af5d3cdccd4e7acb51de6593e5.setContent(html_a3c8c86ee1a70cfc4f3637631c537c8c);
+            
+        
+
+        marker_2f2b6fe20e009e1dbfb640785ab8b8c5.bindPopup(popup_a541d3af5d3cdccd4e7acb51de6593e5)
+        ;
+
+        
+    
+    
+                marker_2f2b6fe20e009e1dbfb640785ab8b8c5.setIcon(icon_671d0b5ee26b542da7ca3f6360d2bfd6);
+            
+    
+            var marker_4fdd6b1f0f1cfb398489037a26a644e0 = L.marker(
+                [48.7995, 6.3696],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_27e9c5c47443db44cb55fe218f4ced19 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_84a26cc660f51853242b730730aeb1c1 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_9afcff20075f43a19eddd5c0fee31a14 = $(`<div id="html_9afcff20075f43a19eddd5c0fee31a14" style="width: 100.0%; height: 100.0%;"><b>BIONCOURT</b><br>INSEE : 57084</div>`)[0];
+                popup_84a26cc660f51853242b730730aeb1c1.setContent(html_9afcff20075f43a19eddd5c0fee31a14);
+            
+        
+
+        marker_4fdd6b1f0f1cfb398489037a26a644e0.bindPopup(popup_84a26cc660f51853242b730730aeb1c1)
+        ;
+
+        
+    
+    
+                marker_4fdd6b1f0f1cfb398489037a26a644e0.setIcon(icon_27e9c5c47443db44cb55fe218f4ced19);
+            
+    
+            var marker_9e8cb9c03a5e35e86c717c6ba81b2060 = L.marker(
+                [45.8137, 2.4182],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_bec107903ae8e8744396d86a68d112ec = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_712c8233f37658600a22a622ea98779b = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_120d90fe92ada81f0db325b284319e6f = $(`<div id="html_120d90fe92ada81f0db325b284319e6f" style="width: 100.0%; height: 100.0%;"><b>FERNOEL</b><br>INSEE : 63159</div>`)[0];
+                popup_712c8233f37658600a22a622ea98779b.setContent(html_120d90fe92ada81f0db325b284319e6f);
+            
+        
+
+        marker_9e8cb9c03a5e35e86c717c6ba81b2060.bindPopup(popup_712c8233f37658600a22a622ea98779b)
+        ;
+
+        
+    
+    
+                marker_9e8cb9c03a5e35e86c717c6ba81b2060.setIcon(icon_bec107903ae8e8744396d86a68d112ec);
+            
+    
+            var marker_8ccf397c949566524b22aca9aca39316 = L.marker(
+                [45.6326, 3.5643],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_22d0cf2e8d23f6c6a18eb0e902c45af3 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_bf633b7e0ac99d358dde275954ff285c = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_b8edab9ed900b8db4cc9dd91d91e8981 = $(`<div id="html_b8edab9ed900b8db4cc9dd91d91e8981" style="width: 100.0%; height: 100.0%;"><b>CUNLHAT</b><br>INSEE : 63132</div>`)[0];
+                popup_bf633b7e0ac99d358dde275954ff285c.setContent(html_b8edab9ed900b8db4cc9dd91d91e8981);
+            
+        
+
+        marker_8ccf397c949566524b22aca9aca39316.bindPopup(popup_bf633b7e0ac99d358dde275954ff285c)
+        ;
+
+        
+    
+    
+                marker_8ccf397c949566524b22aca9aca39316.setIcon(icon_22d0cf2e8d23f6c6a18eb0e902c45af3);
+            
+    
+            var marker_07a1a1287e35be6fdd1fa2cfaf35a69d = L.marker(
+                [43.1323, -0.9813],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_5c43e982bce5c10aedfc5508095cea73 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_efdd6b1a503729dc33cd8e643311c7c0 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_91362f9a20520b3d14885679e4112445 = $(`<div id="html_91362f9a20520b3d14885679e4112445" style="width: 100.0%; height: 100.0%;"><b>AUSSURUCQ</b><br>INSEE : 64081</div>`)[0];
+                popup_efdd6b1a503729dc33cd8e643311c7c0.setContent(html_91362f9a20520b3d14885679e4112445);
+            
+        
+
+        marker_07a1a1287e35be6fdd1fa2cfaf35a69d.bindPopup(popup_efdd6b1a503729dc33cd8e643311c7c0)
+        ;
+
+        
+    
+    
+                marker_07a1a1287e35be6fdd1fa2cfaf35a69d.setIcon(icon_5c43e982bce5c10aedfc5508095cea73);
+            
+    
+            var marker_8407884a8c9194748300cb15a0fd5294 = L.marker(
+                [42.8861, 0.4307],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_1e613650b8d61da51cf4b15e3566b91e = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_8968613052390395499923ac5fa625d3 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_474df0dcf205ba8e49bb8a1a682884db = $(`<div id="html_474df0dcf205ba8e49bb8a1a682884db" style="width: 100.0%; height: 100.0%;"><b>BAREILLES</b><br>INSEE : 65064</div>`)[0];
+                popup_8968613052390395499923ac5fa625d3.setContent(html_474df0dcf205ba8e49bb8a1a682884db);
+            
+        
+
+        marker_8407884a8c9194748300cb15a0fd5294.bindPopup(popup_8968613052390395499923ac5fa625d3)
+        ;
+
+        
+    
+    
+                marker_8407884a8c9194748300cb15a0fd5294.setIcon(icon_1e613650b8d61da51cf4b15e3566b91e);
+            
+    
+            var marker_807c56653ba681a50a321c5ef381e34b = L.marker(
+                [42.9098, 0.4096],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_8d8b6f2588aa89df056e2673cb90f68d = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_68a37193d8c67fbc6e3114de8ecb8a79 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_7c741601fc2629551a0668c1d9e4cb0e = $(`<div id="html_7c741601fc2629551a0668c1d9e4cb0e" style="width: 100.0%; height: 100.0%;"><b>JEZEAU</b><br>INSEE : 65234</div>`)[0];
+                popup_68a37193d8c67fbc6e3114de8ecb8a79.setContent(html_7c741601fc2629551a0668c1d9e4cb0e);
+            
+        
+
+        marker_807c56653ba681a50a321c5ef381e34b.bindPopup(popup_68a37193d8c67fbc6e3114de8ecb8a79)
+        ;
+
+        
+    
+    
+                marker_807c56653ba681a50a321c5ef381e34b.setIcon(icon_8d8b6f2588aa89df056e2673cb90f68d);
+            
+    
+            var marker_c296bd3928aba6dc0a1b4437f0ce66ee = L.marker(
+                [47.6502, 5.6637],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_8a75f444710cc6c027a9dfda1aee1a57 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_1974060def185c7f3149250d321677e0 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_078c533e79bbbf610a45c6348135d1ef = $(`<div id="html_078c533e79bbbf610a45c6348135d1ef" style="width: 100.0%; height: 100.0%;"><b>FOUVENT-SAINT-ANDOCHE</b><br>INSEE : 70247</div>`)[0];
+                popup_1974060def185c7f3149250d321677e0.setContent(html_078c533e79bbbf610a45c6348135d1ef);
+            
+        
+
+        marker_c296bd3928aba6dc0a1b4437f0ce66ee.bindPopup(popup_1974060def185c7f3149250d321677e0)
+        ;
+
+        
+    
+    
+                marker_c296bd3928aba6dc0a1b4437f0ce66ee.setIcon(icon_8a75f444710cc6c027a9dfda1aee1a57);
+            
+    
+            var marker_32e2219f9d2bec1a44961064d698eaed = L.marker(
+                [47.6628, 5.6251],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_8bacf51dd375aab1d29f383763931221 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_d0634916d3e9fc8f5fbaa72823e0ac13 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_e05c9b14b93ffc3aab22cb3930e89a13 = $(`<div id="html_e05c9b14b93ffc3aab22cb3930e89a13" style="width: 100.0%; height: 100.0%;"><b>ARGILLIERES</b><br>INSEE : 70027</div>`)[0];
+                popup_d0634916d3e9fc8f5fbaa72823e0ac13.setContent(html_e05c9b14b93ffc3aab22cb3930e89a13);
+            
+        
+
+        marker_32e2219f9d2bec1a44961064d698eaed.bindPopup(popup_d0634916d3e9fc8f5fbaa72823e0ac13)
+        ;
+
+        
+    
+    
+                marker_32e2219f9d2bec1a44961064d698eaed.setIcon(icon_8bacf51dd375aab1d29f383763931221);
+            
+    
+            var marker_0c474303234dcc1f652542ebf4a4b616 = L.marker(
+                [47.6095, 5.6106],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_a76ce44e604ec32138846d04779ca824 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_45fe850f92ba8c9e3ff21e9d8ee9d729 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_0986eb31ec3bc301e83a9625a370238e = $(`<div id="html_0986eb31ec3bc301e83a9625a370238e" style="width: 100.0%; height: 100.0%;"><b>COURTESOULT-ET-GATEY</b><br>INSEE : 70183</div>`)[0];
+                popup_45fe850f92ba8c9e3ff21e9d8ee9d729.setContent(html_0986eb31ec3bc301e83a9625a370238e);
+            
+        
+
+        marker_0c474303234dcc1f652542ebf4a4b616.bindPopup(popup_45fe850f92ba8c9e3ff21e9d8ee9d729)
+        ;
+
+        
+    
+    
+                marker_0c474303234dcc1f652542ebf4a4b616.setIcon(icon_a76ce44e604ec32138846d04779ca824);
+            
+    
+            var marker_d0bf2f318abf4e7382291ed552dee93b = L.marker(
+                [47.6408, 5.5836],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_cd1de9c855f6a77f28e49979c419eaea = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_0bf727c00c8b51500f5bc65d28bcbd21 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_c8f26466e68a0e74932798dafb99744f = $(`<div id="html_c8f26466e68a0e74932798dafb99744f" style="width: 100.0%; height: 100.0%;"><b>PIERRECOURT</b><br>INSEE : 70409</div>`)[0];
+                popup_0bf727c00c8b51500f5bc65d28bcbd21.setContent(html_c8f26466e68a0e74932798dafb99744f);
+            
+        
+
+        marker_d0bf2f318abf4e7382291ed552dee93b.bindPopup(popup_0bf727c00c8b51500f5bc65d28bcbd21)
+        ;
+
+        
+    
+    
+                marker_d0bf2f318abf4e7382291ed552dee93b.setIcon(icon_cd1de9c855f6a77f28e49979c419eaea);
+            
+    
+            var marker_31f8010a601d4b6b76bab292063957b8 = L.marker(
+                [3.8181, -53.4333],
+                {
+}
+            ).addTo(marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8);
+        
+    
+            var icon_b926d45e7ea93a542da56d2cd9170574 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_7c87a3875274e52962ea8454fac74bd4 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_f20e0841df7080a557a4f8c618fd3284 = $(`<div id="html_f20e0841df7080a557a4f8c618fd3284" style="width: 100.0%; height: 100.0%;"><b>SAUL</b><br>INSEE : 97352</div>`)[0];
+                popup_7c87a3875274e52962ea8454fac74bd4.setContent(html_f20e0841df7080a557a4f8c618fd3284);
+            
+        
+
+        marker_31f8010a601d4b6b76bab292063957b8.bindPopup(popup_7c87a3875274e52962ea8454fac74bd4)
+        ;
+
+        
+    
+    
+                marker_31f8010a601d4b6b76bab292063957b8.setIcon(icon_b926d45e7ea93a542da56d2cd9170574);
+            
+    
+            marker_cluster_a792ce979f1d2d0fa816dcef4b2b07d8.addTo(map_384c374795c612b428ad4884fb8fbb8c);
         
 </script>
 </html>

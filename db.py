@@ -43,6 +43,8 @@ def create_database(conn, cursor):
                 cdreseau TEXT,
                 inseecommune TEXT,
                 nomcommune TEXT,
+                lat REAL,
+                lon REAL,
                 PRIMARY KEY (inseecommune, cdreseau),
                 FOREIGN KEY (cdreseau) REFERENCES Reseau(cdreseau)
             )

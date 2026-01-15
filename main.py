@@ -2,6 +2,8 @@ import sys
 import os
 import requests
 import folium
+import sqlite3
+import time
 
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget,
@@ -18,8 +20,11 @@ MAP_FILE = "map.html"
 
 
 # -------------------------
-# API INSEE
+# API INSEE -> ALIMENTATION DE LA TABLE COMMUNE
 # -------------------------
+
+# API AVEC CODE POSTAL
+"""
 def get_coordinates_and_name_from_insee(insee_code):
     url = f"https://api-adresse.data.gouv.fr/search/?q={insee_code}&type=municipality&limit=1"
     response = requests.get(url)
@@ -29,9 +34,47 @@ def get_coordinates_and_name_from_insee(insee_code):
         if data["features"]:
             name = data["features"][0]["properties"]["label"]
             lon, lat = data["features"][0]["geometry"]["coordinates"]
+            print(f"{insee_code} -> {name}, lat={lat}, lon={lon}")
             return name, lat, lon
     return None, None, None
+"""
 
+# API AVEC CODE INSEE
+
+def normalize_insee(insee):
+    return str(insee).zfill(5)
+
+conn = sqlite3.connect("WaterQuality.db")
+cur = conn.cursor()
+
+cur.execute("""
+    SELECT inseecommune
+    FROM Commune
+    WHERE lat IS NULL OR lon IS NULL
+""")
+
+communes = cur.fetchall()
+
+for (insee,) in communes:
+    print(insee)
+    insee_norm = normalize_insee(insee)
+
+    url = f"https://geo.api.gouv.fr/communes/{insee_norm}?fields=centre"
+    r = requests.get(url)
+
+    if r.status_code == 200:
+        data = r.json()
+        if "centre" in data:
+            lon, lat = data["centre"]["coordinates"]
+            cur.execute(
+                "UPDATE Commune SET lat=?, lon=? WHERE inseecommune=?",
+                (lat, lon, insee)
+            )
+
+    time.sleep(0.1)  # respect API
+
+conn.commit()
+conn.close()
 
 # -------------------------
 # Création carte Folium
@@ -53,31 +96,20 @@ def get_coordinates_and_name_from_insee(insee_code):
 
     m.save(MAP_FILE) """
 
-def create_map(communes=None):
-    """Crée la carte et place un marker pour chaque commune de la liste."""
+def create_map(communes):
     m = folium.Map(location=[46.6, 1.8], zoom_start=6)
 
-    first_coords = None
-    if communes:
-        for commune in communes:
-            if len(commune) >= 2:
-                insee, nom = commune[0], commune[1]
-                _, lat, lon = get_coordinates_and_name_from_insee(insee)
-                if lat and lon:
-                    folium.Marker(
-                        location=[lat, lon],
-                        popup=f"{nom} ({insee})",
-                        icon=folium.Icon(color="blue", icon="info-sign")
-                    ).add_to(m)
-                    if not first_coords:
-                        first_coords = (lat, lon)
+    for insee, nom, lat, lon in communes:
+        if lat is None or lon is None:
+            continue
 
-    # Recentre la carte sur la première commune valide
-    if first_coords:
-        m.location = list(first_coords)
-        m.zoom_start = 8
+        folium.Marker(
+            location=[lat, lon],
+            popup=f"{nom} ({insee})"
+        ).add_to(m)
 
     m.save(MAP_FILE)
+
 
 # -------------------------
 # Fenêtre principale
@@ -247,7 +279,6 @@ class MainWindow(QMainWindow):
 
     def load_map(self):
         path = os.path.abspath(MAP_FILE)
-        self.browser.reload()
         self.browser.load(QUrl.fromLocalFile(path))
 
     def update_map(self):
@@ -270,7 +301,7 @@ class MainWindow(QMainWindow):
         conn.execute("PRAGMA foreign_keys = 1")
         cursor = conn.cursor()
 
-        # Valeurs par défaut (None = pas de filtre)
+        # Récupération de la valeur cochée
         chimique = self.get_radio_value(self.radio_chimie, self.radio_chimie1)
         bacterio = self.get_radio_value(self.radio_bacterio, self.radio_bacterio1)
         ref_bact = self.get_radio_value(self.radio_refbacteriologique, self.radio_refbacteriologique1)
@@ -280,6 +311,7 @@ class MainWindow(QMainWindow):
         if None in (chimique, bacterio, ref_bact, ref_chim):
             return
 
+        # Appel de la requête dans la BDD
         communes = get_communes_conformites(
                 cursor,
                 chimique,
@@ -288,6 +320,7 @@ class MainWindow(QMainWindow):
                 ref_chim
         )
 
+        # Actualisation de la carte
         create_map(communes)
         self.load_map()
 
