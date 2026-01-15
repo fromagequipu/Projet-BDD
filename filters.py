@@ -19,11 +19,12 @@ def get_communes_conformites(cursor):
     If an error occurs while querying the database, the function returns None.
     """
     try:
+        # Valeurs test
         C1="N"
         C2="N"
         C3="N"
         C4="N"
-        # Reqûete qui permet de visualiser les infos des associations
+        # Requête qui permet de visualiser les infos des associations
         cursor.execute("SELECT c.inseecommune, c.nomcommune FROM Commune c JOIN Prelevement p ON p.cdreseau = c.cdreseau WHERE p.plvconformitechimique = ? AND p.plvconformitebacterio = ? AND p.plvconformitereferencebact = ? AND p.plvconformitereferencechim = ?;", (C1,C2,C3,C4))
         row = cursor.fetchall()
     except sqlite3.Error as error:
@@ -32,7 +33,7 @@ def get_communes_conformites(cursor):
     print("Le resultat est", row)
     return row
 
-
+# Filtre 2 : Récupère les communes en fonction d'une date de prélèvement  
 def get_communes_dateprel(cursor):
     """Returns all the associations from the database.
   
@@ -49,9 +50,39 @@ def get_communes_dateprel(cursor):
     If an error occurs while querying the database, the function returns None.
     """
     try:
+        # Valeurs test
         dateprel="23-01-2024"
-        # Reqûete qui permet de visualiser les infos des associations
+        # Requête qui permet de visualiser les infos des associations
         cursor.execute("SELECT c.inseecommune, c.nomcommune FROM Commune c JOIN Prelevement p ON p.cdreseau = c.cdreseau WHERE p.dateprel=?;", (dateprel,))
+        row = cursor.fetchall()
+    except sqlite3.Error as error:
+        print(error)
+        return None
+    print("Le resultat est", row)
+    return row
+
+# Filtre 3 : Récupère les communes en fonction d'un paramètre et de sa valeur
+def get_communes_parametre(cursor):
+    """Returns all the associations from the database.
+  
+    Parameters
+    ----------
+    cursor : 
+        The object used to query the database.
+  
+    Returns
+    -------
+    A (possibly, empty) list of all the associations in the database. 
+    Each item of the list is a tuple (asso_name, asso_desc).
+    
+    If an error occurs while querying the database, the function returns None.
+    """
+    try:
+        # Valeurs test
+        param="pH"
+        valeur="5.9"
+        # Requête qui permet de visualiser les infos des associations
+        cursor.execute("SELECT c.inseecommune, c.nomcommune FROM Commune c JOIN Prelevement p ON p.cdreseau = c.cdreseau JOIN Parametre m ON m.referenceprel = p.referenceprel WHERE m.libminparametre=? AND m.valtraduite=?;", (param,valeur,))
         row = cursor.fetchall()
     except sqlite3.Error as error:
         print(error)
@@ -77,8 +108,9 @@ if __name__ == '__main__':
     cursor = conn.cursor()
 
     # TEST FONCTION
-    get_communes_conformites(cursor)
-    get_communes_dateprel(cursor)
+    #get_communes_conformites(cursor)
+    #get_communes_dateprel(cursor)
+    get_communes_parametre(cursor)
 
     # Close the connection to the database.
     cursor.close()
