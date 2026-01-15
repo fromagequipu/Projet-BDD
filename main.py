@@ -51,6 +51,7 @@ cur.execute("""
     SELECT inseecommune
     FROM Commune
     WHERE lat IS NULL OR lon IS NULL
+    LIMIT 5 000
 """)
 
 communes = cur.fetchall()
@@ -95,7 +96,7 @@ conn.close()
             m.zoom_start = 10
 
     m.save(MAP_FILE) """
-
+"""
 def create_map(communes):
     m = folium.Map(location=[46.6, 1.8], zoom_start=6)
 
@@ -107,6 +108,28 @@ def create_map(communes):
             location=[lat, lon],
             popup=f"{nom} ({insee})"
         ).add_to(m)
+
+    m.save(MAP_FILE)
+
+"""
+
+from folium.plugins import MarkerCluster
+
+def create_map(communes):
+    m = folium.Map(location=[46.6, 1.8], zoom_start=6)
+
+    # Création du cluster
+    marker_cluster = MarkerCluster().add_to(m)
+
+    for insee, nom, lat, lon in communes:
+        if lat is None or lon is None:
+            continue
+
+        # On ajoute le marker dans le cluster
+        folium.Marker(
+            location=[lat, lon],
+            popup=f"{nom} ({insee})"
+        ).add_to(marker_cluster)
 
     m.save(MAP_FILE)
 
@@ -274,7 +297,7 @@ class MainWindow(QMainWindow):
         main_layout.addWidget(self.browser, stretch=1)
 
         # Carte initiale
-        create_map()
+        create_map([])
         self.load_map()
 
     def load_map(self):
