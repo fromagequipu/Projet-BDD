@@ -8,7 +8,8 @@ Look at the instructions after the statement if __name__ == "__main__":
 * Finally, we load the data into the database.
 
 """
-
+import sys
+print(sys.executable)
 import pandas as pd
 import sqlite3
 import os
