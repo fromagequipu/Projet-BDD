@@ -3,7 +3,7 @@
 import sqlite3
 
 # Filtre 1 : Récupère les résultats des quatre type de conformités pour afficher les communes correspondantes
-def get_communes_conformites(cursor):
+def get_communes_conformites(cursor, chimique, bacterio, ref_bact, ref_chim):
     """Returns all the associations from the database.
   
     Parameters
@@ -20,12 +20,12 @@ def get_communes_conformites(cursor):
     """
     try:
         # Valeurs test
-        C1="N"
-        C2="N"
-        C3="N"
-        C4="N"
+        #C1="N"
+        #C2="N"
+        #C3="N"
+        #C4="N"
         # Requête qui permet de visualiser les infos des associations
-        cursor.execute("SELECT c.inseecommune, c.nomcommune FROM Commune c JOIN Prelevement p ON p.cdreseau = c.cdreseau WHERE p.plvconformitechimique = ? AND p.plvconformitebacterio = ? AND p.plvconformitereferencebact = ? AND p.plvconformitereferencechim = ?;", (C1,C2,C3,C4))
+        cursor.execute("SELECT c.inseecommune, c.nomcommune FROM Commune c JOIN Prelevement p ON p.cdreseau = c.cdreseau WHERE p.plvconformitechimique = ? AND p.plvconformitebacterio = ? AND p.plvconformitereferencebact = ? AND p.plvconformitereferencechim = ?;", (chimique, bacterio, ref_bact, ref_chim))
         row = cursor.fetchall()
     except sqlite3.Error as error:
         print(error)
@@ -34,7 +34,7 @@ def get_communes_conformites(cursor):
     return row
 
 # Filtre 2 : Récupère les communes en fonction d'une date de prélèvement  
-def get_communes_dateprel(cursor):
+def get_communes_dateprel(cursor,dateprel):
     """Returns all the associations from the database.
   
     Parameters
@@ -51,7 +51,7 @@ def get_communes_dateprel(cursor):
     """
     try:
         # Valeurs test
-        dateprel="23-01-2024"
+        #dateprel="23-01-2024"
         # Requête qui permet de visualiser les infos des associations
         cursor.execute("SELECT c.inseecommune, c.nomcommune FROM Commune c JOIN Prelevement p ON p.cdreseau = c.cdreseau WHERE p.dateprel=?;", (dateprel,))
         row = cursor.fetchall()
@@ -62,7 +62,7 @@ def get_communes_dateprel(cursor):
     return row
 
 # Filtre 3 : Récupère les communes en fonction d'un paramètre et de sa valeur
-def get_communes_parametre(cursor):
+def get_communes_parametre(cursor,param,valeur):
     """Returns all the associations from the database.
   
     Parameters
@@ -79,8 +79,8 @@ def get_communes_parametre(cursor):
     """
     try:
         # Valeurs test
-        param="pH"
-        valeur="5.9"
+        #param="pH"
+        #valeur="5.9"
         # Requête qui permet de visualiser les infos des associations
         cursor.execute("SELECT c.inseecommune, c.nomcommune FROM Commune c JOIN Prelevement p ON p.cdreseau = c.cdreseau JOIN Parametre m ON m.referenceprel = p.referenceprel WHERE m.libminparametre=? AND m.valtraduite=?;", (param,valeur,))
         row = cursor.fetchall()
