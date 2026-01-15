@@ -25,7 +25,7 @@ def get_communes_conformites(cursor, chimique, bacterio, ref_bact, ref_chim):
         #C3="N"
         #C4="N"
         # Requête qui permet de visualiser les infos des associations
-        cursor.execute("SELECT c.inseecommune, c.nomcommune FROM Commune c JOIN Prelevement p ON p.cdreseau = c.cdreseau WHERE p.plvconformitechimique = ? AND p.plvconformitebacterio = ? AND p.plvconformitereferencebact = ? AND p.plvconformitereferencechim = ?;", (chimique, bacterio, ref_bact, ref_chim))
+        cursor.execute("SELECT c.inseecommune, c.nomcommune FROM Commune c JOIN Prelevement p ON p.cdreseau = c.cdreseau WHERE p.plvconformitechimique = ? AND p.plvconformitebacterio = ? AND p.plvconformitereferencebact = ? AND p.plvconformitereferencechim = ? LIMIT 5;", (chimique, bacterio, ref_bact, ref_chim))
         row = cursor.fetchall()
     except sqlite3.Error as error:
         print(error)

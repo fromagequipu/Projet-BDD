@@ -36,7 +36,8 @@ def get_coordinates_and_name_from_insee(insee_code):
 # -------------------------
 # Création carte Folium
 # -------------------------
-def create_map(insee_code=None):
+ 
+"""def create_map(insee_code=None):
     m = folium.Map(location=[46.6, 1.8], zoom_start=6)
 
     if insee_code:
@@ -50,8 +51,33 @@ def create_map(insee_code=None):
             m.location = [lat, lon]
             m.zoom_start = 10
 
-    m.save(MAP_FILE)
+    m.save(MAP_FILE) """
 
+def create_map(communes=None):
+    """Crée la carte et place un marker pour chaque commune de la liste."""
+    m = folium.Map(location=[46.6, 1.8], zoom_start=6)
+
+    first_coords = None
+    if communes:
+        for commune in communes:
+            if len(commune) >= 2:
+                insee, nom = commune[0], commune[1]
+                _, lat, lon = get_coordinates_and_name_from_insee(insee)
+                if lat and lon:
+                    folium.Marker(
+                        location=[lat, lon],
+                        popup=f"{nom} ({insee})",
+                        icon=folium.Icon(color="blue", icon="info-sign")
+                    ).add_to(m)
+                    if not first_coords:
+                        first_coords = (lat, lon)
+
+    # Recentre la carte sur la première commune valide
+    if first_coords:
+        m.location = list(first_coords)
+        m.zoom_start = 8
+
+    m.save(MAP_FILE)
 
 # -------------------------
 # Fenêtre principale
@@ -121,12 +147,14 @@ class MainWindow(QMainWindow):
         box2.setLayout(col2_layout)
 
         self.combo_conformite = QButtonGroup()
-        radio_c = QRadioButton("Conforme")
-        radio_nc = QRadioButton("Non conforme")
+        self.radio_bacterio = QRadioButton("Conforme")
+        self.radio_bacterio1 = QRadioButton("Non conforme")
+        self.combo_conformite.addButton(self.radio_bacterio)
+        self.combo_conformite.addButton(self.radio_bacterio1)
         statut_layout = QHBoxLayout()
         statut_layout.addWidget(QLabel("Limite Bactériologique"))
-        statut_layout.addWidget(radio_c)
-        statut_layout.addWidget(radio_nc)
+        statut_layout.addWidget(self.radio_bacterio)
+        statut_layout.addWidget(self.radio_bacterio1)
         col2_layout.addLayout(statut_layout)
         #col2_layout.addWidget(QLabel("Statut"))
         #col2_layout.addWidget(radio_c)
@@ -135,30 +163,36 @@ class MainWindow(QMainWindow):
         #self.combo_conformite.addItem("Non conforme", "NC")
 
         self.combo_categorie = QButtonGroup()
-        radio_chimie = QRadioButton("Conforme")
-        radio_chimie1 = QRadioButton("Non conforme")
+        self.radio_chimie = QRadioButton("Conforme")
+        self.radio_chimie1 = QRadioButton("Non conforme")
         statut_layout2 = QHBoxLayout()
         statut_layout2.addWidget(QLabel("Limite Physico-chimique"))
-        statut_layout2.addWidget(radio_chimie)
-        statut_layout2.addWidget(radio_chimie1)
+        statut_layout2.addWidget(self.radio_chimie)
+        statut_layout2.addWidget(self.radio_chimie1)
+        self.combo_categorie.addButton(self.radio_chimie)
+        self.combo_categorie.addButton(self.radio_chimie1)
         col2_layout.addLayout(statut_layout2)
 
         self.combo_refbacteriologique = QButtonGroup()
-        radio_refbacteriologique = QRadioButton("Conforme")
-        radio_refbacteriologique1 = QRadioButton("Non conforme")
+        self.radio_refbacteriologique = QRadioButton("Conforme")
+        self.radio_refbacteriologique1 = QRadioButton("Non conforme")
         statut_layout2 = QHBoxLayout()
         statut_layout2.addWidget(QLabel("Référence Bactériologique"))
-        statut_layout2.addWidget(radio_refbacteriologique)
-        statut_layout2.addWidget(radio_refbacteriologique1)
+        statut_layout2.addWidget(self.radio_refbacteriologique)
+        statut_layout2.addWidget(self.radio_refbacteriologique1)
+        self.combo_refbacteriologique.addButton(self.radio_refbacteriologique)
+        self.combo_refbacteriologique.addButton(self.radio_refbacteriologique1)
         col2_layout.addLayout(statut_layout2)
 
         self.combo_refchimie = QButtonGroup()
-        radio_refchimie = QRadioButton("Conforme")
-        radio_refchimie1 = QRadioButton("Non conforme")
+        self.radio_refchimie = QRadioButton("Conforme")
+        self.radio_refchimie1 = QRadioButton("Non conforme")
         statut_layout2 = QHBoxLayout()
         statut_layout2.addWidget(QLabel("Référence Physico-chimique"))
-        statut_layout2.addWidget(radio_refchimie)
-        statut_layout2.addWidget(radio_refchimie1)
+        statut_layout2.addWidget(self.radio_refchimie)
+        statut_layout2.addWidget(self.radio_refchimie1)
+        self.combo_refchimie.addButton(self.radio_refchimie)
+        self.combo_refchimie.addButton(self.radio_refchimie1)
         col2_layout.addLayout(statut_layout2)
         #self.combo_categorie = QComboBox()
         #self.combo_categorie.addItem("Bactéries")
@@ -170,6 +204,11 @@ class MainWindow(QMainWindow):
         #col2_layout.addWidget(self.combo_conformite)
         #col2_layout.addWidget(QLabel("Catégorie"))
         #col2_layout.addWidget(self.combo_categorie)
+
+        # Bouton pour actualiser la carte avec les conformités sélectionnées
+        self.btn_actualiser = QPushButton("Actualiser la carte")
+        col2_layout.addWidget(self.btn_actualiser)
+        self.btn_actualiser.clicked.connect(self.update_map_with_conformities)
 
         # -------------------------
         # COLONNE 3 - Paramètres
@@ -208,12 +247,52 @@ class MainWindow(QMainWindow):
 
     def load_map(self):
         path = os.path.abspath(MAP_FILE)
+        self.browser.reload()
         self.browser.load(QUrl.fromLocalFile(path))
 
     def update_map(self):
         insee_code = self.combo_ville.currentData()
         create_map(insee_code)
         self.load_map()
+
+    def get_radio_value(self, radio_c, radio_nc):
+        if radio_c.isChecked():
+            return "C"
+        if radio_nc.isChecked():
+            return "N"
+        return None   # aucun choix
+
+    def update_map_with_conformities(self):
+        import sqlite3
+        from filters import get_communes_conformites
+
+        conn = sqlite3.connect("WaterQuality.db")
+        conn.execute("PRAGMA foreign_keys = 1")
+        cursor = conn.cursor()
+
+        # Valeurs par défaut (None = pas de filtre)
+        chimique = self.get_radio_value(self.radio_chimie, self.radio_chimie1)
+        bacterio = self.get_radio_value(self.radio_bacterio, self.radio_bacterio1)
+        ref_bact = self.get_radio_value(self.radio_refbacteriologique, self.radio_refbacteriologique1)
+        ref_chim = self.get_radio_value(self.radio_refchimie, self.radio_refchimie1)
+
+        # Si aucun filtre n'est sélectionné → on ne fait rien
+        if None in (chimique, bacterio, ref_bact, ref_chim):
+            return
+
+        communes = get_communes_conformites(
+                cursor,
+                chimique,
+                bacterio,
+                ref_bact,
+                ref_chim
+        )
+
+        create_map(communes)
+        self.load_map()
+
+        cursor.close()
+        conn.close()
 
 
 # -------------------------
