@@ -5,7 +5,8 @@ import folium
 
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget,
-    QVBoxLayout, QLabel, QComboBox, QPushButton, QHBoxLayout, QDateEdit
+    QVBoxLayout, QHBoxLayout, QLabel,
+    QComboBox, QPushButton, QDateEdit, QGroupBox
 )
 from PyQt5.QtCore import QUrl, QDate
 from PyQt5.QtWebEngineWidgets import QWebEngineView
@@ -50,85 +51,99 @@ def create_map(insee_code=None):
     m.save(MAP_FILE)
 
 
-
+# -------------------------
 # Fenêtre principale
 # -------------------------
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Supervision Qualité de l'Eau")
+        self.setWindowTitle("Water Quality")
         self.resize(1600, 850)
 
-        # Widget central
         central = QWidget()
-        layout = QHBoxLayout(central)
-        col1 = QVBoxLayout()
-        col2 = QVBoxLayout()
-        col3 = QVBoxLayout()
+        self.setCentralWidget(central)
 
-        layout.addLayout(col1)
-        layout.addLayout(col2)
-        layout.addLayout(col3)
+        # Layout principal (vertical)
+        main_layout = QVBoxLayout(central)
 
-        # Label
-        label = QLabel("Choisissez une ville :")
-        col1.addWidget(label)
+        # Layout du haut (3 colonnes)
+        top_layout = QHBoxLayout()
+        main_layout.addLayout(top_layout)
 
-        # ComboBox villes
+        # -------------------------
+        # COLONNE 1 - Général
+        # -------------------------
+        col1_layout = QVBoxLayout()
+        box1 = QGroupBox("Général")
+        box1.setLayout(col1_layout)
+
         self.combo_ville = QComboBox()
         self.combo_ville.addItem("Sélectionner une ville", None)
         self.combo_ville.addItem("Nantes", "44000")
         self.combo_ville.addItem("Rennes", "35000")
         self.combo_ville.addItem("Saint André des Eaux", "44151")
-        col1.addWidget(self.combo_ville)
 
-        #Conformité
-        label2 = QLabel("Critères de conformité")
-        col1.addWidget(label2)
-        self.combo_conformite = QComboBox()
-        self.combo_conformite.addItem("C", "C")
-        self.combo_conformite.addItem("NC", "NC")
-        col1.addWidget(self.combo_conformite)
-        
-        #Catégorie
-        label3 = QLabel("Catégories")
-        layout.addWidget(label3)
-        self.combo_categorie = QComboBox()
-        self.combo_categorie.addItem("Bacteries", "Bacteries")
-        self.combo_categorie.addItem("Chimie", "Chimie")
-        self.combo_categorie.addItem("Référence Bacterie", "Référence Bacterie")
-        self.combo_categorie.addItem("Référence Chimie", "Référence Chimie")
-        layout.addWidget(self.combo_categorie)
-
-
-        #Date à définir
-        label_date = QLabel("Choisissez une date :")
         self.date_edit = QDateEdit()
-        self.date_edit.setCalendarPopup(True)   # ouvre un calendrier
-        self.date_edit.setDate(QDate.currentDate())  # date du jour
-        layout.addWidget(label_date)
-        layout.addWidget(self.date_edit)
+        self.date_edit.setCalendarPopup(True)
+        self.date_edit.setDate(QDate.currentDate())
 
+        col1_layout.addWidget(QLabel("Ville"))
+        col1_layout.addWidget(self.combo_ville)
+        col1_layout.addWidget(QLabel("Date"))
+        col1_layout.addWidget(self.date_edit)
 
-        #Molécules
-        label4 = QLabel("Molécules")
-        layout.addWidget(label4)
+        # -------------------------
+        # COLONNE 2 - Conformité
+        # -------------------------
+        col2_layout = QVBoxLayout()
+        box2 = QGroupBox("Conformité")
+        box2.setLayout(col2_layout)
+
+        self.combo_conformite = QComboBox()
+        self.combo_conformite.addItem("Conforme", "C")
+        self.combo_conformite.addItem("Non conforme", "NC")
+
+        self.combo_categorie = QComboBox()
+        self.combo_categorie.addItem("Bactéries")
+        self.combo_categorie.addItem("Chimie")
+        self.combo_categorie.addItem("Référence Bactérie")
+        self.combo_categorie.addItem("Référence Chimie")
+
+        col2_layout.addWidget(QLabel("Statut"))
+        col2_layout.addWidget(self.combo_conformite)
+        col2_layout.addWidget(QLabel("Catégorie"))
+        col2_layout.addWidget(self.combo_categorie)
+
+        # -------------------------
+        # COLONNE 3 - Paramètres
+        # -------------------------
+        col3_layout = QVBoxLayout()
+        box3 = QGroupBox("Paramètres")
+        box3.setLayout(col3_layout)
+
         self.combo_molecule = QComboBox()
-        self.combo_molecule.addItem("Nitrate", "Nitrate")
-        self.combo_molecule.addItem("Phosphate", "Phosphate")
-        self.combo_molecule.addItem("pH", "pH")
-        layout.addWidget(self.combo_molecule)
+        self.combo_molecule.addItem("Nitrate")
+        self.combo_molecule.addItem("Phosphate")
+        self.combo_molecule.addItem("pH")
 
-        # Bouton
-        button = QPushButton("Afficher la carte")
-        button.clicked.connect(self.update_map)
-        layout.addWidget(button)
+        self.button = QPushButton("Afficher la carte")
+        self.button.clicked.connect(self.update_map)
 
-        # Vue Web (carte)
+        col3_layout.addWidget(QLabel("Molécule"))
+        col3_layout.addWidget(self.combo_molecule)
+        col3_layout.addStretch()
+        col3_layout.addWidget(self.button)
+
+        # Ajout des colonnes
+        top_layout.addWidget(box1)
+        top_layout.addWidget(box2)
+        top_layout.addWidget(box3)
+
+        # -------------------------
+        # Carte (pleine largeur en bas)
+        # -------------------------
         self.browser = QWebEngineView()
-        layout.addWidget(self.browser)
-
-        self.setCentralWidget(central)
+        main_layout.addWidget(self.browser, stretch=1)
 
         # Carte initiale
         create_map()
