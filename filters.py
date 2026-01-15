@@ -2,6 +2,7 @@
 
 import sqlite3
 
+# Filtre 1 : Récupère les résultats des quatre type de conformités pour afficher les communes correspondantes
 def get_communes_conformites(cursor):
     """Returns all the associations from the database.
   
@@ -31,7 +32,7 @@ def get_communes_conformites(cursor):
     print("Le resultat est", row)
     return row
 
-# A MODIFIER 
+
 def get_communes_dateprel(cursor):
     """Returns all the associations from the database.
   
@@ -48,12 +49,9 @@ def get_communes_dateprel(cursor):
     If an error occurs while querying the database, the function returns None.
     """
     try:
-        C1="N"
-        C2="N"
-        C3="N"
-        C4="N"
+        dateprel="23-01-2024"
         # Reqûete qui permet de visualiser les infos des associations
-        cursor.execute("SELECT c.inseecommune, c.nomcommune FROM Commune c JOIN Prelevement p ON p.cdreseau = c.cdreseau WHERE p.plvconformitechimique = ? AND p.plvconformitebacterio = ? AND p.plvconformitereferencebact = ? AND p.plvconformitereferencechim = ?;", (C1,C2,C3,C4))
+        cursor.execute("SELECT c.inseecommune, c.nomcommune FROM Commune c JOIN Prelevement p ON p.cdreseau = c.cdreseau WHERE p.dateprel=?;", (dateprel,))
         row = cursor.fetchall()
     except sqlite3.Error as error:
         print(error)
@@ -80,6 +78,7 @@ if __name__ == '__main__':
 
     # TEST FONCTION
     get_communes_conformites(cursor)
+    get_communes_dateprel(cursor)
 
     # Close the connection to the database.
     cursor.close()
