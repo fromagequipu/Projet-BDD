@@ -51,7 +51,6 @@ cur.execute("""
     SELECT inseecommune
     FROM Commune
     WHERE lat IS NULL OR lon IS NULL
-    LIMIT 5 000
 """)
 
 communes = cur.fetchall()
