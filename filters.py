@@ -37,9 +37,7 @@ def get_communes_conformites(cursor, chimique, bacterio, ref_bact, ref_chim):
         query = """
             SELECT DISTINCT
                 c.inseecommune,
-                c.nomcommune,
-                c.lat,
-                c.lon
+                c.nomcommune
             FROM Commune c
             JOIN Prelevement p ON p.cdreseau = c.cdreseau
             WHERE 1=1
@@ -144,7 +142,7 @@ if __name__ == '__main__':
 
     # TEST FONCTION
     #get_communes_conformites(cursor)
-    get_communes_dateprel(cursor)
+    #get_communes_dateprel(cursor)
     #get_communes_parametre(cursor)
 
     # Close the connection to the database.
