@@ -77,7 +77,7 @@ class MainWindow(QMainWindow):
         ville_layout = QHBoxLayout()
         main_layout.addLayout(ville_layout)
         ville_layout.setAlignment(Qt.AlignCenter)
-        boxville = QGroupBox("Ville")
+        boxville = QGroupBox("Date")
         boxville.setLayout(ville_layout)
         
         self.combo_ville = QComboBox()
@@ -87,7 +87,7 @@ class MainWindow(QMainWindow):
         self.combo_ville.addItem("Sélectionner une ville", None)
         self.combo_ville.addItem("Nantes", "44000")
         self.combo_ville.addItem("Rennes", "35000")
-        self.combo_ville.addItem("Saint André des Eaux", "44151")
+        self.combo_ville.addItem("Saint André des Eaux", "44117")
         
         ville_layout.addWidget(QLabel(""))
         ville_layout.addWidget(self.combo_ville)
@@ -114,6 +114,8 @@ class MainWindow(QMainWindow):
         # COLONNE 1 - Général
         # -------------------------
         col1_layout = QVBoxLayout()
+        box1 = QGroupBox("")
+        box1.setLayout(col1_layout)
         self.date_edit = QDateEdit()
         self.date_edit.setCalendarPopup(True)
         self.date_edit.setDate(QDate.currentDate())
@@ -200,7 +202,7 @@ class MainWindow(QMainWindow):
         col3_layout.addWidget(self.button)
 
         # Ajout des colonnes
-        top_layout.addWidget(boxville)
+        top_layout.addWidget(box1)
         top_layout.addWidget(box2)
         top_layout.addWidget(box3)
 
