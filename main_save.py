@@ -77,7 +77,7 @@ class MainWindow(QMainWindow):
         ville_layout = QHBoxLayout()
         main_layout.addLayout(ville_layout)
         ville_layout.setAlignment(Qt.AlignCenter)
-        boxville = QGroupBox("Date")
+        boxville = QGroupBox("")
         boxville.setLayout(ville_layout)
         
         self.combo_ville = QComboBox()
@@ -114,13 +114,13 @@ class MainWindow(QMainWindow):
         # COLONNE 1 - Général
         # -------------------------
         col1_layout = QVBoxLayout()
-        box1 = QGroupBox("")
+        box1 = QGroupBox("Date")
         box1.setLayout(col1_layout)
         self.date_edit = QDateEdit()
         self.date_edit.setCalendarPopup(True)
         self.date_edit.setDate(QDate.currentDate())
         
-        col1_layout.addWidget(QLabel("Date"))
+        col1_layout.addWidget(QLabel(""))
         col1_layout.addWidget(self.date_edit)
 
         # -------------------------
@@ -185,7 +185,7 @@ class MainWindow(QMainWindow):
         # COLONNE 3 - Paramètres
         # -------------------------
         col3_layout = QVBoxLayout()
-        box3 = QGroupBox("Paramètres")
+        box3 = QGroupBox("Molécules")
         box3.setLayout(col3_layout)
 
         self.combo_molecule = QComboBox()
@@ -196,7 +196,7 @@ class MainWindow(QMainWindow):
         self.button = QPushButton("Afficher la carte")
         self.button.clicked.connect(self.update_map)
 
-        col3_layout.addWidget(QLabel("Molécule"))
+        col3_layout.addWidget(QLabel(""))
         col3_layout.addWidget(self.combo_molecule)
         col3_layout.addStretch()
         col3_layout.addWidget(self.button)
