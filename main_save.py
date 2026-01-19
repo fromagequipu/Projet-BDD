@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget,
     QVBoxLayout, QHBoxLayout, QLabel,
     QComboBox, QPushButton, QDateEdit, QGroupBox,
-    QButtonGroup, QRadioButton, QCheckBox
+    QButtonGroup, QRadioButton, QCheckBox, QLineEdit, QCompleter
 )
 from PyQt5.QtCore import QUrl, QDate, Qt, QThread, pyqtSignal
 from PyQt5.QtWebEngineWidgets import QWebEngineView
@@ -326,7 +326,7 @@ class MainWindow(QMainWindow):
         col2_layout.addLayout(statut_layout2)
 
         # Bouton pour actualiser la carte avec les conformités sélectionnées
-        self.btn_actualiser = QPushButton("Actualiser la carte")
+        self.btn_actualiser = QPushButton("Afficher la carte")
         col2_layout.addWidget(self.btn_actualiser)
         self.btn_actualiser.clicked.connect(self.update_map_with_conformities)
 
@@ -336,19 +336,48 @@ class MainWindow(QMainWindow):
         col3_layout = QVBoxLayout()
         box3 = QGroupBox("Molécules")
         box3.setLayout(col3_layout)
+        box3.setMaximumWidth(650)
 
+# Menu déroulant des molécules
         self.combo_molecule = QComboBox()
-        self.combo_molecule.addItem("Nitrate")
-        self.combo_molecule.addItem("Phosphate")
-        self.combo_molecule.addItem("pH")
+        self.combo_molecule.addItems([
+            "Nitrate",
+            "Phosphate",
+            "pH"
+        ])
 
+# Zone de texte pour la valeur
+        self.value_input = QLineEdit()
+        self.value_input.setPlaceholderText("Entrer la valeur souhaitée")
+
+# ---- AUTOCOMPLÉTION ----
+        suggestions = [
+            "0.1", "0.2", "0.5", "1", "2", "5", "10",
+            "< 0.1", "< 0.5", "> 1", "> 5"
+        ]
+
+        completer = QCompleter(suggestions)
+        completer.setCaseSensitivity(Qt.CaseInsensitive)
+        completer.setFilterMode(Qt.MatchContains)
+
+        self.value_input.setCompleter(completer)
+# -----------------------
+
+# Bouton
         self.button = QPushButton("Afficher la carte")
         self.button.clicked.connect(self.update_map)
 
-        col3_layout.addWidget(QLabel(""))
+# Ajout au layout
+        col3_layout.addWidget(QLabel("Choisir une molécule :"))
         col3_layout.addWidget(self.combo_molecule)
+
+        col3_layout.addWidget(QLabel("Valeur :"))
+        col3_layout.addWidget(self.value_input)
+
         col3_layout.addStretch()
         col3_layout.addWidget(self.button)
+
+
 
         # Ajout des colonnes
         top_layout.addWidget(box1)
