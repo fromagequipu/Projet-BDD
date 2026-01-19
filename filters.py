@@ -37,8 +37,8 @@ def get_communes_conformites(cursor, chimique, bacterio, ref_bact, ref_chim):
             SELECT DISTINCT
                 c.inseecommune,
                 c.nomcommune,
-                c.lon,
-                c.lat
+                c.lat,
+                c.lon
             FROM Commune c
             JOIN Prelevement p ON p.cdreseau = c.cdreseau
             WHERE (p.plvconformitechimique IN ({chimique}))
@@ -64,7 +64,7 @@ def get_communes_conformites(cursor, chimique, bacterio, ref_bact, ref_chim):
 
     except sqlite3.Error as error:
         print("Erreur SQL :", error)
-        return None
+        return []
 
 # Filtre 2 : Récupère les communes en fonction d'une date de prélèvement  
 def get_communes_dateprel(cursor, dateprel):
