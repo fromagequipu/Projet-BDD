@@ -42,43 +42,43 @@ def get_coordinates_and_name_from_insee(insee_code):
 
 # API AVEC CODE INSEE => plus besoin pour l'instant car alimenté dans la BDD 1 fois
 
-def normalize_insee(insee):
-     return str(insee).zfill(5) # format code INSEE = ajout d'un 0 en premier s'il y en a pas
+# def normalize_insee(insee):
+#      return str(insee).zfill(5) # format code INSEE = ajout d'un 0 en premier s'il y en a pas
 
-conn = sqlite3.connect("WaterQuality.db")
-cur = conn.cursor()
+# conn = sqlite3.connect("WaterQuality.db")
+# cur = conn.cursor()
 
-# Sélection des communes qui n'ont pas de coordonnées remplies 
-cur.execute("""
-     SELECT inseecommune
-     FROM Commune
-     WHERE lat IS NULL OR lon IS NULL
-     LIMIT 100
- """)
+# # Sélection des communes qui n'ont pas de coordonnées remplies 
+# cur.execute("""
+#      SELECT inseecommune
+#      FROM Commune
+#      WHERE lat IS NULL OR lon IS NULL
+#      LIMIT 100
+#  """)
 
-communes = cur.fetchall()
+# communes = cur.fetchall()
 
-for (insee,) in communes:
-     print(insee)
-     insee_norm = normalize_insee(insee)
-     # Récupération des coordonnées avec l'API 
-     url = f"https://geo.api.gouv.fr/communes/{insee_norm}?fields=centre"
-     r = requests.get(url)
+# for (insee,) in communes:
+#      print(insee)
+#      insee_norm = normalize_insee(insee)
+#      # Récupération des coordonnées avec l'API 
+#      url = f"https://geo.api.gouv.fr/communes/{insee_norm}?fields=centre"
+#      r = requests.get(url)
 
-     # Mise à jour dans la BDD des coordonnées
-     if r.status_code == 200:
-         data = r.json()
-         if "centre" in data:
-             lon, lat = data["centre"]["coordinates"]
-             cur.execute(
-                 "UPDATE Commune SET lat=?, lon=? WHERE inseecommune=?",
-                 (lat, lon, insee)
-             )
+#      # Mise à jour dans la BDD des coordonnées
+#      if r.status_code == 200:
+#          data = r.json()
+#          if "centre" in data:
+#              lon, lat = data["centre"]["coordinates"]
+#              cur.execute(
+#                  "UPDATE Commune SET lat=?, lon=? WHERE inseecommune=?",
+#                  (lat, lon, insee)
+#              )
 
-     time.sleep(0.1)  # respect API
+#      time.sleep(0.1)  # respect API
 
-conn.commit()
-conn.close()
+# conn.commit()
+# conn.close()
 
 # -------------------------
 # Création carte Folium
