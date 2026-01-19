@@ -72,32 +72,29 @@ def get_communes_conformites(cursor, chimique, bacterio, ref_bact, ref_chim):
         return None
 
 # Filtre 2 : Récupère les communes en fonction d'une date de prélèvement  
-def get_communes_dateprel(cursor,dateprel):
-    """Returns all the associations from the database.
-  
-    Parameters
-    ----------
-    cursor : 
-        The object used to query the database.
-  
-    Returns
-    -------
-    A (possibly, empty) list of all the associations in the database. 
-    Each item of the list is a tuple (asso_name, asso_desc).
-    
-    If an error occurs while querying the database, the function returns None.
+def get_communes_dateprel(cursor, dateprel):
+    """
+    Retourne les communes ayant un prélèvement à une date donnée
+    (coordonnées incluses pour affichage sur carte)
     """
     try:
-        # Valeurs test
-        #dateprel="23-01-2024"
-        # Requête qui permet de visualiser les infos des associations
-        cursor.execute("SELECT c.inseecommune, c.nomcommune FROM Commune c JOIN Prelevement p ON p.cdreseau = c.cdreseau WHERE p.dateprel=?;", (dateprel,))
-        row = cursor.fetchall()
+        query = """
+            SELECT DISTINCT
+                c.inseecommune,
+                c.nomcommune,
+                c.lat,
+                c.lon
+            FROM Commune c
+            JOIN Prelevement p ON p.cdreseau = c.cdreseau
+            WHERE p.dateprel = ?
+        """
+        cursor.execute(query, (dateprel,))
+        return cursor.fetchall()
+
     except sqlite3.Error as error:
-        print(error)
+        print("Erreur SQL :", error)
         return None
-    print("Le resultat est", row)
-    return row
+
 
 # Filtre 3 : Récupère les communes en fonction d'un paramètre et de sa valeur
 def get_communes_parametre(cursor,param,valeur):
@@ -147,8 +144,8 @@ if __name__ == '__main__':
 
     # TEST FONCTION
     #get_communes_conformites(cursor)
-    #get_communes_dateprel(cursor)
-    get_communes_parametre(cursor)
+    get_communes_dateprel(cursor)
+    #get_communes_parametre(cursor)
 
     # Close the connection to the database.
     cursor.close()
