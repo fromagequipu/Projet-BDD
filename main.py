@@ -6,6 +6,7 @@ import sqlite3
 import time
 from folium.plugins import MarkerCluster
 from filters import get_communes_conformites # fonction requête BDD dans fichier filters
+from filters import get_communes_dateprel # fonction requête BDD dans fichier filters
 
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget,
@@ -118,21 +119,39 @@ def create_map(communes):
 
 # Création de la carte
 def create_map(communes):
-    # Configuration de la carte
+     # Configuration de la carte
+     m = folium.Map(location=[46.6, 1.8], zoom_start=6)
+
+     # Création du cluster de marqueurs si beaucoup
+     cluster = MarkerCluster().add_to(m)
+
+     for insee, nom, lat, lon in communes:
+         if lat is None or lon is None:
+             continue
+
+         # On ajoute le marker dans le cluster (selon coordonnées)
+         folium.Marker(
+             location=[lat, lon],
+             popup=f"{nom} ({insee})"
+         ).add_to(cluster)
+
+     m.save(MAP_FILE)
+
+def create_map_from_communes(communes):
     m = folium.Map(location=[46.6, 1.8], zoom_start=6)
 
-    # Création du cluster de marqueurs si beaucoup
-    cluster = MarkerCluster().add_to(m)
+    if communes:
+        for insee, nom, lat, lon in communes:
+            if lat and lon:
+                folium.Marker(
+                    location=[lat, lon],
+                    popup=f"{nom} ({insee})",
+                    icon=folium.Icon(color="blue", icon="info-sign")
+                ).add_to(m)
 
-    for insee, nom, lat, lon in communes:
-        if lat is None or lon is None:
-            continue
-
-        # On ajoute le marker dans le cluster (selon coordonnées)
-        folium.Marker(
-            location=[lat, lon],
-            popup=f"{nom} ({insee})"
-        ).add_to(cluster)
+        # Centrage automatique sur la première commune
+        m.location = [communes[0][2], communes[0][3]]
+        m.zoom_start = 9
 
     m.save(MAP_FILE)
 
@@ -181,6 +200,9 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
+        self.conn = sqlite3.connect("WaterQuality.db")
+        self.cursor = self.conn.cursor()
+
         self.setWindowTitle("Water Quality")
         self.setWindowIcon(QIcon("logo.png"))
         self.resize(1600, 850)
@@ -220,6 +242,9 @@ class MainWindow(QMainWindow):
         box1 = QGroupBox("Général")
         box1.setLayout(col1_layout)
 
+        self.button1 = QPushButton("Afficher la carte")
+        self.button1.clicked.connect(self.update_map)
+
         self.combo_ville = QComboBox()
         self.combo_ville.addItem("Sélectionner une ville", None)
         self.combo_ville.addItem("Nantes", "44000")
@@ -234,6 +259,9 @@ class MainWindow(QMainWindow):
         col1_layout.addWidget(self.combo_ville)
         col1_layout.addWidget(QLabel("Date"))
         col1_layout.addWidget(self.date_edit)
+        col1_layout.addWidget(QLabel(""))
+        col1_layout.addWidget(self.button1)
+
 
         # -------------------------
         # COLONNE 2 - Conformité
@@ -344,6 +372,23 @@ class MainWindow(QMainWindow):
     def update_map(self):
         insee_code = self.combo_ville.currentData()
         create_map([])
+        # Récupération de la date choisie
+        date_str = self.date_edit.date().toString("dd-MM-yyyy")
+
+        # Appel BDD → communes EST DÉFINI ICI
+        communes = get_communes_dateprel(self.cursor, date_str)
+
+        # Sécurité si la requête retourne None
+        if communes is None:
+            communes = []
+
+        # Création de la carte AVEC cluster (comme conformité)
+        create_map(communes)
+
+        # Mise à jour du compteur
+        self.lbl_count.setText(f"Nombre de communes : {len(communes)}")
+
+        # Recharge la carte dans le navigateur
         self.load_map()
 
     def get_radio_value(self, radio_c, radio_nc):
