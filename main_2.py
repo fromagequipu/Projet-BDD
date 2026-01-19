@@ -216,25 +216,6 @@ class MainWindow(QMainWindow):
         # Layout titre
         titre_layout = QHBoxLayout()
         main_layout.addLayout(titre_layout)
-        
-        #Layout choix ville
-        ville_layout = QHBoxLayout()
-        main_layout.addLayout(ville_layout)
-        ville_layout.setAlignment(Qt.AlignCenter)
-        boxville = QGroupBox("")
-        boxville.setLayout(ville_layout)
-        
-        self.combo_ville = QComboBox()
-        
-        
-        #Partie à changer pour pouvoir faire dynamiquement
-        self.combo_ville.addItem("Sélectionner une ville", None)
-        self.combo_ville.addItem("Nantes", "44000")
-        self.combo_ville.addItem("Rennes", "35000")
-        self.combo_ville.addItem("Saint André des Eaux", "44117")
-        
-        ville_layout.addWidget(QLabel(""))
-        ville_layout.addWidget(self.combo_ville)
 
         # Layout du haut (3 colonnes)
         top_layout = QHBoxLayout()
@@ -258,17 +239,25 @@ class MainWindow(QMainWindow):
         # COLONNE 1 - Général
         # -------------------------
         col1_layout = QVBoxLayout()
-        box1 = QGroupBox("Date")
+        box1 = QGroupBox("Général")
         box1.setLayout(col1_layout)
-        
+
         self.button1 = QPushButton("Afficher la carte")
         self.button1.clicked.connect(self.update_map)
-        
+
+        self.combo_ville = QComboBox()
+        self.combo_ville.addItem("Sélectionner une ville", None)
+        self.combo_ville.addItem("Nantes", "44000")
+        self.combo_ville.addItem("Rennes", "35000")
+        self.combo_ville.addItem("Saint André des Eaux", "44151")
+
         self.date_edit = QDateEdit()
         self.date_edit.setCalendarPopup(True)
         self.date_edit.setDate(QDate.currentDate())
-        
-        col1_layout.addWidget(QLabel(""))
+
+        col1_layout.addWidget(QLabel("Ville"))
+        col1_layout.addWidget(self.combo_ville)
+        col1_layout.addWidget(QLabel("Date"))
         col1_layout.addWidget(self.date_edit)
         col1_layout.addWidget(QLabel(""))
         col1_layout.addWidget(self.button1)
@@ -334,7 +323,7 @@ class MainWindow(QMainWindow):
         # COLONNE 3 - Paramètres
         # -------------------------
         col3_layout = QVBoxLayout()
-        box3 = QGroupBox("Molécules")
+        box3 = QGroupBox("Paramètres")
         box3.setLayout(col3_layout)
 
         self.combo_molecule = QComboBox()
@@ -345,7 +334,7 @@ class MainWindow(QMainWindow):
         self.button = QPushButton("Afficher la carte")
         self.button.clicked.connect(self.update_map)
 
-        col3_layout.addWidget(QLabel(""))
+        col3_layout.addWidget(QLabel("Molécule"))
         col3_layout.addWidget(self.combo_molecule)
         col3_layout.addStretch()
         col3_layout.addWidget(self.button)

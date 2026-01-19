@@ -17,7 +17,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_3dca31d20a7d6abab3d4b7554bbd0d24 {
+                #map_e4727d00e5a4a966b59b39329e3caee5 {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -50,20 +50,23 @@
             </script>
 
         
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.Default.css"/>
 </head>
 <body>
     
     
-            <div class="folium-map" id="map_3dca31d20a7d6abab3d4b7554bbd0d24" ></div>
+            <div class="folium-map" id="map_e4727d00e5a4a966b59b39329e3caee5" ></div>
         
 </body>
 <script>
     
     
-            var map_3dca31d20a7d6abab3d4b7554bbd0d24 = L.map(
-                "map_3dca31d20a7d6abab3d4b7554bbd0d24",
+            var map_e4727d00e5a4a966b59b39329e3caee5 = L.map(
+                "map_e4727d00e5a4a966b59b39329e3caee5",
                 {
-                    center: [47.239367, -1.555335],
+                    center: [46.6, 1.8],
                     crs: L.CRS.EPSG3857,
                     ...{
   "zoom": 6,
@@ -78,7 +81,7 @@
 
         
     
-            var tile_layer_442a90c318031ad0c77b92199123b89b = L.tileLayer(
+            var tile_layer_fc8ab36cc8a1ceb6b65881a89c6b9cfb = L.tileLayer(
                 "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                 {
   "minZoom": 0,
@@ -95,45 +98,16 @@
             );
         
     
-            tile_layer_442a90c318031ad0c77b92199123b89b.addTo(map_3dca31d20a7d6abab3d4b7554bbd0d24);
+            tile_layer_fc8ab36cc8a1ceb6b65881a89c6b9cfb.addTo(map_e4727d00e5a4a966b59b39329e3caee5);
         
     
-            var marker_30d96844f3ca05d579e6994ef5a268aa = L.marker(
-                [47.239367, -1.555335],
+            var marker_cluster_b5bf440117c3704ba34729ae9c2f1565 = L.markerClusterGroup(
                 {
-}
-            ).addTo(map_3dca31d20a7d6abab3d4b7554bbd0d24);
-        
-    
-            var icon_972c51bb854b56522375776f9906027a = L.AwesomeMarkers.icon(
-                {
-  "markerColor": "blue",
-  "iconColor": "white",
-  "icon": "info-sign",
-  "prefix": "glyphicon",
-  "extraClasses": "fa-rotate-0",
 }
             );
         
     
-        var popup_807d0c5016281de3ea5127069ff6abdb = L.popup({
-  "maxWidth": "100%",
-});
-
+            marker_cluster_b5bf440117c3704ba34729ae9c2f1565.addTo(map_e4727d00e5a4a966b59b39329e3caee5);
         
-            
-                var html_7403f7ea453fa49abefdeeadd025e04f = $(`<div id="html_7403f7ea453fa49abefdeeadd025e04f" style="width: 100.0%; height: 100.0%;">Nantes</div>`)[0];
-                popup_807d0c5016281de3ea5127069ff6abdb.setContent(html_7403f7ea453fa49abefdeeadd025e04f);
-            
-        
-
-        marker_30d96844f3ca05d579e6994ef5a268aa.bindPopup(popup_807d0c5016281de3ea5127069ff6abdb)
-        ;
-
-        
-    
-    
-                marker_30d96844f3ca05d579e6994ef5a268aa.setIcon(icon_972c51bb854b56522375776f9906027a);
-            
 </script>
 </html>
