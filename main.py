@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget,
     QVBoxLayout, QHBoxLayout, QLabel,
     QComboBox, QPushButton, QDateEdit, QGroupBox,
-    QButtonGroup, QRadioButton
+    QButtonGroup, QRadioButton, QCheckBox
 )
 from PyQt5.QtCore import QUrl, QDate, Qt, QThread, pyqtSignal
 from PyQt5.QtWebEngineWidgets import QWebEngineView
@@ -42,42 +42,43 @@ def get_coordinates_and_name_from_insee(insee_code):
 
 # API AVEC CODE INSEE => plus besoin pour l'instant car alimenté dans la BDD 1 fois
 
-# def normalize_insee(insee):
-#     return str(insee).zfill(5) # format code INSEE = ajout d'un 0 en premier s'il y en a pas
+def normalize_insee(insee):
+     return str(insee).zfill(5) # format code INSEE = ajout d'un 0 en premier s'il y en a pas
 
-# conn = sqlite3.connect("WaterQuality.db")
-# cur = conn.cursor()
+conn = sqlite3.connect("WaterQuality.db")
+cur = conn.cursor()
 
-# # Sélection des communes qui n'ont pas de coordonnées remplies 
-# cur.execute("""
-#     SELECT inseecommune
-#     FROM Commune
-#     WHERE lat IS NULL OR lon IS NULL
-# """)
+# Sélection des communes qui n'ont pas de coordonnées remplies 
+cur.execute("""
+     SELECT inseecommune
+     FROM Commune
+     WHERE lat IS NULL OR lon IS NULL
+     LIMIT 100
+ """)
 
-# communes = cur.fetchall()
+communes = cur.fetchall()
 
-# for (insee,) in communes:
-#     print(insee)
-#     insee_norm = normalize_insee(insee)
-#     # Récupération des coordonnées avec l'API 
-#     url = f"https://geo.api.gouv.fr/communes/{insee_norm}?fields=centre"
-#     r = requests.get(url)
+for (insee,) in communes:
+     print(insee)
+     insee_norm = normalize_insee(insee)
+     # Récupération des coordonnées avec l'API 
+     url = f"https://geo.api.gouv.fr/communes/{insee_norm}?fields=centre"
+     r = requests.get(url)
 
-#     # Mise à jour dans la BDD des coordonnées
-#     if r.status_code == 200:
-#         data = r.json()
-#         if "centre" in data:
-#             lon, lat = data["centre"]["coordinates"]
-#             cur.execute(
-#                 "UPDATE Commune SET lat=?, lon=? WHERE inseecommune=?",
-#                 (lat, lon, insee)
-#             )
+     # Mise à jour dans la BDD des coordonnées
+     if r.status_code == 200:
+         data = r.json()
+         if "centre" in data:
+             lon, lat = data["centre"]["coordinates"]
+             cur.execute(
+                 "UPDATE Commune SET lat=?, lon=? WHERE inseecommune=?",
+                 (lat, lon, insee)
+             )
 
-#     time.sleep(0.1)  # respect API
+     time.sleep(0.1)  # respect API
 
-# conn.commit()
-# conn.close()
+conn.commit()
+conn.close()
 
 # -------------------------
 # Création carte Folium
@@ -163,6 +164,7 @@ class MapWorker(QThread):
             self.ref_chim
         )
 
+        self.last_communes = communes  
         # Génération de la carte
         create_map(communes)
 
@@ -241,8 +243,8 @@ class MainWindow(QMainWindow):
         box2.setLayout(col2_layout)
 
         self.combo_conformite = QButtonGroup()
-        self.radio_bacterio = QRadioButton("Conforme")
-        self.radio_bacterio1 = QRadioButton("Non conforme")
+        self.radio_bacterio = QCheckBox("Conforme")
+        self.radio_bacterio1 = QCheckBox("Non conforme")
         self.combo_conformite.addButton(self.radio_bacterio)
         self.combo_conformite.addButton(self.radio_bacterio1)
         statut_layout = QHBoxLayout()
@@ -250,15 +252,10 @@ class MainWindow(QMainWindow):
         statut_layout.addWidget(self.radio_bacterio)
         statut_layout.addWidget(self.radio_bacterio1)
         col2_layout.addLayout(statut_layout)
-        #col2_layout.addWidget(QLabel("Statut"))
-        #col2_layout.addWidget(radio_c)
-        #col2_layout.addWidget(radio_nc)
-        #self.combo_conformite.addItem("Conforme", "C")
-        #self.combo_conformite.addItem("Non conforme", "NC")
 
         self.combo_categorie = QButtonGroup()
-        self.radio_chimie = QRadioButton("Conforme")
-        self.radio_chimie1 = QRadioButton("Non conforme")
+        self.radio_chimie = QCheckBox("Conforme")
+        self.radio_chimie1 = QCheckBox("Non conforme")
         statut_layout2 = QHBoxLayout()
         statut_layout2.addWidget(QLabel("Limite Physico-chimique"))
         statut_layout2.addWidget(self.radio_chimie)
@@ -268,8 +265,8 @@ class MainWindow(QMainWindow):
         col2_layout.addLayout(statut_layout2)
 
         self.combo_refbacteriologique = QButtonGroup()
-        self.radio_refbacteriologique = QRadioButton("Conforme")
-        self.radio_refbacteriologique1 = QRadioButton("Non conforme")
+        self.radio_refbacteriologique = QCheckBox("Conforme")
+        self.radio_refbacteriologique1 = QCheckBox("Non conforme")
         statut_layout2 = QHBoxLayout()
         statut_layout2.addWidget(QLabel("Référence Bactériologique"))
         statut_layout2.addWidget(self.radio_refbacteriologique)
@@ -279,8 +276,8 @@ class MainWindow(QMainWindow):
         col2_layout.addLayout(statut_layout2)
 
         self.combo_refchimie = QButtonGroup()
-        self.radio_refchimie = QRadioButton("Conforme")
-        self.radio_refchimie1 = QRadioButton("Non conforme")
+        self.radio_refchimie = QCheckBox("Conforme")
+        self.radio_refchimie1 = QCheckBox("Non conforme")
         statut_layout2 = QHBoxLayout()
         statut_layout2.addWidget(QLabel("Référence Physico-chimique"))
         statut_layout2.addWidget(self.radio_refchimie)
@@ -288,16 +285,6 @@ class MainWindow(QMainWindow):
         self.combo_refchimie.addButton(self.radio_refchimie)
         self.combo_refchimie.addButton(self.radio_refchimie1)
         col2_layout.addLayout(statut_layout2)
-        #self.combo_categorie = QComboBox()
-        #self.combo_categorie.addItem("Bactéries")
-        #self.combo_categorie.addItem("Chimie")
-        #self.combo_categorie.addItem("Référence Bactérie")
-        #self.combo_categorie.addItem("Référence Chimie")
-
-        #col2_layout.addWidget(QLabel("Statut"))
-        #col2_layout.addWidget(self.combo_conformite)
-        #col2_layout.addWidget(QLabel("Catégorie"))
-        #col2_layout.addWidget(self.combo_categorie)
 
         # Bouton pour actualiser la carte avec les conformités sélectionnées
         self.btn_actualiser = QPushButton("Actualiser la carte")
@@ -332,6 +319,13 @@ class MainWindow(QMainWindow):
         # -------------------------
         # Carte (pleine largeur en bas)
         # -------------------------
+
+        # Renvoi le nombre de communes affichées
+        self.lbl_count = QLabel("Nombre de communes : 0")
+        self.lbl_count.setAlignment(Qt.AlignCenter)
+        self.lbl_count.setStyleSheet("font-size: 16px; font-weight: bold;")
+        main_layout.addWidget(self.lbl_count)
+
         self.browser = QWebEngineView()
         main_layout.addWidget(self.browser, stretch=1)
 
@@ -353,19 +347,16 @@ class MainWindow(QMainWindow):
         self.load_map()
 
     def get_radio_value(self, radio_c, radio_nc):
-        # Récupération de la valeur cochée selon C ou N 
+        # Récupération des valeurs cochées selon C ou N 
+        values = []
         if radio_c.isChecked():
-            return "C"
+            values.append("C")
         if radio_nc.isChecked():
-            return "N"
-        return None   # aucun choix
+            values.append("N")
+        return values  
 
     # Actualisation de la carte selon filtre 2 
     def update_map_with_conformities(self):
-
-        #conn = sqlite3.connect("WaterQuality.db")
-        #conn.execute("PRAGMA foreign_keys = 1")
-        #cursor = conn.cursor()
 
         # Récupération de la valeur cochée
         chimique = self.get_radio_value(self.radio_chimie, self.radio_chimie1)
@@ -373,31 +364,19 @@ class MainWindow(QMainWindow):
         ref_bact = self.get_radio_value(self.radio_refbacteriologique, self.radio_refbacteriologique1)
         ref_chim = self.get_radio_value(self.radio_refchimie, self.radio_refchimie1)
 
-        # Appel de la requête dans la BDD
-        # communes = get_communes_conformites(
-        #         cursor,
-        #         chimique,
-        #         bacterio,
-        #         ref_bact,
-        #         ref_chim
-        # )
-
         self.setEnabled(False)
 
         self.worker = MapWorker(chimique, bacterio, ref_bact, ref_chim)
         self.worker.finished.connect(self.on_map_ready)
         self.worker.start()
 
-        # Actualisation de la carte
-        # create_map(communes)
-        # self.load_map()
-
-        # cursor.close()
-        # conn.close()
-
     def on_map_ready(self):
         self.load_map()
         self.setEnabled(True)
+
+        # mise à jour du label avec le nombre de communes
+        count = len(self.worker.last_communes)
+        self.lbl_count.setText(f"Nombre de communes : {count}")
 
 
 # -------------------------
