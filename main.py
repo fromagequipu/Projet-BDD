@@ -4,6 +4,8 @@ import requests
 import folium
 import sqlite3
 import time
+from folium.plugins import MarkerCluster
+from filters import get_communes_conformites # fonction requête BDD dans fichier filters
 
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget,
@@ -11,13 +13,12 @@ from PyQt5.QtWidgets import (
     QComboBox, QPushButton, QDateEdit, QGroupBox,
     QButtonGroup, QRadioButton
 )
-from PyQt5.QtCore import QUrl, QDate, Qt
+from PyQt5.QtCore import QUrl, QDate, Qt, QThread, pyqtSignal
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtGui import QIcon
 
-
+# Fichier de sauvegarde de la carte
 MAP_FILE = "map.html"
-
 
 # -------------------------
 # API INSEE -> ALIMENTATION DE LA TABLE COMMUNE
@@ -39,42 +40,44 @@ def get_coordinates_and_name_from_insee(insee_code):
     return None, None, None
 """
 
-# API AVEC CODE INSEE
+# API AVEC CODE INSEE => plus besoin pour l'instant car alimenté dans la BDD 1 fois
 
-def normalize_insee(insee):
-    return str(insee).zfill(5)
+# def normalize_insee(insee):
+#     return str(insee).zfill(5) # format code INSEE = ajout d'un 0 en premier s'il y en a pas
 
-conn = sqlite3.connect("WaterQuality.db")
-cur = conn.cursor()
+# conn = sqlite3.connect("WaterQuality.db")
+# cur = conn.cursor()
 
-cur.execute("""
-    SELECT inseecommune
-    FROM Commune
-    WHERE lat IS NULL OR lon IS NULL
-""")
+# # Sélection des communes qui n'ont pas de coordonnées remplies 
+# cur.execute("""
+#     SELECT inseecommune
+#     FROM Commune
+#     WHERE lat IS NULL OR lon IS NULL
+# """)
 
-communes = cur.fetchall()
+# communes = cur.fetchall()
 
-for (insee,) in communes:
-    print(insee)
-    insee_norm = normalize_insee(insee)
+# for (insee,) in communes:
+#     print(insee)
+#     insee_norm = normalize_insee(insee)
+#     # Récupération des coordonnées avec l'API 
+#     url = f"https://geo.api.gouv.fr/communes/{insee_norm}?fields=centre"
+#     r = requests.get(url)
 
-    url = f"https://geo.api.gouv.fr/communes/{insee_norm}?fields=centre"
-    r = requests.get(url)
+#     # Mise à jour dans la BDD des coordonnées
+#     if r.status_code == 200:
+#         data = r.json()
+#         if "centre" in data:
+#             lon, lat = data["centre"]["coordinates"]
+#             cur.execute(
+#                 "UPDATE Commune SET lat=?, lon=? WHERE inseecommune=?",
+#                 (lat, lon, insee)
+#             )
 
-    if r.status_code == 200:
-        data = r.json()
-        if "centre" in data:
-            lon, lat = data["centre"]["coordinates"]
-            cur.execute(
-                "UPDATE Commune SET lat=?, lon=? WHERE inseecommune=?",
-                (lat, lon, insee)
-            )
+#     time.sleep(0.1)  # respect API
 
-    time.sleep(0.1)  # respect API
-
-conn.commit()
-conn.close()
+# conn.commit()
+# conn.close()
 
 # -------------------------
 # Création carte Folium
@@ -112,33 +115,70 @@ def create_map(communes):
 
 """
 
-from folium.plugins import MarkerCluster
-
+# Création de la carte
 def create_map(communes):
+    # Configuration de la carte
     m = folium.Map(location=[46.6, 1.8], zoom_start=6)
 
-    # Création du cluster
-    marker_cluster = MarkerCluster().add_to(m)
+    # Création du cluster de marqueurs si beaucoup
+    cluster = MarkerCluster().add_to(m)
 
     for insee, nom, lat, lon in communes:
         if lat is None or lon is None:
             continue
 
-        # On ajoute le marker dans le cluster
+        # On ajoute le marker dans le cluster (selon coordonnées)
         folium.Marker(
             location=[lat, lon],
             popup=f"{nom} ({insee})"
-        ).add_to(marker_cluster)
+        ).add_to(cluster)
 
     m.save(MAP_FILE)
 
+# ======================================================
+# THREAD POUR LA GÉNÉRATION DE CARTE FLUIDE
+# ======================================================
+
+class MapWorker(QThread):
+    finished = pyqtSignal()
+
+    def __init__(self, chimique, bacterio, ref_bact, ref_chim):
+        super().__init__()
+        self.chimique = chimique
+        self.bacterio = bacterio
+        self.ref_bact = ref_bact
+        self.ref_chim = ref_chim
+
+    def run(self):
+        # Connexion BDD DANS le thread
+        conn = sqlite3.connect("WaterQuality.db")
+        cursor = conn.cursor()
+
+        # Appel de la fonction dans filters avec les paramètres récupérés
+        communes = get_communes_conformites(
+            cursor,
+            self.chimique,
+            self.bacterio,
+            self.ref_bact,
+            self.ref_chim
+        )
+
+        # Génération de la carte
+        create_map(communes)
+
+        cursor.close()
+        conn.close()
+
+        self.finished.emit()
 
 # -------------------------
 # Fenêtre principale
 # -------------------------
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+
         self.setWindowTitle("Water Quality")
         self.setWindowIcon(QIcon("logo.png"))
         self.resize(1600, 850)
@@ -299,29 +339,33 @@ class MainWindow(QMainWindow):
         create_map([])
         self.load_map()
 
+    # ==================================================
+    # Fonctions associées
+    # ==================================================
+
     def load_map(self):
         path = os.path.abspath(MAP_FILE)
         self.browser.load(QUrl.fromLocalFile(path))
 
     def update_map(self):
         insee_code = self.combo_ville.currentData()
-        create_map(insee_code)
+        create_map([])
         self.load_map()
 
     def get_radio_value(self, radio_c, radio_nc):
+        # Récupération de la valeur cochée selon C ou N 
         if radio_c.isChecked():
             return "C"
         if radio_nc.isChecked():
             return "N"
         return None   # aucun choix
 
+    # Actualisation de la carte selon filtre 2 
     def update_map_with_conformities(self):
-        import sqlite3
-        from filters import get_communes_conformites
 
-        conn = sqlite3.connect("WaterQuality.db")
-        conn.execute("PRAGMA foreign_keys = 1")
-        cursor = conn.cursor()
+        #conn = sqlite3.connect("WaterQuality.db")
+        #conn.execute("PRAGMA foreign_keys = 1")
+        #cursor = conn.cursor()
 
         # Récupération de la valeur cochée
         chimique = self.get_radio_value(self.radio_chimie, self.radio_chimie1)
@@ -329,25 +373,31 @@ class MainWindow(QMainWindow):
         ref_bact = self.get_radio_value(self.radio_refbacteriologique, self.radio_refbacteriologique1)
         ref_chim = self.get_radio_value(self.radio_refchimie, self.radio_refchimie1)
 
-        # Si aucun filtre n'est sélectionné → on ne fait rien
-        if None in (chimique, bacterio, ref_bact, ref_chim):
-            return
-
         # Appel de la requête dans la BDD
-        communes = get_communes_conformites(
-                cursor,
-                chimique,
-                bacterio,
-                ref_bact,
-                ref_chim
-        )
+        # communes = get_communes_conformites(
+        #         cursor,
+        #         chimique,
+        #         bacterio,
+        #         ref_bact,
+        #         ref_chim
+        # )
+
+        self.setEnabled(False)
+
+        self.worker = MapWorker(chimique, bacterio, ref_bact, ref_chim)
+        self.worker.finished.connect(self.on_map_ready)
+        self.worker.start()
 
         # Actualisation de la carte
-        create_map(communes)
-        self.load_map()
+        # create_map(communes)
+        # self.load_map()
 
-        cursor.close()
-        conn.close()
+        # cursor.close()
+        # conn.close()
+
+    def on_map_ready(self):
+        self.load_map()
+        self.setEnabled(True)
 
 
 # -------------------------
