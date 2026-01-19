@@ -55,8 +55,7 @@ def extract():
     dataframes["Prelevement"] = prelevement_df
     dataframes["Parametre"] = parametre_df
     
-    ##################################################################################
-
+    
     # Return the dataframe collection.
     return dataframes
     
@@ -64,7 +63,6 @@ def transform(dataframes):
 
     print("Transforming the data...")
 
-    ################## TODO: COMPLETE THE CODE OF THIS FUNCTION  #####################
 
     ### 1 - SUPPRESSION DES DUPLICAS DANS LES DONNEES ###
     dataframes["Reseau"] = dataframes["Reseau"].drop_duplicates(subset=["cdreseau"])
@@ -117,11 +115,10 @@ def load(dataframes):
         
     print("Done!")
     
-    # We close the connection to the database.
+    # Fermeture de la connexion à la bdd
     cursor.close()
     conn.close()
 
-# Entry point of the ETL module.
 if __name__ == "__main__":
 
     dataframes = extract() # Extraction des données depuis un CSV
