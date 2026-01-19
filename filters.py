@@ -18,20 +18,58 @@ def get_communes_conformites(cursor, chimique, bacterio, ref_bact, ref_chim):
     
     If an error occurs while querying the database, the function returns None.
     """
+    # try:
+    #     # Valeurs test
+    #     #C1="N"
+    #     #C2="N"
+    #     #C3="N"
+    #     #C4="N"
+    #     # Requête qui permet de visualiser les infos des communes => Limitation de 20000 communes sinon trop lent dans les requêtes
+    #     cursor.execute("SELECT DISTINCT c.inseecommune, c.nomcommune, c.lat, c.lon FROM Commune c JOIN Prelevement p ON p.cdreseau = c.cdreseau WHERE p.plvconformitechimique = ? AND p.plvconformitebacterio = ? AND p.plvconformitereferencebact = ? AND p.plvconformitereferencechim = ? LIMIT 20000;", (chimique, bacterio, ref_bact, ref_chim))
+    #     row = cursor.fetchall()
+    # except sqlite3.Error as error:
+    #     print(error)
+    #     return None
+    # print("Le resultat est", row)
+    # return row
+
     try:
-        # Valeurs test
-        #C1="N"
-        #C2="N"
-        #C3="N"
-        #C4="N"
-        # Requête qui permet de visualiser les infos des communes => Limitation de 20000 communes sinon trop lent dans les requêtes
-        cursor.execute("SELECT DISTINCT c.inseecommune, c.nomcommune, c.lat, c.lon FROM Commune c JOIN Prelevement p ON p.cdreseau = c.cdreseau WHERE p.plvconformitechimique = ? AND p.plvconformitebacterio = ? AND p.plvconformitereferencebact = ? AND p.plvconformitereferencechim = ? LIMIT 20000;", (chimique, bacterio, ref_bact, ref_chim))
-        row = cursor.fetchall()
+        query = """
+            SELECT DISTINCT
+                c.inseecommune,
+                c.nomcommune,
+                c.lat,
+                c.lon
+            FROM Commune c
+            JOIN Prelevement p ON p.cdreseau = c.cdreseau
+            WHERE 1=1
+        """
+        params = []
+
+        if chimique is not None:
+            query += " AND p.plvconformitechimique = ?"
+            params.append(chimique)
+
+        if bacterio is not None:
+            query += " AND p.plvconformitebacterio = ?"
+            params.append(bacterio)
+
+        if ref_bact is not None:
+            query += " AND p.plvconformitereferencebact = ?"
+            params.append(ref_bact)
+
+        if ref_chim is not None:
+            query += " AND p.plvconformitereferencechim = ?"
+            params.append(ref_chim)
+
+        query += " LIMIT 20000"
+
+        cursor.execute(query, params)
+        return cursor.fetchall()
+
     except sqlite3.Error as error:
-        print(error)
+        print("Erreur SQL :", error)
         return None
-    print("Le resultat est", row)
-    return row
 
 # Filtre 2 : Récupère les communes en fonction d'une date de prélèvement  
 def get_communes_dateprel(cursor,dateprel):

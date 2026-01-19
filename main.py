@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget,
     QVBoxLayout, QHBoxLayout, QLabel,
     QComboBox, QPushButton, QDateEdit, QGroupBox,
-    QButtonGroup, QRadioButton
+    QButtonGroup, QRadioButton, QCheckBox
 )
 from PyQt5.QtCore import QUrl, QDate, Qt, QThread, pyqtSignal
 from PyQt5.QtWebEngineWidgets import QWebEngineView
@@ -250,11 +250,6 @@ class MainWindow(QMainWindow):
         statut_layout.addWidget(self.radio_bacterio)
         statut_layout.addWidget(self.radio_bacterio1)
         col2_layout.addLayout(statut_layout)
-        #col2_layout.addWidget(QLabel("Statut"))
-        #col2_layout.addWidget(radio_c)
-        #col2_layout.addWidget(radio_nc)
-        #self.combo_conformite.addItem("Conforme", "C")
-        #self.combo_conformite.addItem("Non conforme", "NC")
 
         self.combo_categorie = QButtonGroup()
         self.radio_chimie = QRadioButton("Conforme")
@@ -363,37 +358,17 @@ class MainWindow(QMainWindow):
     # Actualisation de la carte selon filtre 2 
     def update_map_with_conformities(self):
 
-        #conn = sqlite3.connect("WaterQuality.db")
-        #conn.execute("PRAGMA foreign_keys = 1")
-        #cursor = conn.cursor()
-
         # Récupération de la valeur cochée
         chimique = self.get_radio_value(self.radio_chimie, self.radio_chimie1)
         bacterio = self.get_radio_value(self.radio_bacterio, self.radio_bacterio1)
         ref_bact = self.get_radio_value(self.radio_refbacteriologique, self.radio_refbacteriologique1)
         ref_chim = self.get_radio_value(self.radio_refchimie, self.radio_refchimie1)
 
-        # Appel de la requête dans la BDD
-        # communes = get_communes_conformites(
-        #         cursor,
-        #         chimique,
-        #         bacterio,
-        #         ref_bact,
-        #         ref_chim
-        # )
-
         self.setEnabled(False)
 
         self.worker = MapWorker(chimique, bacterio, ref_bact, ref_chim)
         self.worker.finished.connect(self.on_map_ready)
         self.worker.start()
-
-        # Actualisation de la carte
-        # create_map(communes)
-        # self.load_map()
-
-        # cursor.close()
-        # conn.close()
 
     def on_map_ready(self):
         self.load_map()
