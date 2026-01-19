@@ -32,38 +32,29 @@ def get_communes_conformites(cursor, chimique, bacterio, ref_bact, ref_chim):
     #     return None
     # print("Le resultat est", row)
     # return row
-
-    try:
+    try : 
         query = """
-            SELECT DISTINCT
-                c.inseecommune,
-                c.nomcommune,
-                c.lat,
-                c.lon
+            SELECT DISTINCT c.inseecommune, c.nomcommune, c.lat, c.lon
             FROM Commune c
             JOIN Prelevement p ON p.cdreseau = c.cdreseau
-            WHERE 1=1
+            WHERE (p.plvconformitechimique IN ({chimique}))
+            AND (p.plvconformitebacterio IN ({bacterio}))
+            AND (p.plvconformitereferencebact IN ({ref_bact}))
+            AND (p.plvconformitereferencechim IN ({ref_chim}))
+            LIMIT 20000;
         """
-        params = []
 
-        if chimique is not None:
-            query += " AND p.plvconformitechimique = ?"
-            params.append(chimique)
+        def conform(values):
+            return ",".join("?" for _ in values)
 
-        if bacterio is not None:
-            query += " AND p.plvconformitebacterio = ?"
-            params.append(bacterio)
+        query = query.format(
+            chimique=conform(chimique),
+            bacterio=conform(bacterio),
+            ref_bact=conform(ref_bact),
+            ref_chim=conform(ref_chim),
+        )
 
-        if ref_bact is not None:
-            query += " AND p.plvconformitereferencebact = ?"
-            params.append(ref_bact)
-
-        if ref_chim is not None:
-            query += " AND p.plvconformitereferencechim = ?"
-            params.append(ref_chim)
-
-        query += " LIMIT 20000"
-
+        params = chimique + bacterio + ref_bact + ref_chim
         cursor.execute(query, params)
         return cursor.fetchall()
 
