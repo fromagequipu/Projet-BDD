@@ -91,6 +91,29 @@ def get_communes_dateprel(cursor, dateprel):
         return None
 
 
+#Filtre n°5 : Récuperation des molécules
+def get_molecules(cursor, dateprel):
+    """
+    Retourne les communes ayant un prélèvement à une date donnée
+    (coordonnées incluses pour affichage sur carte)
+    """
+    try:
+        query = """
+            SELECT DISTINCT
+                p1.libminparametre,
+            FROM Parametre p1
+            JOIN Prelevement p ON p.referenceprel = p1.referenceprel JOIN Commune c ON c.cdreseau = p.cdreseau
+        """
+        cursor.execute(query, (dateprel,))
+        return cursor.fetchall()
+
+    except sqlite3.Error as error:
+        print("Erreur SQL :", error)
+        return None
+
+
+
+
 # Filtre 3 : Récupère les communes en fonction d'un paramètre et de sa valeur
 def get_communes_parametre(cursor,param,valeur):
     """Returns all the associations from the database.

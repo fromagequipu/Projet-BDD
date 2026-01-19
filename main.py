@@ -338,7 +338,7 @@ class MainWindow(QMainWindow):
         box3.setLayout(col3_layout)
         box3.setMaximumWidth(650)
 
-# Menu déroulant des molécules
+        # Menu déroulant des molécules
         self.combo_molecule = QComboBox()
         self.combo_molecule.addItems([
             "Nitrate",
@@ -346,11 +346,11 @@ class MainWindow(QMainWindow):
             "pH"
         ])
 
-# Zone de texte pour la valeur
+        # Zone de texte pour la valeur
         self.value_input = QLineEdit()
         self.value_input.setPlaceholderText("Entrer la valeur souhaitée")
 
-# ---- AUTOCOMPLÉTION ----
+        # ---- AUTOCOMPLÉTION ----
         suggestions = [
             "0.1", "0.2", "0.5", "1", "2", "5", "10",
             "< 0.1", "< 0.5", "> 1", "> 5"
@@ -361,13 +361,13 @@ class MainWindow(QMainWindow):
         completer.setFilterMode(Qt.MatchContains)
 
         self.value_input.setCompleter(completer)
-# -----------------------
+        # -----------------------
 
-# Bouton
+        # Bouton
         self.button = QPushButton("Afficher la carte")
         self.button.clicked.connect(self.update_map)
 
-# Ajout au layout
+        # Ajout au layout
         col3_layout.addWidget(QLabel("Choisir une molécule :"))
         col3_layout.addWidget(self.combo_molecule)
 
