@@ -164,14 +164,18 @@ def get_refqual(cursor, parametre):
 
 
 #Filtre n°7
-def get_communes_by_parameter_value(cursor, molecule, seuil):
+def get_communes_by_parameter_value(cursor, molecule, seuil, operator):
     try:
         seuil_float = float(seuil)
     except ValueError:
-        seuil_float = 0.0
+        return []
+
+    # Sécurisation de l'opérateur SQL
+    if operator not in [">", "<", "="]:
+        operator = ">"
 
     try:
-        query = """
+        query = f"""
             SELECT DISTINCT 
                 c.inseecommune, 
                 c.nomcommune, 
@@ -181,7 +185,7 @@ def get_communes_by_parameter_value(cursor, molecule, seuil):
             JOIN Prelevement pr ON c.cdreseau = pr.cdreseau
             JOIN Parametre pa ON pr.referenceprel = pa.referenceprel
             WHERE pa.libminparametre = ?
-              AND CAST(pa.valtraduite AS FLOAT) >= ?
+              AND CAST(pa.valtraduite AS FLOAT) {operator} ?
               AND c.lat IS NOT NULL
               AND c.lon IS NOT NULL
             LIMIT 20000;
@@ -192,6 +196,7 @@ def get_communes_by_parameter_value(cursor, molecule, seuil):
     except sqlite3.Error as error:
         print("Erreur SQL :", error)
         return []
+
 
 # Entry point of this module.
 if __name__ == '__main__':
