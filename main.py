@@ -439,7 +439,7 @@ class MainWindow(QMainWindow):
         
         # Récupération des molécules depuis la BDD
         parametres = get_molecules(self.cursor)
-
+        parametres.sort()
         # Menu déroulant des molécules
         self.combo_molecule = QComboBox()
         self.combo_molecule.addItem("Sélectionner une molécule")
@@ -467,6 +467,11 @@ class MainWindow(QMainWindow):
         completer.setFilterMode(Qt.MatchContains)
 
         self.value_input.setCompleter(completer)
+        
+        
+        self.manual_value_input = QLineEdit()
+        self.manual_value_input.setPlaceholderText("Entrer votre propre seuil")
+        
         # -----------------------
 
         # Bouton
@@ -479,6 +484,9 @@ class MainWindow(QMainWindow):
 
         col3_layout.addWidget(QLabel("Valeur :"))
         col3_layout.addWidget(self.value_input)
+        
+        col3_layout.addWidget(QLabel("Saisir un seuil personnalisé :"))
+        col3_layout.addWidget(self.manual_value_input)
 
         col3_layout.addStretch()
         col3_layout.addWidget(self.button)
