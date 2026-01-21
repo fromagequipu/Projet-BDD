@@ -163,24 +163,35 @@ def get_refqual(cursor, parametre):
         return ""
 
 
+#Filtre n°7
 def get_communes_by_parameter_value(cursor, molecule, seuil):
-    # On tente de convertir le seuil en nombre pour la comparaison SQL
     try:
-        seuil_float = float(seuil.replace('<', '').replace('>', '').strip())
+        seuil_float = float(seuil)
     except ValueError:
         seuil_float = 0.0
 
-    query = """
-        SELECT DISTINCT c.inseecommune, c.nomcommune, c.lat, c.lon, r.rs_resultat_nombre
-        FROM Commune c
-        JOIN Resultat r ON c.inseecommune = r.inseecommune
-        JOIN Parametre p ON r.code_parametre = p.code_parametre
-        WHERE p.libminparametre = ? 
-          AND r.rs_resultat_nombre >= ?
-          AND c.lat IS NOT NULL
-    """
-    cursor.execute(query, (molecule, seuil_float))
-    return cursor.fetchall()
+    try:
+        query = """
+            SELECT DISTINCT 
+                c.inseecommune, 
+                c.nomcommune, 
+                c.lat, 
+                c.lon
+            FROM Commune c
+            JOIN Prelevement pr ON c.cdreseau = pr.cdreseau
+            JOIN Parametre pa ON pr.referenceprel = pa.referenceprel
+            WHERE pa.libminparametre = ?
+              AND CAST(pa.valtraduite AS FLOAT) >= ?
+              AND c.lat IS NOT NULL
+              AND c.lon IS NOT NULL
+            LIMIT 20000;
+        """
+        cursor.execute(query, (molecule, seuil_float))
+        return cursor.fetchall()
+
+    except sqlite3.Error as error:
+        print("Erreur SQL :", error)
+        return []
 
 # Entry point of this module.
 if __name__ == '__main__':

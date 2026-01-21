@@ -9,6 +9,7 @@ from filters import get_communes_conformites # fonction requête BDD dans fichie
 from filters import get_communes_dateprel # fonction requête BDD dans fichier filters
 from filters import get_molecules #fonction pour récuperer les paramètres
 from filters import get_refqual
+from filters import get_communes_by_parameter_value
 
 
 from PyQt5.QtWidgets import (
@@ -481,7 +482,7 @@ class MainWindow(QMainWindow):
 
         # Bouton
         self.button = QPushButton("Afficher la carte")
-        self.button.clicked.connect(self.update_map)
+        self.button.clicked.connect(self.update_map_with_parameter_value)
 
         # Ajout au layout
         col3_layout.addWidget(QLabel("Choisir une molécule :"))
@@ -580,6 +581,30 @@ class MainWindow(QMainWindow):
         self.worker = MapWorker(chimique, bacterio, ref_bact, ref_chim)
         self.worker.finished.connect(self.on_map_ready)
         self.worker.start()
+
+    def update_map_with_parameter_value(self):
+        molecule = self.combo_molecule.currentText()
+        seuil = self.manual_value_input.text().strip()
+
+        if molecule == "Sélectionner une molécule" or not seuil:
+            QMessageBox.warning(
+                self,
+                "Erreur",
+                "Veuillez sélectionner une molécule et saisir un seuil."
+            )
+            return
+
+        communes = get_communes_by_parameter_value(
+            self.cursor,
+            molecule,
+            seuil
+        )
+
+        create_map(communes)
+
+        self.lbl_count.setText(f"Nombre de communes : {len(communes)}")
+        self.load_map()
+
 
     def on_map_ready(self):
         self.load_map()
