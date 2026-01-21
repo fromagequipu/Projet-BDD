@@ -165,13 +165,12 @@ def create_map_from_communes(communes):
 class MapWorker(QThread):
     finished = pyqtSignal()
 
-    def __init__(self, chimique, bacterio, ref_bact, ref_chim, parametre):
+    def __init__(self, chimique, bacterio, ref_bact, ref_chim):
         super().__init__()
         self.chimique = chimique
         self.bacterio = bacterio
         self.ref_bact = ref_bact
         self.ref_chim = ref_chim
-        self.parametre = parametre
 
     def run(self):
         # Connexion BDD DANS le thread
@@ -188,11 +187,6 @@ class MapWorker(QThread):
         )
 
         self.last_communes = communes  
-        
-        parametres = get_molecules(
-            cursor,
-            self.parametre
-        )
         # Génération de la carte
         create_map(communes)
 
