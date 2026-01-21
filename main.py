@@ -359,7 +359,7 @@ class MainWindow(QMainWindow):
         statut_layout2 = QHBoxLayout()
         statut_layout2.addWidget(QLabel("Référence Bactériologique"))
 
-         # ----- BOUTON INFO -----
+        # ----- BOUTON INFO -----
         info_refbact = QToolButton()
         info_refbact.setToolButtonStyle(Qt.ToolButtonIconOnly)
 
@@ -371,10 +371,10 @@ class MainWindow(QMainWindow):
             QMessageBox.information(
                 None,
                 "Référence Bactériologique",
-                "Indicateur de la conformité des paramètres chimiques aux limites de qualité en vigueur au moment du prélèvement\n"
-                "pour le type d’eau considéré (et en prenant en compte les dérogations éventuelles en cours pour l'installation concernée).\n"
-                "Valeurs possibles : 'blanc', 'C=conforme', 'N=non conforme', 'D=conforme dans le cadre d’une dérogation','S (sans objet lorsqu'aucun paramètre chimique n'a été mesuré)'."
-            )
+                "Indicateur de la conformité des paramètres microbiologiques aux références de qualité en vigueur au moment du\n"
+                "prélèvement pour le type d’eau considéré.\n"
+                "Valeurs possibles : 'blanc', 'C=conforme', 'N=non conforme', 'S (sans objet lorsqu'aucun paramètre microbio n'a été mesuré)."
+                )
 
         info_refbact.clicked.connect(show_info)
 
@@ -383,15 +383,36 @@ class MainWindow(QMainWindow):
         statut_layout2.addWidget(self.radio_refbacteriologique1)
         col2_layout.addLayout(statut_layout2)
 
-        #self.combo_refchimie = QButtonGroup()
+         # ----- CONFORMITE REF PHYSICO-CHIMIQUE -----
+
         self.radio_refchimie = QCheckBox("Conforme")
         self.radio_refchimie1 = QCheckBox("Non conforme")
         statut_layout2 = QHBoxLayout()
         statut_layout2.addWidget(QLabel("Référence Physico-chimique"))
+        
+        # ----- BOUTON INFO -----
+        info_refchimie = QToolButton()
+        info_refchimie.setToolButtonStyle(Qt.ToolButtonIconOnly)
+
+        # Icône standard Qt
+        info_refchimie.setIcon(QApplication.style().standardIcon(QApplication.style().SP_MessageBoxInformation))
+        
+        # Fenêtre pop-up pour afficher l'information supplémentaire
+        def show_info():
+            QMessageBox.information(
+                None,
+                "Référence Physico-Chimique",
+                "Indicateur de la conformité des paramètres chimiques aux références de qualité en vigueur au moment du prélèvement\n"
+                "pour le type d’eau considéré.\n"
+                "Valeurs possibles : 'blanc', 'C=conforme', 'N=non conforme', 'S (sans objet lorsqu'aucun paramètre chimique n'a été mesuré)'."
+            )
+
+        info_refchimie.clicked.connect(show_info)
+
+        statut_layout2.addWidget(info_refchimie)
         statut_layout2.addWidget(self.radio_refchimie)
         statut_layout2.addWidget(self.radio_refchimie1)
-        #self.combo_refchimie.addButton(self.radio_refchimie)
-        #self.combo_refchimie.addButton(self.radio_refchimie1)
+
         col2_layout.addLayout(statut_layout2)
 
         # Bouton pour actualiser la carte avec les conformités sélectionnées
