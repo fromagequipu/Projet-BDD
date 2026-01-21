@@ -7,6 +7,8 @@ import time
 from folium.plugins import MarkerCluster
 from filters import get_communes_conformites # fonction requête BDD dans fichier filters
 from filters import get_communes_dateprel # fonction requête BDD dans fichier filters
+from filters import get_molecules #fonction pour récuperer les paramètres
+
 
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget,
@@ -162,12 +164,13 @@ def create_map_from_communes(communes):
 class MapWorker(QThread):
     finished = pyqtSignal()
 
-    def __init__(self, chimique, bacterio, ref_bact, ref_chim):
+    def __init__(self, chimique, bacterio, ref_bact, ref_chim, parametre):
         super().__init__()
         self.chimique = chimique
         self.bacterio = bacterio
         self.ref_bact = ref_bact
         self.ref_chim = ref_chim
+        self.parametre = parametre
 
     def run(self):
         # Connexion BDD DANS le thread
@@ -184,6 +187,11 @@ class MapWorker(QThread):
         )
 
         self.last_communes = communes  
+        
+        parametres = get_molecules(
+            cursor,
+            self.parametre
+        )
         # Génération de la carte
         create_map(communes)
 
@@ -337,14 +345,15 @@ class MainWindow(QMainWindow):
         box3 = QGroupBox("Molécules")
         box3.setLayout(col3_layout)
         box3.setMaximumWidth(650)
+        
+        # Récupération des molécules depuis la BDD
+        parametres = get_molecules(self.cursor)
 
         # Menu déroulant des molécules
         self.combo_molecule = QComboBox()
-        self.combo_molecule.addItems([
-            "Nitrate",
-            "Phosphate",
-            "pH"
-        ])
+        self.combo_molecule.addItem("Sélectionner une molécule")
+        self.combo_molecule.addItems(parametres)
+
 
         # Zone de texte pour la valeur
         self.value_input = QLineEdit()
