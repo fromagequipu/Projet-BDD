@@ -67,10 +67,10 @@ def get_communes_conformites(cursor, chimique, bacterio, ref_bact, ref_chim):
         return []
 
 # Filtre 2 : Récupère les communes en fonction d'une date de prélèvement  
-def get_communes_dateprel(cursor, dateprel):
+def get_communes_dateprel(cursor, date_start, date_end):
     """
-    Retourne les communes ayant un prélèvement à une date donnée
-    (coordonnées incluses pour affichage sur carte)
+    Retourne les communes ayant au moins un prélèvement
+    dans l'intervalle de dates donné
     """
     try:
         query = """
@@ -81,14 +81,15 @@ def get_communes_dateprel(cursor, dateprel):
                 c.lon
             FROM Commune c
             JOIN Prelevement p ON p.cdreseau = c.cdreseau
-            WHERE p.dateprel = ?
+            WHERE p.dateprel BETWEEN ? AND ?
+            LIMIT 20000;
         """
-        cursor.execute(query, (dateprel,))
+        cursor.execute(query, (date_start, date_end))
         return cursor.fetchall()
 
     except sqlite3.Error as error:
         print("Erreur SQL :", error)
-        return None
+        return []
 
 
 #Filtre n°5 : Récuperation des molécules
