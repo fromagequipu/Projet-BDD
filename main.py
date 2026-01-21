@@ -8,6 +8,7 @@ from folium.plugins import MarkerCluster
 from filters import get_communes_conformites # fonction requête BDD dans fichier filters
 from filters import get_communes_dateprel # fonction requête BDD dans fichier filters
 from filters import get_molecules #fonction pour récuperer les paramètres
+from filters import get_refqual
 
 
 from PyQt5.QtWidgets import (
@@ -365,6 +366,12 @@ class MainWindow(QMainWindow):
             "< 0.1", "< 0.5", "> 1", "> 5"
         ]
 
+        #Partie pour le remplissage automatique du champ refqual suivant la molécule choisit
+        self.value_input = QLineEdit()
+        self.value_input.setReadOnly(True)
+        self.value_input.setPlaceholderText("Valeur réglementaire")
+        self.combo_molecule.currentTextChanged.connect(self.update_refqual)
+        
         completer = QCompleter(suggestions)
         completer.setCaseSensitivity(Qt.CaseInsensitive)
         completer.setFilterMode(Qt.MatchContains)
@@ -417,6 +424,14 @@ class MainWindow(QMainWindow):
     def load_map(self):
         path = os.path.abspath(MAP_FILE)
         self.browser.load(QUrl.fromLocalFile(path))
+        
+    def update_refqual(self, parametre):
+        if parametre == "Sélectionner une molécule":
+            self.value_input.clear()
+            return
+        refqual = get_refqual(self.cursor, parametre)
+        self.value_input.setText(refqual)
+        
 
     def update_map(self):
         insee_code = self.combo_ville.currentData()

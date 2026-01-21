@@ -111,9 +111,6 @@ def get_molecules(cursor):
         print("Erreur SQL :", error)
         return None
 
-
-
-
 # Filtre 3 : Récupère les communes en fonction d'un paramètre et de sa valeur
 def get_communes_parametre(cursor,param,valeur):
     """Returns all the associations from the database.
@@ -142,6 +139,28 @@ def get_communes_parametre(cursor,param,valeur):
         return None
     print("Le resultat est", row)
     return row
+
+#Filtre n°6
+def get_refqual(cursor, parametre):
+    """
+    Retourne la valeur réglementaire (refqual) associée à une molécule
+    """
+    try:
+        query = """
+            SELECT DISTINCT pa.refqual
+            FROM Parametre pa
+            WHERE pa.libminparametre = ?
+              AND pa.refqual IS NOT NULL
+            LIMIT 1
+        """
+        cursor.execute(query, (parametre,))
+        row = cursor.fetchone()
+        return row[0] if row else ""
+
+    except sqlite3.Error as error:
+        print("Erreur SQL :", error)
+        return ""
+
 
 
 # Entry point of this module.
