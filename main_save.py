@@ -269,23 +269,28 @@ class MainWindow(QMainWindow):
         self.button1 = QPushButton("Afficher la carte")
         self.button1.clicked.connect(self.update_map)
         
-        self.date_edit = QDateEdit()
-        self.date_edit.setCalendarPopup(True)
+        self.date_start = QDateEdit()
+        self.date_start.setCalendarPopup(True)
+        self.date_start.setMinimumDate(QDate(2024, 1, 1))
+        self.date_start.setMaximumDate(QDate(2024, 12, 31))
+        self.date_start.setDate(QDate(2024, 1, 1))
+        self.date_start.setDisplayFormat("dd-MM-yyyy")
 
-        # Limitation à l'année 2024 (COLONNE 1)
-        self.date_edit.setMinimumDate(QDate(2024, 1, 1))
-        self.date_edit.setMaximumDate(QDate(2024, 12, 31))
+        self.date_end = QDateEdit()
+        self.date_end.setCalendarPopup(True)
+        self.date_end.setMinimumDate(QDate(2024, 1, 1))
+        self.date_end.setMaximumDate(QDate(2024, 12, 31))
+        self.date_end.setDate(QDate(2024, 12, 31))
+        self.date_end.setDisplayFormat("dd-MM-yyyy")
 
-        # Date par défaut
-        self.date_edit.setDate(QDate(2024, 1, 1))
+        col1_layout.addWidget(QLabel("Date début :"))
+        col1_layout.addWidget(self.date_start)
 
-        # Format d'affichage (optionnel mais recommandé)
-        self.date_edit.setDisplayFormat("dd-MM-yyyy")
-        
-        col1_layout.addWidget(QLabel(""))
-        col1_layout.addWidget(self.date_edit)
-        col1_layout.addWidget(QLabel(""))
+        col1_layout.addWidget(QLabel("Date fin :"))
+        col1_layout.addWidget(self.date_end)
+
         col1_layout.addWidget(self.button1)
+        
 
 
         # -------------------------
@@ -534,11 +539,10 @@ class MainWindow(QMainWindow):
     def update_map(self):
         insee_code = self.combo_ville.currentData()
         create_map([])
-        # Récupération de la date choisie
-        date_str = self.date_edit.date().toString("dd-MM-yyyy")
+        date_start = self.date_start.date().toString("dd-MM-yyyy")
+        date_end = self.date_end.date().toString("dd-MM-yyyy")
 
-        # Appel BDD → communes EST DÉFINI ICI
-        communes = get_communes_dateprel(self.cursor, date_str)
+        communes = get_communes_dateprel(self.cursor, date_start, date_end)
 
         # Sécurité si la requête retourne None
         if communes is None:

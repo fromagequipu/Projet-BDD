@@ -163,6 +163,24 @@ def get_refqual(cursor, parametre):
         return ""
 
 
+def get_communes_by_parameter_value(cursor, molecule, seuil):
+    # On tente de convertir le seuil en nombre pour la comparaison SQL
+    try:
+        seuil_float = float(seuil.replace('<', '').replace('>', '').strip())
+    except ValueError:
+        seuil_float = 0.0
+
+    query = """
+        SELECT DISTINCT c.inseecommune, c.nomcommune, c.lat, c.lon, r.rs_resultat_nombre
+        FROM Commune c
+        JOIN Resultat r ON c.inseecommune = r.inseecommune
+        JOIN Parametre p ON r.code_parametre = p.code_parametre
+        WHERE p.libminparametre = ? 
+          AND r.rs_resultat_nombre >= ?
+          AND c.lat IS NOT NULL
+    """
+    cursor.execute(query, (molecule, seuil_float))
+    return cursor.fetchall()
 
 # Entry point of this module.
 if __name__ == '__main__':
