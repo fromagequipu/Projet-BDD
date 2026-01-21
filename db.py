@@ -1,9 +1,9 @@
-# CREATION BDD
+# FICHIER DE CREATION DE NOTRE BDD
 
-### BIBLIOTHEQUES ###
+### BIBLIOTHEQUE : SQL ###
 import sqlite3
-import utils
 
+# Création de la BDD 
 def create_database(conn, cursor):
     """Creates the WaterQuality database
 
@@ -35,8 +35,8 @@ def create_database(conn, cursor):
         )
         ''')
 
-        # Création de la table commune (attribut zone temporairement en texte pour voir délimitaion des communes)
-        # Contient les communes
+        # Création de la table commune
+        # Contient les communes et leurs coordonnées
         print("CREATION TABLE COMMUNE")
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Commune(
@@ -67,7 +67,7 @@ def create_database(conn, cursor):
         ''')
 
         # Création de la table paramètre
-        # Contient les paramètres de qualité
+        # Contient les paramètres de qualité relevés lors des prévèlements
         print("CREATION TABLE PARAMETRE")
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Parametre(
