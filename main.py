@@ -15,7 +15,8 @@ from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget,
     QVBoxLayout, QHBoxLayout, QLabel,
     QComboBox, QPushButton, QDateEdit, QGroupBox,
-    QButtonGroup, QRadioButton, QCheckBox, QLineEdit, QCompleter
+    QButtonGroup, QRadioButton, QCheckBox, QLineEdit, QCompleter,
+    QToolButton, QMessageBox
 )
 from PyQt5.QtCore import QUrl, QDate, Qt, QThread, pyqtSignal
 from PyQt5.QtWebEngineWidgets import QWebEngineView
@@ -222,10 +223,11 @@ class MainWindow(QMainWindow):
         
         #Layout choix ville
         ville_layout = QHBoxLayout()
-        main_layout.addLayout(ville_layout)
         ville_layout.setAlignment(Qt.AlignCenter)
         boxville = QGroupBox("")
         boxville.setLayout(ville_layout)
+
+        main_layout.addWidget(boxville)  
         
         self.combo_ville = QComboBox()
         
@@ -284,48 +286,66 @@ class MainWindow(QMainWindow):
         box2 = QGroupBox("Conformité")
         box2.setLayout(col2_layout)
 
-        self.combo_conformite = QButtonGroup()
+        #self.combo_conformite = QButtonGroup()
         self.radio_bacterio = QCheckBox("Conforme")
         self.radio_bacterio1 = QCheckBox("Non conforme")
-        self.combo_conformite.addButton(self.radio_bacterio)
-        self.combo_conformite.addButton(self.radio_bacterio1)
+        #self.combo_conformite.addButton(self.radio_bacterio)
+        #self.combo_conformite.addButton(self.radio_bacterio1)
+
+        label_bacterio = QLabel("Limite Bactériologique")
+        info_bacterio = QToolButton()
+        info_bacterio.setIcon(QIcon.fromTheme("help-about"))
+        
+        def show_info():
+            QMessageBox.information(
+                None,
+                "Limite Bactériologique",
+                "Indicateur de la conformité des paramètres microbiologiques aux limites de qualité en vigueur au moment du\n"
+                "prélèvement pour le type d’eau considéré.\n"
+                "Valeurs possibles : 'blanc', 'C=conforme', 'N=non conforme', 'S' (sans objet lorsqu'aucun paramètre microbio n'a été mesuré)."
+            )
+
+        info_bacterio.clicked.connect(show_info)
+
         statut_layout = QHBoxLayout()
-        statut_layout.addWidget(QLabel("Limite Bactériologique"))
+    
+        statut_layout.addWidget(label_bacterio)
         statut_layout.addWidget(self.radio_bacterio)
         statut_layout.addWidget(self.radio_bacterio1)
+
         col2_layout.addLayout(statut_layout)
 
-        self.combo_categorie = QButtonGroup()
+        #self.combo_categorie = QButtonGroup()
         self.radio_chimie = QCheckBox("Conforme")
         self.radio_chimie1 = QCheckBox("Non conforme")
         statut_layout2 = QHBoxLayout()
         statut_layout2.addWidget(QLabel("Limite Physico-chimique"))
         statut_layout2.addWidget(self.radio_chimie)
         statut_layout2.addWidget(self.radio_chimie1)
-        self.combo_categorie.addButton(self.radio_chimie)
-        self.combo_categorie.addButton(self.radio_chimie1)
+        #self.combo_categorie.addButton(self.radio_chimie)
+        #self.combo_categorie.addButton(self.radio_chimie1)
         col2_layout.addLayout(statut_layout2)
 
-        self.combo_refbacteriologique = QButtonGroup()
+        #self.combo_refbacteriologique = QButtonGroup()
         self.radio_refbacteriologique = QCheckBox("Conforme")
         self.radio_refbacteriologique1 = QCheckBox("Non conforme")
         statut_layout2 = QHBoxLayout()
         statut_layout2.addWidget(QLabel("Référence Bactériologique"))
         statut_layout2.addWidget(self.radio_refbacteriologique)
         statut_layout2.addWidget(self.radio_refbacteriologique1)
-        self.combo_refbacteriologique.addButton(self.radio_refbacteriologique)
-        self.combo_refbacteriologique.addButton(self.radio_refbacteriologique1)
+        #self.combo_refbacteriologique.addButton(self.radio_refbacteriologique)
+        #self.combo_refbacteriologique.addButton(self.radio_refbacteriologique1)
         col2_layout.addLayout(statut_layout2)
 
-        self.combo_refchimie = QButtonGroup()
+        #self.combo_refchimie = QButtonGroup()
         self.radio_refchimie = QCheckBox("Conforme")
         self.radio_refchimie1 = QCheckBox("Non conforme")
         statut_layout2 = QHBoxLayout()
         statut_layout2.addWidget(QLabel("Référence Physico-chimique"))
         statut_layout2.addWidget(self.radio_refchimie)
         statut_layout2.addWidget(self.radio_refchimie1)
-        self.combo_refchimie.addButton(self.radio_refchimie)
-        self.combo_refchimie.addButton(self.radio_refchimie1)
+        #self.combo_refchimie.addButton(self.radio_refchimie)
+        #self.combo_refchimie.addButton(self.radio_refchimie1)
         col2_layout.addLayout(statut_layout2)
 
         # Bouton pour actualiser la carte avec les conformités sélectionnées
