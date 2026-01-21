@@ -9,13 +9,15 @@ from filters import get_communes_conformites # fonction requête BDD dans fichie
 from filters import get_communes_dateprel # fonction requête BDD dans fichier filters
 from filters import get_molecules #fonction pour récuperer les paramètres
 from filters import get_refqual
+from filters import get_communes_by_parameter_value
 
 
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget,
     QVBoxLayout, QHBoxLayout, QLabel,
     QComboBox, QPushButton, QDateEdit, QGroupBox,
-    QButtonGroup, QRadioButton, QCheckBox, QLineEdit, QCompleter
+    QButtonGroup, QRadioButton, QCheckBox, QLineEdit, QCompleter,
+    QToolButton, QMessageBox
 )
 from PyQt5.QtCore import QUrl, QDate, Qt, QThread, pyqtSignal
 from PyQt5.QtWebEngineWidgets import QWebEngineView
@@ -222,10 +224,11 @@ class MainWindow(QMainWindow):
         
         #Layout choix ville
         ville_layout = QHBoxLayout()
-        main_layout.addLayout(ville_layout)
         ville_layout.setAlignment(Qt.AlignCenter)
         boxville = QGroupBox("")
         boxville.setLayout(ville_layout)
+
+        main_layout.addWidget(boxville)  
         
         self.combo_ville = QComboBox()
         
@@ -267,14 +270,28 @@ class MainWindow(QMainWindow):
         self.button1 = QPushButton("Afficher la carte")
         self.button1.clicked.connect(self.update_map)
         
-        self.date_edit = QDateEdit()
-        self.date_edit.setCalendarPopup(True)
-        self.date_edit.setDate(QDate.currentDate())
-        
-        col1_layout.addWidget(QLabel(""))
-        col1_layout.addWidget(self.date_edit)
-        col1_layout.addWidget(QLabel(""))
+        self.date_start = QDateEdit()
+        self.date_start.setCalendarPopup(True)
+        self.date_start.setMinimumDate(QDate(2024, 1, 1))
+        self.date_start.setMaximumDate(QDate(2024, 12, 31))
+        self.date_start.setDate(QDate(2024, 1, 1))
+        self.date_start.setDisplayFormat("dd-MM-yyyy")
+
+        self.date_end = QDateEdit()
+        self.date_end.setCalendarPopup(True)
+        self.date_end.setMinimumDate(QDate(2024, 1, 1))
+        self.date_end.setMaximumDate(QDate(2024, 12, 31))
+        self.date_end.setDate(QDate(2024, 12, 31))
+        self.date_end.setDisplayFormat("dd-MM-yyyy")
+
+        col1_layout.addWidget(QLabel("Date début :"))
+        col1_layout.addWidget(self.date_start)
+
+        col1_layout.addWidget(QLabel("Date fin :"))
+        col1_layout.addWidget(self.date_end)
+
         col1_layout.addWidget(self.button1)
+        
 
 
         # -------------------------
@@ -284,48 +301,133 @@ class MainWindow(QMainWindow):
         box2 = QGroupBox("Conformité")
         box2.setLayout(col2_layout)
 
-        self.combo_conformite = QButtonGroup()
+        # ----- CONFORMITE BACTERIOLOGIQUE -----
+
         self.radio_bacterio = QCheckBox("Conforme")
         self.radio_bacterio1 = QCheckBox("Non conforme")
-        self.combo_conformite.addButton(self.radio_bacterio)
-        self.combo_conformite.addButton(self.radio_bacterio1)
+
+        label_bacterio = QLabel("Limite Bactériologique")
+
+        # ----- BOUTON INFO -----
+        info_bacterio = QToolButton()
+        info_bacterio.setToolButtonStyle(Qt.ToolButtonIconOnly)
+
+        # Icône standard Qt
+        info_bacterio.setIcon(QApplication.style().standardIcon(QApplication.style().SP_MessageBoxInformation))
+        
+        # Fenêtre pop-up pour afficher l'information supplémentaire
+        def show_info():
+            QMessageBox.information(
+                None,
+                "Limite Bactériologique",
+                "Indicateur de la conformité des paramètres microbiologiques aux limites de qualité en vigueur au moment du\n"
+                "prélèvement pour le type d’eau considéré.\n"
+                "Valeurs possibles : 'blanc', 'C=conforme', 'N=non conforme', 'S' (sans objet lorsqu'aucun paramètre microbio n'a été mesuré)."
+            )
+
+        info_bacterio.clicked.connect(show_info)
+
+
         statut_layout = QHBoxLayout()
-        statut_layout.addWidget(QLabel("Limite Bactériologique"))
+        statut_layout.addWidget(label_bacterio)
+        statut_layout.addWidget(info_bacterio) # icône info
         statut_layout.addWidget(self.radio_bacterio)
         statut_layout.addWidget(self.radio_bacterio1)
+
         col2_layout.addLayout(statut_layout)
 
-        self.combo_categorie = QButtonGroup()
+        # ----- CONFORMITE PHYSICO-CHIMIQUE -----
+
         self.radio_chimie = QCheckBox("Conforme")
         self.radio_chimie1 = QCheckBox("Non conforme")
         statut_layout2 = QHBoxLayout()
         statut_layout2.addWidget(QLabel("Limite Physico-chimique"))
+
+        # ----- BOUTON INFO -----
+        info_chimie = QToolButton()
+        info_chimie.setToolButtonStyle(Qt.ToolButtonIconOnly)
+
+        # Icône standard Qt
+        info_chimie.setIcon(QApplication.style().standardIcon(QApplication.style().SP_MessageBoxInformation))
+        
+        # Fenêtre pop-up pour afficher l'information supplémentaire
+        def show_info():
+            QMessageBox.information(
+                None,
+                "Limite Physico-chimique",
+                "Indicateur de la conformité des paramètres chimiques aux limites de qualité en vigueur au moment du prélèvement\n"
+                "pour le type d’eau considéré (et en prenant en compte les dérogations éventuelles en cours pour l'installation concernée).\n"
+                "Valeurs possibles : 'blanc', 'C=conforme', 'N=non conforme', 'D=conforme dans le cadre d’une dérogation','S (sans objet lorsqu'aucun paramètre chimique n'a été mesuré)'."
+            )
+
+        info_chimie.clicked.connect(show_info)
+
+        statut_layout2.addWidget(info_chimie)
         statut_layout2.addWidget(self.radio_chimie)
         statut_layout2.addWidget(self.radio_chimie1)
-        self.combo_categorie.addButton(self.radio_chimie)
-        self.combo_categorie.addButton(self.radio_chimie1)
         col2_layout.addLayout(statut_layout2)
 
-        self.combo_refbacteriologique = QButtonGroup()
+        # ----- CONFORMITE REF BACTERIOLOGIQUE -----
+
         self.radio_refbacteriologique = QCheckBox("Conforme")
         self.radio_refbacteriologique1 = QCheckBox("Non conforme")
         statut_layout2 = QHBoxLayout()
         statut_layout2.addWidget(QLabel("Référence Bactériologique"))
+
+        # ----- BOUTON INFO -----
+        info_refbact = QToolButton()
+        info_refbact.setToolButtonStyle(Qt.ToolButtonIconOnly)
+
+        # Icône standard Qt
+        info_refbact.setIcon(QApplication.style().standardIcon(QApplication.style().SP_MessageBoxInformation))
+        
+        # Fenêtre pop-up pour afficher l'information supplémentaire
+        def show_info():
+            QMessageBox.information(
+                None,
+                "Référence Bactériologique",
+                "Indicateur de la conformité des paramètres microbiologiques aux références de qualité en vigueur au moment du\n"
+                "prélèvement pour le type d’eau considéré.\n"
+                "Valeurs possibles : 'blanc', 'C=conforme', 'N=non conforme', 'S (sans objet lorsqu'aucun paramètre microbio n'a été mesuré)."
+                )
+
+        info_refbact.clicked.connect(show_info)
+
+        statut_layout2.addWidget(info_refbact)
         statut_layout2.addWidget(self.radio_refbacteriologique)
         statut_layout2.addWidget(self.radio_refbacteriologique1)
-        self.combo_refbacteriologique.addButton(self.radio_refbacteriologique)
-        self.combo_refbacteriologique.addButton(self.radio_refbacteriologique1)
         col2_layout.addLayout(statut_layout2)
 
-        self.combo_refchimie = QButtonGroup()
+         # ----- CONFORMITE REF PHYSICO-CHIMIQUE -----
+
         self.radio_refchimie = QCheckBox("Conforme")
         self.radio_refchimie1 = QCheckBox("Non conforme")
         statut_layout2 = QHBoxLayout()
         statut_layout2.addWidget(QLabel("Référence Physico-chimique"))
+        
+        # ----- BOUTON INFO -----
+        info_refchimie = QToolButton()
+        info_refchimie.setToolButtonStyle(Qt.ToolButtonIconOnly)
+
+        # Icône standard Qt
+        info_refchimie.setIcon(QApplication.style().standardIcon(QApplication.style().SP_MessageBoxInformation))
+        
+        # Fenêtre pop-up pour afficher l'information supplémentaire
+        def show_info():
+            QMessageBox.information(
+                None,
+                "Référence Physico-Chimique",
+                "Indicateur de la conformité des paramètres chimiques aux références de qualité en vigueur au moment du prélèvement\n"
+                "pour le type d’eau considéré.\n"
+                "Valeurs possibles : 'blanc', 'C=conforme', 'N=non conforme', 'S (sans objet lorsqu'aucun paramètre chimique n'a été mesuré)'."
+            )
+
+        info_refchimie.clicked.connect(show_info)
+
+        statut_layout2.addWidget(info_refchimie)
         statut_layout2.addWidget(self.radio_refchimie)
         statut_layout2.addWidget(self.radio_refchimie1)
-        self.combo_refchimie.addButton(self.radio_refchimie)
-        self.combo_refchimie.addButton(self.radio_refchimie1)
+
         col2_layout.addLayout(statut_layout2)
 
         # Bouton pour actualiser la carte avec les conformités sélectionnées
@@ -343,7 +445,7 @@ class MainWindow(QMainWindow):
         
         # Récupération des molécules depuis la BDD
         parametres = get_molecules(self.cursor)
-
+        parametres.sort()
         # Menu déroulant des molécules
         self.combo_molecule = QComboBox()
         self.combo_molecule.addItem("Sélectionner une molécule")
@@ -371,11 +473,16 @@ class MainWindow(QMainWindow):
         completer.setFilterMode(Qt.MatchContains)
 
         self.value_input.setCompleter(completer)
+        
+        
+        self.manual_value_input = QLineEdit()
+        self.manual_value_input.setPlaceholderText("Entrer votre propre seuil")
+        
         # -----------------------
 
         # Bouton
         self.button = QPushButton("Afficher la carte")
-        self.button.clicked.connect(self.update_map)
+        self.button.clicked.connect(self.update_map_with_parameter_value)
 
         # Ajout au layout
         col3_layout.addWidget(QLabel("Choisir une molécule :"))
@@ -383,6 +490,9 @@ class MainWindow(QMainWindow):
 
         col3_layout.addWidget(QLabel("Valeur :"))
         col3_layout.addWidget(self.value_input)
+        
+        col3_layout.addWidget(QLabel("Saisir un seuil personnalisé :"))
+        col3_layout.addWidget(self.manual_value_input)
 
         col3_layout.addStretch()
         col3_layout.addWidget(self.button)
@@ -430,11 +540,10 @@ class MainWindow(QMainWindow):
     def update_map(self):
         insee_code = self.combo_ville.currentData()
         create_map([])
-        # Récupération de la date choisie
-        date_str = self.date_edit.date().toString("dd-MM-yyyy")
+        date_start = self.date_start.date().toString("dd-MM-yyyy")
+        date_end = self.date_end.date().toString("dd-MM-yyyy")
 
-        # Appel BDD → communes EST DÉFINI ICI
-        communes = get_communes_dateprel(self.cursor, date_str)
+        communes = get_communes_dateprel(self.cursor, date_start, date_end)
 
         # Sécurité si la requête retourne None
         if communes is None:
@@ -472,6 +581,30 @@ class MainWindow(QMainWindow):
         self.worker = MapWorker(chimique, bacterio, ref_bact, ref_chim)
         self.worker.finished.connect(self.on_map_ready)
         self.worker.start()
+
+    def update_map_with_parameter_value(self):
+        molecule = self.combo_molecule.currentText()
+        seuil = self.manual_value_input.text().strip()
+
+        if molecule == "Sélectionner une molécule" or not seuil:
+            QMessageBox.warning(
+                self,
+                "Erreur",
+                "Veuillez sélectionner une molécule et saisir un seuil."
+            )
+            return
+
+        communes = get_communes_by_parameter_value(
+            self.cursor,
+            molecule,
+            seuil
+        )
+
+        create_map(communes)
+
+        self.lbl_count.setText(f"Nombre de communes : {len(communes)}")
+        self.load_map()
+
 
     def on_map_ready(self):
         self.load_map()
