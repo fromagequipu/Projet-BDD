@@ -210,7 +210,7 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle("Water Quality")
         self.setWindowIcon(QIcon("logo.png"))
-        self.resize(1600, 850)
+        self.resize(1650, 900)
 
         central = QWidget()
         self.setCentralWidget(central)
@@ -439,7 +439,7 @@ class MainWindow(QMainWindow):
         # COLONNE 3 - Paramètres
         # -------------------------
         col3_layout = QVBoxLayout()
-        box3 = QGroupBox("Molécules")
+        box3 = QGroupBox("Parametres")
         box3.setLayout(col3_layout)
         box3.setMaximumWidth(650)
         
@@ -448,7 +448,7 @@ class MainWindow(QMainWindow):
         parametres.sort()
         # Menu déroulant des molécules
         self.combo_molecule = QComboBox()
-        self.combo_molecule.addItem("Sélectionner une molécule")
+        self.combo_molecule.addItem("Sélectionner un parametre")
         self.combo_molecule.addItems(parametres)
 
 
@@ -465,7 +465,7 @@ class MainWindow(QMainWindow):
         #Partie pour le remplissage automatique du champ refqual suivant la molécule choisit
         self.value_input = QLineEdit()
         self.value_input.setReadOnly(True)
-        self.value_input.setPlaceholderText("Valeur réglementaire")
+        self.value_input.setPlaceholderText("Valeur de référence")
         self.combo_molecule.currentTextChanged.connect(self.update_refqual)
         
         completer = QCompleter(suggestions)
@@ -476,7 +476,26 @@ class MainWindow(QMainWindow):
         
         
         self.manual_value_input = QLineEdit()
-        self.manual_value_input.setPlaceholderText("Entrer votre propre seuil")
+        self.manual_value_input.setPlaceholderText("Entrer la valeur personnalisée")
+        
+        # RADIO BUTTONS COMPARAISON
+# -----------------------
+        self.radio_sup = QRadioButton("Supérieur à")
+        self.radio_inf = QRadioButton("Inférieur à")
+        self.radio_eq = QRadioButton("Égal à")
+
+        # Groupe pour forcer un seul choix
+        self.group_comparaison = QButtonGroup(self)
+        self.group_comparaison.addButton(self.radio_sup)
+        self.group_comparaison.addButton(self.radio_inf)
+        self.group_comparaison.addButton(self.radio_eq)
+        radio_layout = QHBoxLayout()
+        radio_layout.addWidget(self.radio_sup)
+        radio_layout.addWidget(self.radio_eq)
+        radio_layout.addWidget(self.radio_inf)
+
+        # Valeur par défaut
+        self.radio_sup.setChecked(True)
         
         # -----------------------
 
@@ -485,19 +504,20 @@ class MainWindow(QMainWindow):
         self.button.clicked.connect(self.update_map_with_parameter_value)
 
         # Ajout au layout
-        col3_layout.addWidget(QLabel("Choisir une molécule :"))
+        col3_layout.addWidget(QLabel("Choisir un parametre :"))
         col3_layout.addWidget(self.combo_molecule)
 
-        col3_layout.addWidget(QLabel("Valeur :"))
+        col3_layout.addWidget(QLabel("Valeur de référence:"))
         col3_layout.addWidget(self.value_input)
         
-        col3_layout.addWidget(QLabel("Saisir un seuil personnalisé :"))
+        col3_layout.addWidget(QLabel("Saisir la valeur personnalisée :"))
         col3_layout.addWidget(self.manual_value_input)
 
         col3_layout.addStretch()
         col3_layout.addWidget(self.button)
 
-
+        col3_layout.addWidget(QLabel("Condition sur la valeur :"))
+        col3_layout.addLayout(radio_layout)
 
         # Ajout des colonnes
         top_layout.addWidget(box1)
@@ -586,24 +606,33 @@ class MainWindow(QMainWindow):
         molecule = self.combo_molecule.currentText()
         seuil = self.manual_value_input.text().strip()
 
-        if molecule == "Sélectionner une molécule" or not seuil:
+        if molecule == "Sélectionner un parametre" or not seuil:
             QMessageBox.warning(
                 self,
                 "Erreur",
-                "Veuillez sélectionner une molécule et saisir un seuil."
+                "Veuillez sélectionner un paramètre et saisir une valeur."
             )
             return
+
+        # Détermination de l'opérateur selon le radio bouton
+        if self.radio_sup.isChecked():
+            operator = ">"
+        elif self.radio_inf.isChecked():
+            operator = "<"
+        else:
+            operator = "="
 
         communes = get_communes_by_parameter_value(
             self.cursor,
             molecule,
-            seuil
+            seuil,
+            operator
         )
 
         create_map(communes)
-
         self.lbl_count.setText(f"Nombre de communes : {len(communes)}")
         self.load_map()
+
 
 
     def on_map_ready(self):
