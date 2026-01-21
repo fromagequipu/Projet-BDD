@@ -271,7 +271,16 @@ class MainWindow(QMainWindow):
         
         self.date_edit = QDateEdit()
         self.date_edit.setCalendarPopup(True)
-        self.date_edit.setDate(QDate.currentDate())
+
+        # Limitation à l'année 2024 (COLONNE 1)
+        self.date_edit.setMinimumDate(QDate(2024, 1, 1))
+        self.date_edit.setMaximumDate(QDate(2024, 12, 31))
+
+        # Date par défaut
+        self.date_edit.setDate(QDate(2024, 1, 1))
+
+        # Format d'affichage (optionnel mais recommandé)
+        self.date_edit.setDisplayFormat("dd-MM-yyyy")
         
         col1_layout.addWidget(QLabel(""))
         col1_layout.addWidget(self.date_edit)
