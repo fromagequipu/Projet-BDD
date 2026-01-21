@@ -15,7 +15,8 @@ from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget,
     QVBoxLayout, QHBoxLayout, QLabel,
     QComboBox, QPushButton, QDateEdit, QGroupBox,
-    QButtonGroup, QRadioButton, QCheckBox, QLineEdit, QCompleter
+    QButtonGroup, QRadioButton, QCheckBox, QLineEdit, QCompleter,
+    QToolButton, QMessageBox
 )
 from PyQt5.QtCore import QUrl, QDate, Qt, QThread, pyqtSignal
 from PyQt5.QtWebEngineWidgets import QWebEngineView
@@ -222,10 +223,11 @@ class MainWindow(QMainWindow):
         
         #Layout choix ville
         ville_layout = QHBoxLayout()
-        main_layout.addLayout(ville_layout)
         ville_layout.setAlignment(Qt.AlignCenter)
         boxville = QGroupBox("")
         boxville.setLayout(ville_layout)
+
+        main_layout.addWidget(boxville)  
         
         self.combo_ville = QComboBox()
         
@@ -269,7 +271,16 @@ class MainWindow(QMainWindow):
         
         self.date_edit = QDateEdit()
         self.date_edit.setCalendarPopup(True)
-        self.date_edit.setDate(QDate.currentDate())
+
+        # Limitation à l'année 2024 (COLONNE 1)
+        self.date_edit.setMinimumDate(QDate(2024, 1, 1))
+        self.date_edit.setMaximumDate(QDate(2024, 12, 31))
+
+        # Date par défaut
+        self.date_edit.setDate(QDate(2024, 1, 1))
+
+        # Format d'affichage (optionnel mais recommandé)
+        self.date_edit.setDisplayFormat("dd-MM-yyyy")
         
         col1_layout.addWidget(QLabel(""))
         col1_layout.addWidget(self.date_edit)
@@ -284,48 +295,133 @@ class MainWindow(QMainWindow):
         box2 = QGroupBox("Conformité")
         box2.setLayout(col2_layout)
 
-        self.combo_conformite = QButtonGroup()
+        # ----- CONFORMITE BACTERIOLOGIQUE -----
+
         self.radio_bacterio = QCheckBox("Conforme")
         self.radio_bacterio1 = QCheckBox("Non conforme")
-        self.combo_conformite.addButton(self.radio_bacterio)
-        self.combo_conformite.addButton(self.radio_bacterio1)
+
+        label_bacterio = QLabel("Limite Bactériologique")
+
+        # ----- BOUTON INFO -----
+        info_bacterio = QToolButton()
+        info_bacterio.setToolButtonStyle(Qt.ToolButtonIconOnly)
+
+        # Icône standard Qt
+        info_bacterio.setIcon(QApplication.style().standardIcon(QApplication.style().SP_MessageBoxInformation))
+        
+        # Fenêtre pop-up pour afficher l'information supplémentaire
+        def show_info():
+            QMessageBox.information(
+                None,
+                "Limite Bactériologique",
+                "Indicateur de la conformité des paramètres microbiologiques aux limites de qualité en vigueur au moment du\n"
+                "prélèvement pour le type d’eau considéré.\n"
+                "Valeurs possibles : 'blanc', 'C=conforme', 'N=non conforme', 'S' (sans objet lorsqu'aucun paramètre microbio n'a été mesuré)."
+            )
+
+        info_bacterio.clicked.connect(show_info)
+
+
         statut_layout = QHBoxLayout()
-        statut_layout.addWidget(QLabel("Limite Bactériologique"))
+        statut_layout.addWidget(label_bacterio)
+        statut_layout.addWidget(info_bacterio) # icône info
         statut_layout.addWidget(self.radio_bacterio)
         statut_layout.addWidget(self.radio_bacterio1)
+
         col2_layout.addLayout(statut_layout)
 
-        self.combo_categorie = QButtonGroup()
+        # ----- CONFORMITE PHYSICO-CHIMIQUE -----
+
         self.radio_chimie = QCheckBox("Conforme")
         self.radio_chimie1 = QCheckBox("Non conforme")
         statut_layout2 = QHBoxLayout()
         statut_layout2.addWidget(QLabel("Limite Physico-chimique"))
+
+        # ----- BOUTON INFO -----
+        info_chimie = QToolButton()
+        info_chimie.setToolButtonStyle(Qt.ToolButtonIconOnly)
+
+        # Icône standard Qt
+        info_chimie.setIcon(QApplication.style().standardIcon(QApplication.style().SP_MessageBoxInformation))
+        
+        # Fenêtre pop-up pour afficher l'information supplémentaire
+        def show_info():
+            QMessageBox.information(
+                None,
+                "Limite Physico-chimique",
+                "Indicateur de la conformité des paramètres chimiques aux limites de qualité en vigueur au moment du prélèvement\n"
+                "pour le type d’eau considéré (et en prenant en compte les dérogations éventuelles en cours pour l'installation concernée).\n"
+                "Valeurs possibles : 'blanc', 'C=conforme', 'N=non conforme', 'D=conforme dans le cadre d’une dérogation','S (sans objet lorsqu'aucun paramètre chimique n'a été mesuré)'."
+            )
+
+        info_chimie.clicked.connect(show_info)
+
+        statut_layout2.addWidget(info_chimie)
         statut_layout2.addWidget(self.radio_chimie)
         statut_layout2.addWidget(self.radio_chimie1)
-        self.combo_categorie.addButton(self.radio_chimie)
-        self.combo_categorie.addButton(self.radio_chimie1)
         col2_layout.addLayout(statut_layout2)
 
-        self.combo_refbacteriologique = QButtonGroup()
+        # ----- CONFORMITE REF BACTERIOLOGIQUE -----
+
         self.radio_refbacteriologique = QCheckBox("Conforme")
         self.radio_refbacteriologique1 = QCheckBox("Non conforme")
         statut_layout2 = QHBoxLayout()
         statut_layout2.addWidget(QLabel("Référence Bactériologique"))
+
+        # ----- BOUTON INFO -----
+        info_refbact = QToolButton()
+        info_refbact.setToolButtonStyle(Qt.ToolButtonIconOnly)
+
+        # Icône standard Qt
+        info_refbact.setIcon(QApplication.style().standardIcon(QApplication.style().SP_MessageBoxInformation))
+        
+        # Fenêtre pop-up pour afficher l'information supplémentaire
+        def show_info():
+            QMessageBox.information(
+                None,
+                "Référence Bactériologique",
+                "Indicateur de la conformité des paramètres microbiologiques aux références de qualité en vigueur au moment du\n"
+                "prélèvement pour le type d’eau considéré.\n"
+                "Valeurs possibles : 'blanc', 'C=conforme', 'N=non conforme', 'S (sans objet lorsqu'aucun paramètre microbio n'a été mesuré)."
+                )
+
+        info_refbact.clicked.connect(show_info)
+
+        statut_layout2.addWidget(info_refbact)
         statut_layout2.addWidget(self.radio_refbacteriologique)
         statut_layout2.addWidget(self.radio_refbacteriologique1)
-        self.combo_refbacteriologique.addButton(self.radio_refbacteriologique)
-        self.combo_refbacteriologique.addButton(self.radio_refbacteriologique1)
         col2_layout.addLayout(statut_layout2)
 
-        self.combo_refchimie = QButtonGroup()
+         # ----- CONFORMITE REF PHYSICO-CHIMIQUE -----
+
         self.radio_refchimie = QCheckBox("Conforme")
         self.radio_refchimie1 = QCheckBox("Non conforme")
         statut_layout2 = QHBoxLayout()
         statut_layout2.addWidget(QLabel("Référence Physico-chimique"))
+        
+        # ----- BOUTON INFO -----
+        info_refchimie = QToolButton()
+        info_refchimie.setToolButtonStyle(Qt.ToolButtonIconOnly)
+
+        # Icône standard Qt
+        info_refchimie.setIcon(QApplication.style().standardIcon(QApplication.style().SP_MessageBoxInformation))
+        
+        # Fenêtre pop-up pour afficher l'information supplémentaire
+        def show_info():
+            QMessageBox.information(
+                None,
+                "Référence Physico-Chimique",
+                "Indicateur de la conformité des paramètres chimiques aux références de qualité en vigueur au moment du prélèvement\n"
+                "pour le type d’eau considéré.\n"
+                "Valeurs possibles : 'blanc', 'C=conforme', 'N=non conforme', 'S (sans objet lorsqu'aucun paramètre chimique n'a été mesuré)'."
+            )
+
+        info_refchimie.clicked.connect(show_info)
+
+        statut_layout2.addWidget(info_refchimie)
         statut_layout2.addWidget(self.radio_refchimie)
         statut_layout2.addWidget(self.radio_refchimie1)
-        self.combo_refchimie.addButton(self.radio_refchimie)
-        self.combo_refchimie.addButton(self.radio_refchimie1)
+
         col2_layout.addLayout(statut_layout2)
 
         # Bouton pour actualiser la carte avec les conformités sélectionnées
