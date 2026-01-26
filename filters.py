@@ -3,6 +3,26 @@
 ### BIBLIOTHEQUE : SQL ###
 import sqlite3
 
+
+def get_commune_by_insee(cursor, insee):
+    try:
+        query = """
+            SELECT
+                inseecommune,
+                nomcommune,
+                lat,
+                lon
+            FROM Commune
+            WHERE inseecommune = ?
+        """
+        cursor.execute(query, (insee,))
+        return cursor.fetchall()
+
+    except sqlite3.Error as error:
+        print("Erreur SQL :", error)
+        return []
+
+
 # Filtre 2 (au centre de l'application) : Récupère les résultats des quatre type de conformités pour afficher les communes correspondantes
 # Récupère en paramètre si l'élément a été coché ou non (C ou N) pour les 4 conformités
 def get_communes_conformites(cursor, chimique, bacterio, ref_bact, ref_chim):

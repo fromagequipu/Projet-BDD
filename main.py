@@ -10,6 +10,7 @@ from filters import get_communes_dateprel # fonction requête BDD dans fichier f
 from filters import get_molecules #fonction pour récuperer les paramètres
 from filters import get_refqual
 from filters import get_communes_by_parameter_value
+from filters import get_commune_by_insee
 
 
 from PyQt5.QtWidgets import (
@@ -532,7 +533,19 @@ class MainWindow(QMainWindow):
         déclenchée par la sélection d'une commune
         """
         # On réutilise le comportement EXISTANT
-        self.update_map()
+        insee = self.combo_ville.currentData()
+
+        # Cas : "Toutes les communes"
+        if insee is None:
+            self.update_map()
+            return
+
+        # Cas : UNE commune sélectionnée
+        communes = get_commune_by_insee(self.cursor, insee)
+
+        create_map(communes)
+        self.lbl_count.setText("Nombre de communes : 1")
+        self.load_map()
 
 
     def update_map(self):
