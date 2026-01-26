@@ -186,17 +186,27 @@ class MainWindow(QMainWindow):
 
         main_layout.addWidget(boxville)  
         
+
         self.combo_ville = QComboBox()
-        
-        
-        #Partie à changer pour pouvoir faire dynamiquement
-        self.combo_ville.addItem("Sélectionner une ville", None)
-        self.combo_ville.addItem("Nantes", "44000")
-        self.combo_ville.addItem("Rennes", "35000")
-        self.combo_ville.addItem("Saint André des Eaux", "44117")
+        self.combo_ville.addItem("Toutes les communes", None)
+
+        query = """
+            SELECT DISTINCT inseecommune, nomcommune
+            FROM Commune
+            ORDER BY nomcommune
+        """
+        self.cursor.execute(query)
+        communes = self.cursor.fetchall()
+
+        for insee, nom in communes:
+            self.combo_ville.addItem(nom, insee)
         
         ville_layout.addWidget(QLabel(""))
         ville_layout.addWidget(self.combo_ville)
+
+        self.combo_ville.currentIndexChanged.connect(
+        self.update_map_from_commune
+    )
 
         # Layout du haut (3 colonnes)
         top_layout = QHBoxLayout()
@@ -516,6 +526,14 @@ class MainWindow(QMainWindow):
         refqual = get_refqual(self.cursor, parametre)
         self.value_input.setText(refqual)
         
+    def update_map_from_commune(self):
+        """
+        Mise à jour automatique de la carte
+        déclenchée par la sélection d'une commune
+        """
+        # On réutilise le comportement EXISTANT
+        self.update_map()
+
 
     def update_map(self):
         insee_code = self.combo_ville.currentData()
