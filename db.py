@@ -3,7 +3,7 @@
 ### BIBLIOTHEQUE : SQL ###
 import sqlite3
 
-# Création de la BDD 
+# Création de la BDD WaterQuality.db
 def create_database(conn, cursor):
     """Creates the WaterQuality database
 
@@ -25,8 +25,7 @@ def create_database(conn, cursor):
     
     # Création des tables
     try:
-        # Création de la table réseau
-        # Contient les réseaux d'eau
+        # Création de la table réseau qui contient les réseaux d'eau
         print("CREATION TABLE RESEAU")
         cursor.execute('''
         CREATE TABLE Reseau(
@@ -35,8 +34,8 @@ def create_database(conn, cursor):
         )
         ''')
 
-        # Création de la table commune
-        # Contient les communes et leurs coordonnées
+        # Création de la table commune qui contient les communes et leurs coordonnées et qui est relié à la table réseau
+        # La clé primaire contient deux attributs : insee + réseau pour rendre chaque id unique
         print("CREATION TABLE COMMUNE")
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Commune(
@@ -50,8 +49,8 @@ def create_database(conn, cursor):
             )
         ''')
 
-        # Création de la table prelèvement
-        # Contient l'association des communes et le prélèvement de leurs paramètres ainsi que leurs conformités
+        # Création de la table prelèvement qui contient l'association des communes et le prélèvement de leurs paramètres ainsi que leurs conformités
+        # La table est également reliée à la table Reseau
         print("CREATION TABLE PRELEVEMENT")
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Prelevement(
@@ -66,8 +65,9 @@ def create_database(conn, cursor):
             )
         ''')
 
-        # Création de la table paramètre
-        # Contient les paramètres de qualité relevés lors des prévèlements
+        # Création de la table paramètre qui contient les paramètres de qualité relevés lors des prévèlements
+        # La table est donc reliée à la table prélèvement 
+        # Nous avons ajouté une auto-incrémentation de l'id
         print("CREATION TABLE PARAMETRE")
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Parametre(
@@ -81,7 +81,6 @@ def create_database(conn, cursor):
             )
         ''')
        
-        
        ###################################################################
         
     # Exception raised when something goes wrong while creating the tables.
