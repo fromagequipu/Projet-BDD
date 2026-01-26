@@ -133,26 +133,7 @@ def get_molecules(cursor):
     except sqlite3.Error as error:
         print("Erreur SQL :", error)
         return None
-
-# Filtre 3 (à droite de l'application): Récupère les communes en fonction d'un paramètre et de sa valeur personnalisée
-def get_communes_parametre(cursor,param,valeur):
-    """
-    Retourne les communes en fonction de la valeur d'un paramètre sélectionné
-    """
-    try:
-        # Valeurs pour tester la requête  
-        # param="pH"
-        # valeur="5.9"
-        # Requête qui permet de visualiser les infos des communes et de joindre à la table prélèvement et paramètre pour récupèrer seulement celles qui sont associées au paramètre et à la valeur sélectionnée
-        cursor.execute("SELECT c.inseecommune, c.nomcommune FROM Commune c JOIN Prelevement p ON p.cdreseau = c.cdreseau JOIN Parametre m ON m.referenceprel = p.referenceprel WHERE m.libminparametre=? AND m.valtraduite=?;", (param,valeur,))
-        row = cursor.fetchall()
-    # En cas d'erreur SQL
-    except sqlite3.Error as error:
-        print(error)
-        return None
-    # Affichage du résultat
-    print("Le resultat est", row)
-    return row
+    
 
 # Alimentation du champ de valeur référence du paramètre pour connaître la norme (filtre 3) d'un paramètre sélectionné venant de la table Parametre
 def get_refqual(cursor, parametre):
@@ -178,10 +159,16 @@ def get_refqual(cursor, parametre):
     except sqlite3.Error as error:
         print("Erreur SQL :", error)
         return ""
-
+    
 
 # Filtre 3 (à droite de l'application): Récupère les communes en fonction d'un paramètre ainsi que d'un opérateur par rapport à une valeur personnalisée
 def get_communes_by_parameter_value(cursor, molecule, seuil, operator):
+    """
+    Retourne les communes en fonction de la valeur d'un paramètre sélectionné et d'un opérateur
+    """
+    # Valeurs pour tester la requête  
+    # param="pH"
+    # valeur="5.9"
     try:
         # Conversion du seuil en float
         seuil_float = float(seuil)

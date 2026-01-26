@@ -4,15 +4,15 @@ import requests
 import folium
 import sqlite3
 import time
-from folium.plugins import MarkerCluster
-from filters import get_communes_conformites # fonction requête BDD dans fichier filters
-from filters import get_communes_dateprel # fonction requête BDD dans fichier filters
-from filters import get_molecules #fonction pour récuperer les paramètres
-from filters import get_refqual
-from filters import get_communes_by_parameter_value
-from filters import get_commune_by_insee
+from folium.plugins import MarkerCluster # bibliothèque folium pour carte interactive
+from filters import get_communes_conformites # fonction requête BDD pour le filtre 2 dans fichier filters
+from filters import get_communes_dateprel # fonction requête BDD pour le filtre 1 dans fichier filters
+from filters import get_molecules # fonction requête BDD pour récuperer les paramètres dans fichier filters
+from filters import get_refqual # fonction requête BDD pour récuperer les valeurs de référence selon le param dans fichier filters
+from filters import get_communes_by_parameter_value # fonction requête BDD pour le filtre 3 dans fichier filters
+from filters import get_commune_by_insee # fonction requête BDD pour récuperer les communes dans fichier filters
 
-
+# Importation de tous les éléments graphiques nécessaires à notre interface
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget,
     QVBoxLayout, QHBoxLayout, QLabel,
@@ -27,9 +27,9 @@ from PyQt5.QtGui import QIcon
 # Fichier de sauvegarde de la carte
 MAP_FILE = "map.html"
 
-# -------------------------
-# API INSEE -> ALIMENTATION DE LA TABLE COMMUNE
-# -------------------------
+# -------------------------------------------------------------------
+# API INSEE -> ALIMENTATION DE LA TABLE COMMUNE POUR LES COORDONNEES
+# -------------------------------------------------------------------
 
 # API AVEC CODE INSEE => plus besoin pour l'instant car alimenté dans la BDD 1 fois
 
@@ -95,7 +95,7 @@ def create_map(communes):
 
      m.save(MAP_FILE)
 
-#On va créer la carte avec un marqueur folium
+# On va créer la carte avec un marqueur folium
 def create_map_from_communes(communes):
     m = folium.Map(location=[46.6, 1.8], zoom_start=6)
 
@@ -154,21 +154,24 @@ class MapWorker(QThread):
 # -------------------------
 # Fenêtre principale
 # -------------------------
-#Création de la fenêtre principal avec connexion à la BDD
+
+# Création de la fenêtre principale avec connexion à la BDD
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
+        # Connexion à la BDD
         self.conn = sqlite3.connect("WaterQuality.db")
         self.cursor = self.conn.cursor()
 
-        #Titre de la fenêtre
+        # Titre de la fenêtre
         self.setWindowTitle("Water Quality")
-        #Logo
+
+        # Logo
         self.setWindowIcon(QIcon("logo.png"))
         self.resize(1650, 900)
 
-        #Définition d'un gros widget central pour la fenêtre
+        # Définition d'un widget central pour la fenêtre
         central = QWidget()
         self.setCentralWidget(central)
 
@@ -179,7 +182,7 @@ class MainWindow(QMainWindow):
         titre_layout = QHBoxLayout()
         main_layout.addLayout(titre_layout)
         
-        #Layout choix ville
+        # Layout choix ville
         ville_layout = QHBoxLayout()
         ville_layout.setAlignment(Qt.AlignCenter)
         boxville = QGroupBox("")
@@ -187,11 +190,11 @@ class MainWindow(QMainWindow):
 
         main_layout.addWidget(boxville)  
         
-        #Liste déroulante des communes
+        # Liste déroulante des communes
         self.combo_ville = QComboBox()
         self.combo_ville.addItem("Toutes les communes", None)
 
-        #Requête permettant d'afficher les communes de notre bdd
+        # Requête permettant d'afficher les communes de notre bdd
         query = """
             SELECT DISTINCT inseecommune, nomcommune
             FROM Commune
@@ -217,6 +220,7 @@ class MainWindow(QMainWindow):
         # -------------------------
         # TITRE (au centre, en haut)
         # -------------------------
+
         title_label = QLabel("Bienvenue dans l'interface Water Quality !")
         title_label.setAlignment(Qt.AlignCenter)
         title_label.setStyleSheet("""
@@ -231,15 +235,16 @@ class MainWindow(QMainWindow):
         # -------------------------
         # COLONNE 1 - Général à gauche
         # -------------------------
+
         col1_layout = QVBoxLayout()
         box1 = QGroupBox("Date")
         box1.setLayout(col1_layout)
         
-        #Bouton d'éxécution afficher la carte
+        # Bouton d'éxécution afficher la carte
         self.button1 = QPushButton("Afficher la carte")
         self.button1.clicked.connect(self.update_map)
         
-        #Creation d'un champ date qui peut être modifié
+        # Creation d'un champ date qui peut être modifié
         self.date_start = QDateEdit()
         self.date_start.setCalendarPopup(True)
         self.date_start.setMinimumDate(QDate(2024, 1, 1))
@@ -254,7 +259,7 @@ class MainWindow(QMainWindow):
         self.date_end.setDate(QDate(2024, 12, 31))
         self.date_end.setDisplayFormat("dd-MM-yyyy")
 
-        #On peut définir une date de début et une date de fin
+        # On peut définir une date de début et une date de fin
         col1_layout.addWidget(QLabel("Date début :"))
         col1_layout.addWidget(self.date_start)
 
@@ -262,12 +267,11 @@ class MainWindow(QMainWindow):
         col1_layout.addWidget(self.date_end)
 
         col1_layout.addWidget(self.button1)
-        
-
 
         # -------------------------
         # COLONNE 2 - Conformité (Partie centrale)
         # -------------------------
+
         col2_layout = QVBoxLayout()
         box2 = QGroupBox("Conformité")
         box2.setLayout(col2_layout)
@@ -298,7 +302,7 @@ class MainWindow(QMainWindow):
 
         info_bacterio.clicked.connect(show_info)
 
-        #Mise en forme des boutons à l'horizontal 
+        # Mise en forme des boutons à l'horizontal 
         statut_layout = QHBoxLayout()
         statut_layout.addWidget(label_bacterio)
         statut_layout.addWidget(info_bacterio) # icône info
@@ -409,6 +413,7 @@ class MainWindow(QMainWindow):
         # -------------------------
         # COLONNE 3 - Paramètres (partie droite)
         # -------------------------
+
         col3_layout = QVBoxLayout()
         box3 = QGroupBox("Parametres")
         box3.setLayout(col3_layout)
@@ -417,11 +422,12 @@ class MainWindow(QMainWindow):
         # Récupération des molécules depuis la BDD
         parametres = get_molecules(self.cursor)
         parametres.sort()
+
         # Menu déroulant des molécules
+
         self.combo_molecule = QComboBox()
         self.combo_molecule.addItem("Sélectionner un parametre")
         self.combo_molecule.addItems(parametres)
-
 
         # Zone de texte pour la valeur
         self.value_input = QLineEdit()
@@ -433,25 +439,26 @@ class MainWindow(QMainWindow):
             "< 0.1", "< 0.5", "> 1", "> 5"
         ]
 
-        #Partie pour le remplissage automatique du champ refqual suivant la molécule choisit
+        # Partie pour le remplissage automatique du champ refqual suivant la molécule choisit
         self.value_input = QLineEdit()
         self.value_input.setReadOnly(True)
         self.value_input.setPlaceholderText("Valeur de référence")
         self.combo_molecule.currentTextChanged.connect(self.update_refqual)
         
-        #Suggestions proposées pour les valeurs à renseigner
+        # Suggestions proposées pour les valeurs à renseigner
         completer = QCompleter(suggestions)
         completer.setCaseSensitivity(Qt.CaseInsensitive)
         completer.setFilterMode(Qt.MatchContains)
 
         self.value_input.setCompleter(completer)
         
-        #Creation du champ label pour entrer la valeur personnalisé
+        # Creation du champ label pour entrer la valeur personnalisé
         self.manual_value_input = QLineEdit()
         self.manual_value_input.setPlaceholderText("Entrer la valeur personnalisée")
         
         # RADIO BUTTONS COMPARAISON
-# -----------------------
+        # -----------------------
+
         self.radio_sup = QRadioButton("Supérieur à")
         self.radio_inf = QRadioButton("Inférieur à")
         self.radio_eq = QRadioButton("Égal à")
@@ -550,6 +557,10 @@ class MainWindow(QMainWindow):
 
 
     def update_map(self):
+        """
+        Mise à jour automatique de la carte
+        déclenchée par la sélection des dates de prélèvement
+        """
         insee_code = self.combo_ville.currentData()
         create_map([])
         date_start = self.date_start.date().toString("dd-MM-yyyy")
@@ -594,8 +605,12 @@ class MainWindow(QMainWindow):
         self.worker.finished.connect(self.on_map_ready)
         self.worker.start()
 
-        #Mets à jour la carte avec les informations renseignées avant, permet d'avoir quelque chose de dynamique
+    # Mets à jour la carte avec les informations renseignées avant, permet d'avoir quelque chose de dynamique
     def update_map_with_parameter_value(self):
+        """
+        Mise à jour automatique de la carte
+        déclenchée par la sélection des paramètres, valeurs et opérateurs
+        """
         molecule = self.combo_molecule.currentText()
         seuil = self.manual_value_input.text().strip()
 
@@ -627,19 +642,19 @@ class MainWindow(QMainWindow):
         self.load_map()
 
 
-
     def on_map_ready(self):
         self.load_map()
         self.setEnabled(True)
 
-        # mise à jour du label avec le nombre de communes
+        # Mise à jour du label avec le nombre de communes
         count = len(self.worker.last_communes)
         self.lbl_count.setText(f"Nombre de communes : {count}")
 
 
 # -------------------------
-# Lancement
+# Lancement de l'application
 # -------------------------
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainWindow()
