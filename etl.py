@@ -2,7 +2,6 @@ import pandas as pd
 import sqlite3
 import os
 import db
-import utils
 from datetime import datetime
 
 #Fonction permettant d'avoir le bon format date
