@@ -30,22 +30,6 @@ MAP_FILE = "map.html"
 # API INSEE -> ALIMENTATION DE LA TABLE COMMUNE
 # -------------------------
 
-# API AVEC CODE POSTAL
-"""
-def get_coordinates_and_name_from_insee(insee_code):
-    url = f"https://api-adresse.data.gouv.fr/search/?q={insee_code}&type=municipality&limit=1"
-    response = requests.get(url)
-
-    if response.status_code == 200:
-        data = response.json()
-        if data["features"]:
-            name = data["features"][0]["properties"]["label"]
-            lon, lat = data["features"][0]["geometry"]["coordinates"]
-            print(f"{insee_code} -> {name}, lat={lat}, lon={lon}")
-            return name, lat, lon
-    return None, None, None
-"""
-
 # API AVEC CODE INSEE => plus besoin pour l'instant car alimenté dans la BDD 1 fois
 
 # def normalize_insee(insee):
@@ -89,38 +73,6 @@ def get_coordinates_and_name_from_insee(insee_code):
 # -------------------------
 # Création carte Folium
 # -------------------------
- 
-"""def create_map(insee_code=None):
-    m = folium.Map(location=[46.6, 1.8], zoom_start=6)
-
-    if insee_code:
-        name, lat, lon = get_coordinates_and_name_from_insee(insee_code)
-        if lat and lon:
-            folium.Marker(
-                location=[lat, lon],
-                popup=name,
-                icon=folium.Icon(color="blue", icon="info-sign")
-            ).add_to(m)
-            m.location = [lat, lon]
-            m.zoom_start = 10
-
-    m.save(MAP_FILE) """
-"""
-def create_map(communes):
-    m = folium.Map(location=[46.6, 1.8], zoom_start=6)
-
-    for insee, nom, lat, lon in communes:
-        if lat is None or lon is None:
-            continue
-
-        folium.Marker(
-            location=[lat, lon],
-            popup=f"{nom} ({insee})"
-        ).add_to(m)
-
-    m.save(MAP_FILE)
-
-"""
 
 # Création de la carte
 def create_map(communes):
@@ -142,6 +94,7 @@ def create_map(communes):
 
      m.save(MAP_FILE)
 
+#On va créer la carte avec un marqueur folium
 def create_map_from_communes(communes):
     m = folium.Map(location=[46.6, 1.8], zoom_start=6)
 
@@ -200,7 +153,7 @@ class MapWorker(QThread):
 # -------------------------
 # Fenêtre principale
 # -------------------------
-
+#Création de la fenêtre principal avec connexion à la BDD
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -208,10 +161,13 @@ class MainWindow(QMainWindow):
         self.conn = sqlite3.connect("WaterQuality.db")
         self.cursor = self.conn.cursor()
 
+        #Titre de la fenêtre
         self.setWindowTitle("Water Quality")
+        #Logo
         self.setWindowIcon(QIcon("logo.png"))
         self.resize(1650, 900)
 
+        #Définition d'un gros widget central pour la fenêtre
         central = QWidget()
         self.setCentralWidget(central)
 
@@ -261,15 +217,17 @@ class MainWindow(QMainWindow):
         titre_layout.addWidget(title_label)
 
         # -------------------------
-        # COLONNE 1 - Général
+        # COLONNE 1 - Général à gauche
         # -------------------------
         col1_layout = QVBoxLayout()
         box1 = QGroupBox("Date")
         box1.setLayout(col1_layout)
         
+        #Bouton d'éxécution afficher la carte
         self.button1 = QPushButton("Afficher la carte")
         self.button1.clicked.connect(self.update_map)
         
+        #Creation d'un champ date qui peut être modifié
         self.date_start = QDateEdit()
         self.date_start.setCalendarPopup(True)
         self.date_start.setMinimumDate(QDate(2024, 1, 1))
@@ -284,6 +242,7 @@ class MainWindow(QMainWindow):
         self.date_end.setDate(QDate(2024, 12, 31))
         self.date_end.setDisplayFormat("dd-MM-yyyy")
 
+        #On peut définir une date de début et une date de fin
         col1_layout.addWidget(QLabel("Date début :"))
         col1_layout.addWidget(self.date_start)
 
@@ -295,7 +254,7 @@ class MainWindow(QMainWindow):
 
 
         # -------------------------
-        # COLONNE 2 - Conformité
+        # COLONNE 2 - Conformité (Partie centrale)
         # -------------------------
         col2_layout = QVBoxLayout()
         box2 = QGroupBox("Conformité")
@@ -327,7 +286,7 @@ class MainWindow(QMainWindow):
 
         info_bacterio.clicked.connect(show_info)
 
-
+        #Mise en forme des boutons à l'horizontal 
         statut_layout = QHBoxLayout()
         statut_layout.addWidget(label_bacterio)
         statut_layout.addWidget(info_bacterio) # icône info
@@ -436,7 +395,7 @@ class MainWindow(QMainWindow):
         self.btn_actualiser.clicked.connect(self.update_map_with_conformities)
 
         # -------------------------
-        # COLONNE 3 - Paramètres
+        # COLONNE 3 - Paramètres (partie droite)
         # -------------------------
         col3_layout = QVBoxLayout()
         box3 = QGroupBox("Parametres")
@@ -468,13 +427,14 @@ class MainWindow(QMainWindow):
         self.value_input.setPlaceholderText("Valeur de référence")
         self.combo_molecule.currentTextChanged.connect(self.update_refqual)
         
+        #Suggestions proposées pour les valeurs à renseigner
         completer = QCompleter(suggestions)
         completer.setCaseSensitivity(Qt.CaseInsensitive)
         completer.setFilterMode(Qt.MatchContains)
 
         self.value_input.setCompleter(completer)
         
-        
+        #Creation du champ label pour entrer la valeur personnalisé
         self.manual_value_input = QLineEdit()
         self.manual_value_input.setPlaceholderText("Entrer la valeur personnalisée")
         
@@ -602,6 +562,7 @@ class MainWindow(QMainWindow):
         self.worker.finished.connect(self.on_map_ready)
         self.worker.start()
 
+        #Mets à jour la carte avec les informations renseignées avant, permet d'avoir quelque chose de dynamique
     def update_map_with_parameter_value(self):
         molecule = self.combo_molecule.currentText()
         seuil = self.manual_value_input.text().strip()
