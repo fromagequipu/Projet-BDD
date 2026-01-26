@@ -11,6 +11,7 @@ from filters import get_molecules # fonction requête BDD pour récuperer les pa
 from filters import get_refqual # fonction requête BDD pour récuperer les valeurs de référence selon le param dans fichier filters
 from filters import get_communes_by_parameter_value # fonction requête BDD pour le filtre 3 dans fichier filters
 from filters import get_commune_by_insee # fonction requête BDD pour récuperer les communes dans fichier filters
+from filters import get_communes_by_parameter_interval # fonction requête BDD pour le filtre 3 dans fichier filters
 
 # Importation de tous les éléments graphiques nécessaires à notre interface
 from PyQt5.QtWidgets import (
@@ -18,7 +19,7 @@ from PyQt5.QtWidgets import (
     QVBoxLayout, QHBoxLayout, QLabel,
     QComboBox, QPushButton, QDateEdit, QGroupBox,
     QButtonGroup, QRadioButton, QCheckBox, QLineEdit, QCompleter,
-    QToolButton, QMessageBox
+    QToolButton, QMessageBox, QFrame, QSlider
 )
 from PyQt5.QtCore import QUrl, QDate, Qt, QThread, pyqtSignal
 from PyQt5.QtWebEngineWidgets import QWebEngineView
@@ -179,9 +180,12 @@ class MainWindow(QMainWindow):
         main_layout = QVBoxLayout(central)
 
         # Layout titre
-        titre_layout = QHBoxLayout()
-        main_layout.addLayout(titre_layout)
-        
+        title_widget = QWidget()
+        title_widget.setStyleSheet("background-color: #cfefff;")  # bleu clair
+        title_widget.setFixedHeight(100)
+        titre_layout = QHBoxLayout(title_widget)
+        main_layout.addWidget(title_widget)
+    
         # Layout choix ville
         ville_layout = QHBoxLayout()
         ville_layout.setAlignment(Qt.AlignCenter)
@@ -217,10 +221,33 @@ class MainWindow(QMainWindow):
         top_layout = QHBoxLayout()
         main_layout.addLayout(top_layout)
 
+        style_btn = """
+        QPushButton {
+            background-color: #1f4e79;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            border-radius: 12px;
+            padding: 10px 18px;
+            border: 2px solid #173a57;
+        }
+
+        QPushButton:hover {
+            background-color: #255b8f;
+        }
+
+        QPushButton:pressed {
+            background-color: #173a57;
+            padding-left: 12px;
+            padding-top: 12px;
+        }
+        """
+
         # -------------------------
         # TITRE (au centre, en haut)
         # -------------------------
 
+        # Titre
         title_label = QLabel("Bienvenue dans l'interface Water Quality !")
         title_label.setAlignment(Qt.AlignCenter)
         title_label.setStyleSheet("""
@@ -228,11 +255,18 @@ class MainWindow(QMainWindow):
             font-weight: bold;
             color: #1f4e79;
             padding: 20px;
+            background-color: #cfefff;
+            font-family: "Verdana";
         """)
 
         titre_layout.addStretch()      
         titre_layout.addWidget(title_label)
         titre_layout.addStretch()
+
+        line = QFrame()
+        line.setFrameShape(QFrame.HLine)
+        line.setFrameShadow(QFrame.Sunken)
+        main_layout.addWidget(line)
 
         # Layout de nos noms prénoms (en haut à droite)
         credit_layout = QHBoxLayout()
@@ -255,10 +289,19 @@ class MainWindow(QMainWindow):
 
         col1_layout = QVBoxLayout()
         box1 = QGroupBox("Dates")
+        box1.setStyleSheet("""
+        QGroupBox::title {
+            color: #1f4e79;   /* bleu */
+            font-weight: bold; /* gras */
+            font-size: 14px;
+        }
+        """)
         box1.setLayout(col1_layout)
         
         # Bouton d'éxécution afficher la carte
         self.button1 = QPushButton("Afficher la carte")
+        self.button1.setStyleSheet(style_btn)
+        self.button1.setMaximumWidth(180)
         self.button1.clicked.connect(self.update_map)
         
         # Creation d'un champ date qui peut être modifié
@@ -283,7 +326,7 @@ class MainWindow(QMainWindow):
         col1_layout.addWidget(QLabel("Date fin :"))
         col1_layout.addWidget(self.date_end)
 
-        col1_layout.addWidget(self.button1)
+        col1_layout.addWidget(self.button1, alignment=Qt.AlignCenter)
 
         # -------------------------
         # COLONNE 2 - Conformité (Partie centrale)
@@ -291,6 +334,13 @@ class MainWindow(QMainWindow):
 
         col2_layout = QVBoxLayout()
         box2 = QGroupBox("Conformités")
+        box2.setStyleSheet("""
+        QGroupBox::title {
+            color: #1f4e79;   /* bleu */
+            font-weight: bold; /* gras */
+            font-size: 14px;
+        }
+    """)
         box2.setLayout(col2_layout)
 
         # ----- CONFORMITE BACTERIOLOGIQUE -----
@@ -424,7 +474,9 @@ class MainWindow(QMainWindow):
 
         # Bouton pour actualiser la carte avec les conformités sélectionnées
         self.btn_actualiser = QPushButton("Afficher la carte")
-        col2_layout.addWidget(self.btn_actualiser)
+        self.btn_actualiser.setStyleSheet(style_btn)
+        self.btn_actualiser.setMaximumWidth(180)
+        col2_layout.addWidget(self.btn_actualiser, alignment=Qt.AlignCenter)
         self.btn_actualiser.clicked.connect(self.update_map_with_conformities)
 
         # -------------------------
@@ -433,6 +485,13 @@ class MainWindow(QMainWindow):
 
         col3_layout = QVBoxLayout()
         box3 = QGroupBox("Paramètres")
+        box3.setStyleSheet("""
+        QGroupBox::title {
+            color: #1f4e79;   /* bleu */
+            font-weight: bold; /* gras */
+            font-size: 14px;
+        }
+    """)
         box3.setLayout(col3_layout)
         box3.setMaximumWidth(650)
         
@@ -461,47 +520,73 @@ class MainWindow(QMainWindow):
         self.manual_value_input = QLineEdit()
         self.manual_value_input.setPlaceholderText("Entrer la valeur personnalisée")
         
+        self.min_value_input = QLineEdit()
+        self.min_value_input.setPlaceholderText("Valeur min")
+        self.max_value_input = QLineEdit()
+        self.max_value_input.setPlaceholderText("Valeur max")
+
+        self.min_value_input.hide()
+        self.max_value_input.hide()
+
+
         # RADIO BUTTONS COMPARAISON
         # -----------------------
 
         self.radio_sup = QRadioButton("Supérieur à")
         self.radio_inf = QRadioButton("Inférieur à")
         self.radio_eq = QRadioButton("Égal à")
+        self.radio_interval = QRadioButton("Intervalle")
 
         # Groupe pour forcer un seul choix
         self.group_comparaison = QButtonGroup(self)
         self.group_comparaison.addButton(self.radio_sup)
         self.group_comparaison.addButton(self.radio_inf)
         self.group_comparaison.addButton(self.radio_eq)
+        self.group_comparaison.addButton(self.radio_interval)
         radio_layout = QHBoxLayout()
         radio_layout.addWidget(self.radio_sup)
         radio_layout.addWidget(self.radio_eq)
         radio_layout.addWidget(self.radio_inf)
+        radio_layout.addWidget(self.radio_interval)
 
         # Valeur par défaut
         self.radio_sup.setChecked(True)
-        
+
+        self.radio_interval.toggled.connect(self.toggle_interval)
+
         # -----------------------
 
-
         # Ajout au layout
-        col3_layout.addWidget(QLabel("Choisir un paramètre :"))
         col3_layout.addWidget(self.combo_molecule)
 
         col3_layout.addWidget(self.value_label)
         
-        col3_layout.addWidget(QLabel("Saisir la valeur personnalisée :"))
-        col3_layout.addWidget(self.manual_value_input)
+        col3_layout.addWidget(QLabel("Valeurs personnalisées :"))
+
+        value_layout = QHBoxLayout()
+        value_layout.addWidget(self.manual_value_input)
+        value_layout.addWidget(self.min_value_input)
+        value_layout.addWidget(self.max_value_input)
+
+        col3_layout.addLayout(value_layout)
+
+        self.manual_value_input.setMaximumWidth(180)
+        self.min_value_input.setMaximumWidth(120)
+        self.max_value_input.setMaximumWidth(120)
+
 
         # Bouton
         self.button = QPushButton("Afficher la carte")
+        self.button.setStyleSheet(style_btn)
+        
+        self.button.setMaximumWidth(180)
         self.button.clicked.connect(self.update_map_with_parameter_value)
 
         col3_layout.addWidget(QLabel("Condition sur la valeur :"))
         col3_layout.addLayout(radio_layout)
 
         col3_layout.addStretch()
-        col3_layout.addWidget(self.button)
+        col3_layout.addWidget(self.button, alignment=Qt.AlignCenter)
 
         # Ajout des colonnes
         top_layout.addWidget(box1)
@@ -515,11 +600,15 @@ class MainWindow(QMainWindow):
         # Renvoi le nombre de communes affichées
         self.lbl_count = QLabel("Nombre de communes : 0")
         self.lbl_count.setAlignment(Qt.AlignCenter)
-        self.lbl_count.setStyleSheet("font-size: 16px; font-weight: bold;")
+        self.lbl_count.setStyleSheet("font-size: 14px; font-weight: bold; color: #1f4e79;  font-family: 'Verdana';")
         main_layout.addWidget(self.lbl_count)
 
         self.browser = QWebEngineView()
-        main_layout.addWidget(self.browser, stretch=1)
+        main_layout.addWidget(self.browser, stretch=5)
+
+        box1.setMaximumHeight(300)
+        box2.setMaximumHeight(300)
+        box3.setMaximumHeight(300)
 
         # Carte initiale
         create_map([])
@@ -532,6 +621,16 @@ class MainWindow(QMainWindow):
     def load_map(self):
         path = os.path.abspath(MAP_FILE)
         self.browser.load(QUrl.fromLocalFile(path))
+
+    def toggle_interval(self):
+        if self.radio_interval.isChecked():
+            self.min_value_input.show()
+            self.max_value_input.show()
+        else:
+            self.min_value_input.hide()
+            self.max_value_input.hide()
+
+
         
     def update_refqual(self, parametre):
         """
@@ -628,9 +727,9 @@ class MainWindow(QMainWindow):
         déclenchée par la sélection des paramètres, valeurs et opérateurs
         """
         molecule = self.combo_molecule.currentText()
-        seuil = self.manual_value_input.text().strip()
 
-        if molecule == "Sélectionner un parametre" or not seuil:
+        # Vérification du paramètre
+        if molecule == "Sélectionner un parametre" :
             QMessageBox.warning(
                 self,
                 "Erreur",
@@ -638,25 +737,56 @@ class MainWindow(QMainWindow):
             )
             return
 
-        # Détermination de l'opérateur selon le radio bouton
-        if self.radio_sup.isChecked():
-            operator = ">"
-        elif self.radio_inf.isChecked():
-            operator = "<"
+         # CAS 1 : intervalle
+        if self.radio_interval.isChecked():
+            # Récupération de la valeur min et max
+            min_val = self.min_value_input.text().strip()
+            max_val = self.max_value_input.text().strip()
+
+            if not min_val or not max_val:
+                QMessageBox.warning(self, "Erreur", "Veuillez saisir une valeur min et une valeur max.")
+                return
+
+            # Appel de la requête SQL
+            communes = get_communes_by_parameter_interval(
+                self.cursor,
+                molecule,
+                min_val,
+                max_val
+            )
+
+        # CAS 2 : valeur personnalisée
         else:
-            operator = "="
+            # Récupération de la valeur écrite dans le champ
+            seuil = self.manual_value_input.text().strip()
+            if not seuil:
+                QMessageBox.warning(
+                    self,
+                    "Erreur",
+                    "Veuillez saisir une valeur personnalisée ou sélectionner l'intervalle."
+                )
+                return
+            
+            # Récupération de l'opérateur sélectionné
+            if self.radio_sup.isChecked():
+                operator = ">"
+            elif self.radio_inf.isChecked():
+                operator = "<"
+            else:
+                operator = "="
 
-        communes = get_communes_by_parameter_value(
-            self.cursor,
-            molecule,
-            seuil,
-            operator
-        )
-
+            # Appel de la requête SQL
+            communes = get_communes_by_parameter_value(
+                self.cursor,
+                molecule,
+                seuil,
+                operator
+            )
+            
+        # Actualisation de la carte
         create_map(communes)
         self.lbl_count.setText(f"Nombre de communes : {len(communes)}")
         self.load_map()
-
 
     def on_map_ready(self):
         self.load_map()
@@ -665,7 +795,6 @@ class MainWindow(QMainWindow):
         # Mise à jour du label avec le nombre de communes
         count = len(self.worker.last_communes)
         self.lbl_count.setText(f"Nombre de communes : {count}")
-
 
 # -------------------------
 # Lancement de l'application

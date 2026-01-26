@@ -159,7 +159,6 @@ def get_refqual(cursor, parametre):
     except sqlite3.Error as error:
         print("Erreur SQL :", error)
         return ""
-    
 
 # Filtre 3 (à droite de l'application): Récupère les communes en fonction d'un paramètre ainsi que d'un opérateur par rapport à une valeur personnalisée
 def get_communes_by_parameter_value(cursor, molecule, seuil, operator):
@@ -207,6 +206,35 @@ def get_communes_by_parameter_value(cursor, molecule, seuil, operator):
     except sqlite3.Error as error:
         print("Erreur SQL :", error)
         return []
+    
+# Filtre 3 bis : intervalle de valeurs (slider)
+def get_communes_by_parameter_interval(cursor, molecule, min_val, max_val):
+    """
+    Retourne les communes en fonction d'un paramètre et d'un intervalle de valeurs
+    """
+    try:
+        query = """
+            SELECT DISTINCT 
+                c.inseecommune, 
+                c.nomcommune, 
+                c.lat, 
+                c.lon
+            FROM Commune c
+            JOIN Prelevement pr ON c.cdreseau = pr.cdreseau
+            JOIN Parametre pa ON pr.referenceprel = pa.referenceprel
+            WHERE pa.libminparametre = ?
+              AND CAST(pa.valtraduite AS FLOAT) BETWEEN ? AND ?
+              AND c.lat IS NOT NULL
+              AND c.lon IS NOT NULL
+            LIMIT 20000;
+        """
+        cursor.execute(query, (molecule, min_val, max_val))
+        return cursor.fetchall()
+
+    except sqlite3.Error as error:
+        print("Erreur SQL :", error)
+        return []
+
 
 # Programma principal
 if __name__ == '__main__':
