@@ -230,14 +230,31 @@ class MainWindow(QMainWindow):
             padding: 20px;
         """)
 
+        titre_layout.addStretch()      
         titre_layout.addWidget(title_label)
+        titre_layout.addStretch()
+
+        # Layout de nos noms prénoms (en haut à droite)
+        credit_layout = QHBoxLayout()
+        main_layout.addLayout(credit_layout)
+
+        self.credit_label = QLabel("Créé par : Camille BRARD, Gatien RICHARD et Renan FOUCHER - ESIR SNR 2 - BDD S7")
+        self.credit_label.setAlignment(Qt.AlignRight)
+        self.credit_label.setStyleSheet("""
+            font-size: 12px;
+            color: #1f4e79;
+            padding-right: 10px;
+        """)
+
+        credit_layout.addStretch()
+        credit_layout.addWidget(self.credit_label)
 
         # -------------------------
         # COLONNE 1 - Général à gauche
         # -------------------------
 
         col1_layout = QVBoxLayout()
-        box1 = QGroupBox("Date")
+        box1 = QGroupBox("Dates")
         box1.setLayout(col1_layout)
         
         # Bouton d'éxécution afficher la carte
@@ -273,7 +290,7 @@ class MainWindow(QMainWindow):
         # -------------------------
 
         col2_layout = QVBoxLayout()
-        box2 = QGroupBox("Conformité")
+        box2 = QGroupBox("Conformités")
         box2.setLayout(col2_layout)
 
         # ----- CONFORMITE BACTERIOLOGIQUE -----
@@ -415,7 +432,7 @@ class MainWindow(QMainWindow):
         # -------------------------
 
         col3_layout = QVBoxLayout()
-        box3 = QGroupBox("Parametres")
+        box3 = QGroupBox("Paramètres")
         box3.setLayout(col3_layout)
         box3.setMaximumWidth(650)
         
@@ -424,33 +441,21 @@ class MainWindow(QMainWindow):
         parametres.sort()
 
         # Menu déroulant des molécules
-
         self.combo_molecule = QComboBox()
-        self.combo_molecule.addItem("Sélectionner un parametre")
+        self.combo_molecule.addItem("Sélectionner un paramètre")
         self.combo_molecule.addItems(parametres)
 
         # Zone de texte pour la valeur
         self.value_input = QLineEdit()
         self.value_input.setPlaceholderText("Entrer la valeur souhaitée")
 
-        # ---- AUTOCOMPLÉTION ----
-        suggestions = [
-            "0.1", "0.2", "0.5", "1", "2", "5", "10",
-            "< 0.1", "< 0.5", "> 1", "> 5"
-        ]
-
-        # Partie pour le remplissage automatique du champ refqual suivant la molécule choisit
-        self.value_input = QLineEdit()
-        self.value_input.setReadOnly(True)
-        self.value_input.setPlaceholderText("Valeur de référence")
+        # Partie pour le remplissage automatique du label refqual suivant la molécule choisit
+        self.value_label = QLabel("Valeur de référence")
+        self.value_label.setStyleSheet("""
+        font-weight: bold;
+        color: #1f4e79;
+        """)
         self.combo_molecule.currentTextChanged.connect(self.update_refqual)
-        
-        # Suggestions proposées pour les valeurs à renseigner
-        completer = QCompleter(suggestions)
-        completer.setCaseSensitivity(Qt.CaseInsensitive)
-        completer.setFilterMode(Qt.MatchContains)
-
-        self.value_input.setCompleter(completer)
         
         # Creation du champ label pour entrer la valeur personnalisé
         self.manual_value_input = QLineEdit()
@@ -478,25 +483,25 @@ class MainWindow(QMainWindow):
         
         # -----------------------
 
-        # Bouton
-        self.button = QPushButton("Afficher la carte")
-        self.button.clicked.connect(self.update_map_with_parameter_value)
 
         # Ajout au layout
-        col3_layout.addWidget(QLabel("Choisir un parametre :"))
+        col3_layout.addWidget(QLabel("Choisir un paramètre :"))
         col3_layout.addWidget(self.combo_molecule)
 
-        col3_layout.addWidget(QLabel("Valeur de référence:"))
-        col3_layout.addWidget(self.value_input)
+        col3_layout.addWidget(self.value_label)
         
         col3_layout.addWidget(QLabel("Saisir la valeur personnalisée :"))
         col3_layout.addWidget(self.manual_value_input)
 
-        col3_layout.addStretch()
-        col3_layout.addWidget(self.button)
+        # Bouton
+        self.button = QPushButton("Afficher la carte")
+        self.button.clicked.connect(self.update_map_with_parameter_value)
 
         col3_layout.addWidget(QLabel("Condition sur la valeur :"))
         col3_layout.addLayout(radio_layout)
+
+        col3_layout.addStretch()
+        col3_layout.addWidget(self.button)
 
         # Ajout des colonnes
         top_layout.addWidget(box1)
@@ -529,11 +534,19 @@ class MainWindow(QMainWindow):
         self.browser.load(QUrl.fromLocalFile(path))
         
     def update_refqual(self, parametre):
+        """
+        Mise à jour automatique de la valeur de référence selon un paramètre
+        """
         if parametre == "Sélectionner une molécule":
-            self.value_input.clear()
+            self.value_label.setText("Valeur de référence")
             return
+        
         refqual = get_refqual(self.cursor, parametre)
-        self.value_input.setText(refqual)
+
+        if refqual:
+            self.value_label.setText(str(refqual))
+        else:
+            self.value_label.setText("Non disponible")
         
     def update_map_from_commune(self):
         """
@@ -592,7 +605,10 @@ class MainWindow(QMainWindow):
 
     # Actualisation de la carte selon filtre 2 
     def update_map_with_conformities(self):
-
+        """
+        Mise à jour automatique de la carte
+        déclenchée par la sélection des conformités
+        """
         # Récupération de la valeur cochée
         chimique = self.get_radio_value(self.radio_chimie, self.radio_chimie1)
         bacterio = self.get_radio_value(self.radio_bacterio, self.radio_bacterio1)
