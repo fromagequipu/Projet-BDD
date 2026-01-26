@@ -1,9 +1,9 @@
-# CREATION BDD
+# FICHIER DE CREATION DE NOTRE BDD
 
-### BIBLIOTHEQUES ###
+### BIBLIOTHEQUE : SQL ###
 import sqlite3
-import utils
 
+# Création de la BDD 
 def create_database(conn, cursor):
     """Creates the WaterQuality database
 
@@ -25,46 +25,59 @@ def create_database(conn, cursor):
     
     # Création des tables
     try:
-        # Création de la table commune (attribut zone temporairement en texte pour voir délimitaion des communes)
-        # Contient les communes
+        # Création de la table réseau
+        # Contient les réseaux d'eau
+        print("CREATION TABLE RESEAU")
+        cursor.execute('''
+        CREATE TABLE Reseau(
+            cdreseau TEXT PRIMARY KEY,
+            nomreseau TEXT
+        )
+        ''')
+
+        # Création de la table commune
+        # Contient les communes et leurs coordonnées
         print("CREATION TABLE COMMUNE")
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Commune(
-                id_reseau INT PRIMARY KEY,
-                code_insee INT,
-                nom_commune TEXT,
-                zone TEXT
+                cdreseau TEXT,
+                inseecommune TEXT,
+                nomcommune TEXT,
+                lat REAL,
+                lon REAL,
+                PRIMARY KEY (inseecommune, cdreseau),
+                FOREIGN KEY (cdreseau) REFERENCES Reseau(cdreseau)
             )
         ''')
 
-        # Création de la table paramètre
-        # Contient les paramètres de qualité
-        print("CREATION TABLE PARAMETRE")
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS Parametre(
-                id_param INT PRIMARY KEY,
-                nom_param TEXT,
-                unite TEXT,
-                seuil_qualite FLOAT
-            )
-        ''')
-    
         # Création de la table prelèvement
         # Contient l'association des communes et le prélèvement de leurs paramètres ainsi que leurs conformités
         print("CREATION TABLE PRELEVEMENT")
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Prelevement(
-                id_reseau INT,
-                id_param INT,
-                date_prelev DATE,
-                valeur_param FLOAT,
-                conformite_bacterio TEXT, 
-                conformite_chimique TEXT,
-                conformite_refbact TEXT,
-                conformite_refchim TEXT,
-                PRIMARY KEY (id_reseau, id_param),
-		        FOREIGN KEY (id_reseau) REFERENCES Commune(id_reseau),
-		        FOREIGN KEY (id_param) REFERENCES Parametre(id_param)
+                referenceprel TEXT PRIMARY KEY,
+                cdreseau TEXT,
+                dateprel DATE,
+                plvconformitebacterio TEXT, 
+                plvconformitechimique TEXT,
+                plvconformitereferencebact TEXT,
+                plvconformitereferencechim TEXT,
+                FOREIGN KEY (cdreseau) REFERENCES Reseau(cdreseau)
+            )
+        ''')
+
+        # Création de la table paramètre
+        # Contient les paramètres de qualité relevés lors des prévèlements
+        print("CREATION TABLE PARAMETRE")
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS Parametre(
+                id_param INTEGER PRIMARY KEY AUTOINCREMENT,
+                referenceprel TEXT,
+                libminparametre TEXT,
+                valtraduite TEXT, 
+                cdunitereferencesiseeaux TEXT,
+                refqual TEXT,
+                FOREIGN KEY (referenceprel) REFERENCES Prelevement(referenceprel)
             )
         ''')
        
