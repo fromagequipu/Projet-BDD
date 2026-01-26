@@ -187,10 +187,11 @@ class MainWindow(QMainWindow):
 
         main_layout.addWidget(boxville)  
         
-
+        #Liste déroulante des communes
         self.combo_ville = QComboBox()
         self.combo_ville.addItem("Toutes les communes", None)
 
+        #Requête permettant d'afficher les communes de notre bdd
         query = """
             SELECT DISTINCT inseecommune, nomcommune
             FROM Commune
@@ -535,12 +536,12 @@ class MainWindow(QMainWindow):
         # On réutilise le comportement EXISTANT
         insee = self.combo_ville.currentData()
 
-        # Cas : "Toutes les communes"
+        # Cas si aucune commune est selectionée
         if insee is None:
             self.update_map()
             return
 
-        # Cas : UNE commune sélectionnée
+        # Cas si UNE commune est sélectionnée
         communes = get_commune_by_insee(self.cursor, insee)
 
         create_map(communes)

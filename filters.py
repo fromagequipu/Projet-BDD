@@ -3,7 +3,7 @@
 ### BIBLIOTHEQUE : SQL ###
 import sqlite3
 
-
+#Fonction permettant de rechercher une commune sélectionnée
 def get_commune_by_insee(cursor, insee):
     try:
         query = """
