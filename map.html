@@ -17,7 +17,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_a0f0160bff4ccd9b0f23ab0c370248e4 {
+                #map_f7c2c4c2e505fc5a79aec2e615dd01fc {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -50,18 +50,21 @@
             </script>
 
         
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.Default.css"/>
 </head>
 <body>
     
     
-            <div class="folium-map" id="map_a0f0160bff4ccd9b0f23ab0c370248e4" ></div>
+            <div class="folium-map" id="map_f7c2c4c2e505fc5a79aec2e615dd01fc" ></div>
         
 </body>
 <script>
     
     
-            var map_a0f0160bff4ccd9b0f23ab0c370248e4 = L.map(
-                "map_a0f0160bff4ccd9b0f23ab0c370248e4",
+            var map_f7c2c4c2e505fc5a79aec2e615dd01fc = L.map(
+                "map_f7c2c4c2e505fc5a79aec2e615dd01fc",
                 {
                     center: [46.6, 1.8],
                     crs: L.CRS.EPSG3857,
@@ -78,7 +81,7 @@
 
         
     
-            var tile_layer_cc99a07f70018ccf7adc8154de7d461f = L.tileLayer(
+            var tile_layer_d53621fbeacb8c02be5dae557a2d65c9 = L.tileLayer(
                 "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                 {
   "minZoom": 0,
@@ -95,7 +98,16 @@
             );
         
     
-            tile_layer_cc99a07f70018ccf7adc8154de7d461f.addTo(map_a0f0160bff4ccd9b0f23ab0c370248e4);
+            tile_layer_d53621fbeacb8c02be5dae557a2d65c9.addTo(map_f7c2c4c2e505fc5a79aec2e615dd01fc);
+        
+    
+            var marker_cluster_384194083d264753e89d1b73792f8524 = L.markerClusterGroup(
+                {
+}
+            );
+        
+    
+            marker_cluster_384194083d264753e89d1b73792f8524.addTo(map_f7c2c4c2e505fc5a79aec2e615dd01fc);
         
 </script>
 </html>
